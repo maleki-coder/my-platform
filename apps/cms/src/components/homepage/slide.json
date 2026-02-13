@@ -1,0 +1,39 @@
+{
+  "collectionName": "components_homepage_slides",
+  "info": {
+    "displayName": "slide"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "subtitle": {
+      "type": "string"
+    },
+    "linkUrl": {
+      "type": "string",
+      "required": true
+    },
+    "isActive": {
+      "type": "boolean",
+      "required": true,
+      "default": true
+    },
+    "order": {
+      "type": "integer"
+    }
+  },
+  "config": {}
+}

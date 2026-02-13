@@ -1,0 +1,30 @@
+{
+  "name": "my-platform",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter server dev\" \"pnpm --filter store-front dev\" \"pnpm --filter cms dev\"",
+    "build": "turbo build",
+    "start": "concurrently \"pnpm --filter server start\" \"pnpm --filter store-front start\" \"pnpm --filter cms start\""
+  },
+  "pnpm": {
+    "overrides": {
+      "@mikro-orm/core": "6.4.16",
+      "@mikro-orm/postgresql": "6.4.16",
+      "@mikro-orm/knex": "6.4.16",
+      "@mikro-orm/migrations": "6.4.16",
+      "@mikro-orm/reflection": "6.4.16",
+      "@mikro-orm/seeder": "6.4.16"
+    }
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.29.1",
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "turbo": "^2.8.3"
+  }
+}
