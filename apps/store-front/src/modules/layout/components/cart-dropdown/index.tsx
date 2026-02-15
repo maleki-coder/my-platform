@@ -12,7 +12,7 @@ import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { ShoppingCart } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, useTransition } from "react"
 import CartDropdownHeader from "../cart-dropdown-header"
 import CartDropdownItems from "../cart-dropdown-items"
 import CartDropdownFooter from "../cart-dropdown-footer"
@@ -39,7 +39,7 @@ const CartDropdown = ({
     undefined
   )
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false)
-
+  const [isNavigating, startTransition] = useTransition()
   const open = () => setCartDropdownOpen(true)
   const close = () => setCartDropdownOpen(false)
 
@@ -88,15 +88,19 @@ const CartDropdown = ({
 
   const handleLoginOrOrder = () => {
     if (isLoading || error || !customer) {
-      router.push("/account")
+      startTransition(() => {
+        router.push("/account")
+      })
     } else {
-      router.push("/checkout?step=" + step)
+      startTransition(() => {
+        router.push("/checkout?step=" + step)
+      })
     }
   }
 
   return (
     <div onMouseEnter={openAndCancel} onMouseLeave={close}>
-      <Popover open={cartDropdownOpen}>
+      <Popover open={true}>
         <PopoverTrigger id="cart-popover-trigger">
           <LocalizedClientLink href="/cart" data-testid="nav-cart-link">
             <div className="flex items-center relative top-0.5">
@@ -133,6 +137,7 @@ const CartDropdown = ({
               <CartDropdownItems cartState={cartState} />
               <CartDropdownFooter
                 total={total}
+                isNavigating={isNavigating}
                 isLoading={isLoading}
                 error={error}
                 customer={customer}

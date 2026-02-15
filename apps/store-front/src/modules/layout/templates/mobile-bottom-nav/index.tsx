@@ -6,7 +6,7 @@ import { BookAIcon, HomeIcon, ShoppingCart, UserIcon } from "lucide-react"
 import { CategoryWithImages } from "types/global"
 
 export default function MobileBottomNav({
-  cart: cartState
+  cart: cartState,
 }: {
   cart?: HttpTypes.StoreCart | null
 }) {
@@ -16,7 +16,7 @@ export default function MobileBottomNav({
     }, 0) || 0
   return (
     <div className="fixed bottom-0 left-0 w-full border-t-2 border-gray-300 bg-white z-2000">
-      <div className="w-full mx-auto max-w-[1920px] min-h-20">
+      <div className="w-full mx-auto max-w-480 min-h-20">
         <div className="flex w-full justify-between items-center">
           <NavItem href="/" icon={<HomeIcon />} label="خانه" />
           <MobileCategoryButton />

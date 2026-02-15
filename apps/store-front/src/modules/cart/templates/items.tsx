@@ -5,9 +5,10 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import Thumbnail from "@modules/products/components/thumbnail"
 import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
 import { BadgePercent, BoxIcon } from "lucide-react"
-import { QuantitySelector } from "../components/quantity-selector"
+import { QuantitySelector } from "@modules/cart/components/quantity-selector"
 import DeleteButton from "@modules/common/components/delete-button"
 import { getTotalQuantity } from "@lib/util/get-total-quantity"
+import { VariantTagScroll } from "@modules/cart/components/variant-tag-scroll"
 type ItemsTemplateProps = {
   cart?: HttpTypes.StoreCart
 }
@@ -96,26 +97,11 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                     </LocalizedClientLink>
                   </div>
                   <div className="flex w-full flex-col justify-end gap-8 pt-6 lg:flex-row">
-                    <div className="w-full 3xl:w-auto lg:min-w-[364px] ll:max-w-[364px]">
+                    <div className="w-full 3xl:w-auto lg:min-w-91 ll:max-w-[364px]">
                       <div className=" flex h-full justify-between gap-2 rounded-lg border bg-white py-8 pl-6 pr-4 flex-col xl:flex-row lg:flex-col">
                         <div className="flex grow items-center justify-between">
                           <div className="ml-4">
-                            <div className="relative flex w-full items-center">
-                              <div className="overflow-x-auto no-scrollbar">
-                                <div className="flex items-center scroll-smooth lg:pr-0">
-                                  <div className="flex items-center gap-2.5 w-fit flex-nowrap">
-                                    <div>
-                                      <div className="flex w-max items-center border p-[3px] h-6.5  rounded-[5px] lg:rounded-md border-primary-shade-10">
-                                        <p className="ml-3 mr-2 select-none whitespace-nowrap text-xs leading-5 font-bold text-gray-700">
-                                          {item.variant?.title}
-                                        </p>
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <span className="flex h-1 w-1 p-1 lg:h-0.5 lg:w-0.5 lg:p-0.5"></span>
-                                </div>
-                              </div>
-                            </div>
+                            <VariantTagScroll variantTitle={item.variant?.title} />
                           </div>
                           <div className="mt-0 flex max-w-max flex-row items-center justify-between gap-0 3xl:w-full 3xl:max-w-none">
                             <div className="min-w-6 lg:min-w-7 flex h-[17px] items-center! justify-center gap-1 rounded-[3px] px-1 lg:h-[19px] bg-red-60">

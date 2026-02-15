@@ -3,15 +3,15 @@
 import { setAddresses } from "@lib/data/cart"
 import { HttpTypes } from "@medusajs/types"
 import Divider from "@modules/common/components/divider"
-import Spinner from "@modules/common/icons/spinner"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useActionState, useState } from "react"
+import { useActionState, useState, useTransition } from "react"
 import ErrorMessage from "../error-message"
 import ShippingAddress from "../shipping-address"
 import AddressBook from "@modules/account/components/address-book"
 import { Button } from "@lib/components/ui/button"
 import { CheckoutStepHeader } from "../checkout-step-header"
 import { ChevronLeft, LocationEdit, Phone } from "lucide-react"
+import { Spinner } from "@lib/components/ui/spinner"
 
 const Addresses = ({
   cart,
@@ -25,10 +25,13 @@ const Addresses = ({
   const pathname = usePathname()
   const isOpen = searchParams.get("step") === "address"
   const [checked, setChecked] = useState(false)
+  const [isNavigating, startTransition] = useTransition()
   const handleEdit = () => {
-    router.push(pathname + "?step=address")
+    startTransition(() => {
+      router.push(pathname + "?step=address")
+    })
   }
-  const [message, formAction] = useActionState(setAddresses, null)
+  const [message, formAction, isPending] = useActionState(setAddresses, null)
 
   return (
     <div className="bg-white">
@@ -45,13 +48,13 @@ const Addresses = ({
             />
             <AddressBook customer={customer} showAddresses={false} />
             <Button
-              disabled={!checked}
+              disabled={!checked || isPending}
               type="submit"
               size={"sm"}
-              className="cursor-pointer text-xs"
+              className="cursor-pointer text-xs w-22"
               data-testid="add-discount-button"
             >
-              ادامه خرید
+              {isPending ? <Spinner /> : <span>ادامه خرید</span>}
             </Button>
             <ErrorMessage error={message} data-testid="address-error-message" />
           </div>
@@ -83,7 +86,7 @@ const Addresses = ({
                       onClick={handleEdit}
                       className="inline-block text-sm leading-5 xl:text-sm"
                     >
-                      ویرایش
+                      {isNavigating ? <Spinner /> : <span>ویرایش</span>}
                     </span>
                     <ChevronLeft size={18} />
                   </>

@@ -8,7 +8,7 @@ export default function MobileCategoryButton() {
       onClick={() => {
         toggleSheet()
       }}
-      className={`flex flex-col gap-3 items-center justify-center min-w-20 py-3.5 pb-8 text-xs leading-4 font-medium border-t-2 transition-colors
+      className={`flex flex-col gap-3 items-center justify-center min-w-20 max-[390px]:min-w-10 py-3.5 text-xs leading-4 font-medium border-t-2 transition-colors
         ${
           open
             ? "border-t-sky-700 bg-gray-100"

@@ -4,9 +4,10 @@ import CartTotals from "@modules/common/components/cart-totals"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@lib/components/ui/button"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useTransition } from "react"
 import { useCustomer } from "@lib/context/customer-context"
 import { useRouter } from "next/navigation"
+import { Spinner } from "@lib/components/ui/spinner"
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart & {
@@ -28,6 +29,7 @@ const Summary = ({ cart }: SummaryProps) => {
   const step = getCheckoutStep(cart)
   const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
+  const [isNavigating, startTransition] = useTransition()
   useEffect(() => {
     const checkMobile = () => {
       const userAgent = navigator.userAgent
@@ -45,11 +47,26 @@ const Summary = ({ cart }: SummaryProps) => {
   const { customer, isLoading, error } = useCustomer()
   const handleLoginOrOrder = () => {
     if (isLoading || error || !customer) {
-      router.push("/account")
+      startTransition(() => {
+        router.push("/account")
+      })
     } else {
-      router.push("/checkout?step=" + step)
+      startTransition(() => {
+        router.push("/checkout?step=" + step)
+      })
     }
   }
+
+  const buttonContent = (() => {
+    if (isLoading || error || !customer) {
+      return <div className="font-semibold">ورود و ثبت سفارش</div>
+    }
+    if (isNavigating) {
+      return <Spinner />
+    }
+    return <div className="font-semibold">ادامه خرید</div>
+  })()
+
   return (
     <div
       style={{
@@ -66,11 +83,7 @@ const Summary = ({ cart }: SummaryProps) => {
           onClick={handleLoginOrOrder}
           className="w-full hover:bg-sky-700 bg-sky-700 cursor-pointer items-center justify-center text-white rounded-sm py-6"
         >
-          {isLoading || error || !customer ? (
-            <div className="font-semibold">ورود و ثبت سفارش</div>
-          ) : (
-            <div className="font-semibold">ادامه خرید‍</div>
-          )}
+          {buttonContent}
         </Button>
       </div>
       <div className="md:hidden block">
@@ -79,11 +92,7 @@ const Summary = ({ cart }: SummaryProps) => {
             onClick={handleLoginOrOrder}
             className="w-full hover:bg-sky-700 bg-sky-700 cursor-pointer items-center justify-center text-white rounded-sm py-6"
           >
-            {isLoading || error || !customer ? (
-              <div className="font-semibold">ورود و ثبت سفارش</div>
-            ) : (
-              <div className="font-semibold">ادامه خرید‍</div>
-            )}
+            {buttonContent}
           </Button>
         </div>
       </div>

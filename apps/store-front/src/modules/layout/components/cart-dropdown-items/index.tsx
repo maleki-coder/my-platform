@@ -5,6 +5,7 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { BadgePercent, BoxIcon } from "lucide-react"
 import { HttpTypes } from "@medusajs/types"
 import { QuantitySelector } from "@modules/cart/components/quantity-selector"
+import { VariantTagScroll } from "@modules/cart/components/variant-tag-scroll"
 import { getDiscountPercent } from "@lib/util/get-discount-percent"
 import { isVariantDiscounted } from "@lib/util/is-variant-discounted"
 import { convertToLocale } from "@lib/util/money"
@@ -13,7 +14,6 @@ import { useParams } from "next/navigation"
 type Props = {
   cartState: HttpTypes.StoreCart
 }
-
 
 const CartDropdownItems = ({ cartState }: Props) => {
   const { countryCode } = useParams() as { countryCode: string }
@@ -74,17 +74,7 @@ const CartDropdownItems = ({ cartState }: Props) => {
             <div className="mt-3.5 w-full flex flex-col">
               <div className="flex items-stretch">
                 <div className="flex flex-1 flex-col justify-between">
-                  <div className="relative flex items-center">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex items-center border p-[3px] h-6.5 rounded-[5px] border-primary-shade">
-                        <div className="max-w-[180px] overflow-x-auto pb-1">
-                          <p className="px-3 whitespace-nowrap select-none text-xs leading-5 font-semiBold text-gray-900">
-                            {item.variant?.title}
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  <VariantTagScroll variantTitle={item.variant?.title} />
 
                   <div className="h-8"></div>
 

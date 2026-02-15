@@ -5,16 +5,17 @@ import { setShippingMethod } from "@lib/data/cart"
 import { calculatePriceForShippingOption } from "@lib/data/fulfillment"
 import { clx } from "@lib/util/clx"
 import { convertToLocale } from "@lib/util/money"
-import { Loader, Spinner } from "@medusajs/icons"
+import { Loader } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useEffect, useState } from "react"
+import { useEffect, useState, useTransition } from "react"
 import { CheckoutStepHeader } from "../checkout-step-header"
 import { Button } from "@lib/components/ui/button"
 import { ChevronLeft, Mailbox } from "lucide-react"
+import { Spinner } from "@lib/components/ui/spinner"
 
 const PICKUP_OPTION_ON = "__PICKUP_ON"
 const PICKUP_OPTION_OFF = "__PICKUP_OFF"
@@ -70,7 +71,7 @@ const Shipping: React.FC<ShippingProps> = ({
   const searchParams = useSearchParams()
   const router = useRouter()
   const pathname = usePathname()
-
+  const [isNavigating, startTransition] = useTransition()
   const isOpen = searchParams.get("step") === "delivery"
 
   const _shippingMethods = availableShippingMethods?.filter(
@@ -110,11 +111,15 @@ const Shipping: React.FC<ShippingProps> = ({
   }, [availableShippingMethods])
 
   const handleEdit = () => {
-    router.push(pathname + "?step=delivery", { scroll: false })
+    startTransition(() => {
+      router.push(pathname + "?step=delivery", { scroll: false })
+    })
   }
 
   const handleSubmit = () => {
-    router.push(pathname + "?step=payment", { scroll: false })
+    startTransition(() => {
+      router.push(pathname + "?step=payment", { scroll: false })
+    })
   }
 
   const handleSetShippingMethod = async (
@@ -149,6 +154,9 @@ const Shipping: React.FC<ShippingProps> = ({
   useEffect(() => {
     setError(null)
   }, [isOpen])
+
+  const isButtonDisabled =
+    !shippingMethodId?.length || isLoading || isNavigating
 
   return (
     <div className="bg-white">
@@ -332,12 +340,12 @@ const Shipping: React.FC<ShippingProps> = ({
               data-testid="delivery-option-error-message"
             />
             <Button
-              disabled={!shippingMethodId?.length}
+              disabled={isButtonDisabled}
               onClick={handleSubmit}
-              className="cursor-pointer text-xs"
+              className="cursor-pointer text-xs w-22 h-fit"
               data-testid="submit-delivery-option-button"
             >
-              ادامه خرید
+              {isNavigating ? <Spinner /> : <span>ادامه خرید</span>}
             </Button>
           </div>
         </>
@@ -357,21 +365,19 @@ const Shipping: React.FC<ShippingProps> = ({
                         amount: cart.shipping_methods!.at(-1)!.amount!,
                       })}
                     </span>
-                    <span>
-                      تومان
-                    </span>
+                    <span>تومان</span>
                   </div>
                 </div>
               </div>
               <div className="text-gray-600 flex shrink-0! items-center cursor-pointer gap-1.5">
                 {!isOpen && cart?.shipping_address && (
                   <>
-                    <span
+                    <div
                       onClick={handleEdit}
                       className="inline-block text-sm leading-5 xl:text-sm"
                     >
-                      ویرایش
-                    </span>
+                      {isNavigating ? <Spinner /> : <span>ویرایش</span>}
+                    </div>
                     <ChevronLeft size={18} />
                   </>
                 )}

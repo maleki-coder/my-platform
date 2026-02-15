@@ -26,7 +26,7 @@ export function NavItem({ href, icon, label, badge }: NavItemProps) {
       href={href}
     >
       <div
-        className={`relative flex flex-col gap-3 items-center justify-center grow min-w-20 py-3.5 pb-8 text-xs leading-4 font-medium border-t-2 transition-colors
+        className={`relative flex flex-col gap-3 items-center justify-center grow min-w-20 max-[390px]:min-w-12 py-3.5 text-xs leading-4 font-medium border-t-2 transition-colors
           ${
             isActive
               ? "border-t-sky-700 bg-gray-100"
