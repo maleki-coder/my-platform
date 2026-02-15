@@ -73,7 +73,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                           {item?.title}
                         </p>
                       </LocalizedClientLink>
-                      <div className="relative flex flex-col gap-2 lg:gap-[18px] [&>div]:flex [&>div]:items-center [&>div]:gap-2.5 [&>div]:lg:gap-4">
+                      <div className="relative flex flex-col gap-2 lg:gap-4.5 [&>div]:flex [&>div]:items-center [&>div]:gap-2.5 [&>div]:lg:gap-4">
                         <div className="items-start! text-indigo-500">
                           <div className="me-2 flex h-5 w-5 items-center justify-center">
                             <BoxIcon size={20} />
@@ -104,7 +104,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                             <VariantTagScroll variantTitle={item.variant?.title} />
                           </div>
                           <div className="mt-0 flex max-w-max flex-row items-center justify-between gap-0 3xl:w-full 3xl:max-w-none">
-                            <div className="min-w-6 lg:min-w-7 flex h-[17px] items-center! justify-center gap-1 rounded-[3px] px-1 lg:h-[19px] bg-red-60">
+                            <div className="min-w-6 lg:min-w-7 flex h-4.5 items-center! justify-center gap-1 rounded-[3px] px-1 lg:h-4.75 bg-red-60">
                               {isVariantDiscounted(item) && (
                                 <div className="flex flex-nowrap flex-row-reverse items-center gap-1 rounded-sm p-0.5 text-xs bg-red-700 text-white">
                                   <div className="flex flex-nowrap flex-row-reverse items-center gap-1 rounded-sm p-0.5 text-xs bg-red-700 text-white">

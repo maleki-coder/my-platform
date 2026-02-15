@@ -78,7 +78,7 @@ module.exports = defineConfig({
       },
     },
     {
-      resolve: "./modules/strapi",
+      resolve: "./src/modules/strapi",
       options: {
         apiUrl: process.env.STRAPI_API_URL || "http://localhost:1337",
         apiToken: process.env.STRAPI_API_KEY || "",
