@@ -3,14 +3,12 @@
 import { RadioGroup } from "@headlessui/react"
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import { initiatePaymentSession } from "@lib/data/cart"
-import { clx } from "@lib/util/clx"
-// import { CheckCircleSolid, CreditCard } from "@medusajs/icons"
-// import { Button, Container, Heading, Text, clx } from "@medusajs/ui"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import PaymentContainer, {
   StripeCardContainer,
 } from "@modules/checkout/components/payment-container"
 import Divider from "@modules/common/components/divider"
+import { CheckoutStepHeader } from "@modules/checkout/components/checkout-step-header"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useCallback, useEffect, useState } from "react"
 
@@ -108,19 +106,10 @@ const Payment = ({
   return (
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
-        <h2
-          // level="h2"
-          className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
-            {
-              "opacity-50 pointer-events-none select-none":
-                !isOpen && !paymentReady,
-            }
-          )}
-        >
-          Payment
-          {!isOpen && paymentReady && <p>check circle</p>}
-        </h2>
+        <CheckoutStepHeader
+          isOpen={isOpen}
+          title={"روش پرداخت"}
+        />
         {!isOpen && paymentReady && (
           <p>
             <button

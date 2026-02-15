@@ -12,7 +12,7 @@ import Divider from "@modules/common/components/divider"
 import MedusaRadio from "@modules/common/components/radio"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { useEffect, useState, useTransition } from "react"
-import { CheckoutStepHeader } from "../checkout-step-header"
+import { CheckoutStepHeader } from "@modules/checkout/components/checkout-step-header"
 import { Button } from "@lib/components/ui/button"
 import { ChevronLeft, Mailbox } from "lucide-react"
 import { Spinner } from "@lib/components/ui/spinner"
@@ -162,7 +162,7 @@ const Shipping: React.FC<ShippingProps> = ({
     <div className="bg-white">
       <div className="flex flex-row items-center justify-between mb-6">
         <CheckoutStepHeader
-          isOpen={isOpen && cart.shipping_methods?.length === 0}
+          isOpen={isOpen}
           title={"شیوه دریافت"}
         />
       </div>
