@@ -31,8 +31,10 @@
     "@medusajs/medusa": "2.13.1",
     "@mikro-orm/postgresql": "^6.4.16",
     "@strapi/client": "^1.5.0",
+    "@types/multer": "^2.0.0",
     "jsonwebtoken": "^9.0.2",
-    "kavenegar": "^1.1.4"
+    "kavenegar": "^1.1.4",
+    "multer": "^2.0.2"
   },
   "devDependencies": {
     "@medusajs/test-utils": "2.13.1",

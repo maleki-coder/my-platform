@@ -135,7 +135,7 @@ const StripePaymentButton = ({
   return (
     <>
       <button
-        disabled={disabled || notReady}
+        // disabled={disabled || notReady}
         onClick={handlePayment}
         // size="large"
         // isLoading={submitting}
@@ -174,7 +174,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   return (
     <>
       <button
-        disabled={notReady}
+        // disabled={notReady}
         // isLoading={submitting}
         onClick={handlePayment}
         // size="large"

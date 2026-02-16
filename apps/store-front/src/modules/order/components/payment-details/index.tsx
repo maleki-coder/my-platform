@@ -1,9 +1,8 @@
-// import { Container, h2, p } from "@medusajs/ui"
-
 import { isStripeLike, paymentInfoMap } from "@lib/constants"
 import Divider from "@modules/common/components/divider"
 import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
+import UploadReceiptForm from "@modules/order/components/upload-receipt-form"
 
 type PaymentDetailsProps = {
   order: HttpTypes.StoreOrder
@@ -43,14 +42,14 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                   {isStripeLike(payment.provider_id) && payment.data?.card_last4
                     ? `**** **** **** ${payment.data.card_last4}`
                     : `${convertToLocale({
-                        amount: payment.amount,
-                        currency_code: order.currency_code,
+                        amount: payment.amount
                       })} paid at ${new Date(
                         payment.created_at ?? ""
                       ).toLocaleString()}`}
                 </p>
               </div>
             </div>
+            <UploadReceiptForm orderId={order.id} />
           </div>
         )}
       </div>

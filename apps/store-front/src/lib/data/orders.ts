@@ -110,3 +110,61 @@ export const declineTransferRequest = async (id: string, token: string) => {
     .then(({ order }) => ({ success: true, error: null, order }))
     .catch((err) => ({ success: false, error: err.message, order: null }))
 }
+
+export const uploadReceipt = async (
+  state: {
+    success: boolean
+    error: string | null
+    receiptUrl: string | null
+  },
+  formData: FormData
+): Promise<{
+  success: boolean
+  error: string | null
+  receiptUrl: string | null
+}> => {
+  const orderId = formData.get("order_id") as string
+  const receiptFile = formData.get("receipt") as File | null
+  const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+  const BACKEND_URL = process.env.MEDUSA_BACKEND_URL
+  if (!orderId) {
+    return { success: false, error: "Order ID is required", receiptUrl: null }
+  }
+
+  if (!receiptFile || receiptFile.size === 0) {
+    return {
+      success: false,
+      error: "No receipt file provided",
+      receiptUrl: null,
+    }
+  }
+
+  const headers = await getAuthHeaders()
+
+  // Prepare FormData for the fetch (since it's multipart)
+  const uploadFormData = new FormData()
+  uploadFormData.append("receipt", receiptFile)
+  try {
+    const response = await fetch(
+      `${BACKEND_URL}/store/orders/${orderId}/upload-receipt`,
+      {
+        method: "POST",
+        body: uploadFormData,
+        headers: { ...headers, "x-publishable-api-key": PUBLISHABLE_API_KEY! },
+      }
+    )
+    return {
+      success: true,
+      error: null,
+      receiptUrl: response.url || null,
+    }
+  } catch (err) {
+    // Use your medusaError helper for consistent error handling
+    const error = medusaError(err)
+    return {
+      success: false,
+      error: error || "Failed to upload receipt",
+      receiptUrl: null,
+    }
+  }
+}

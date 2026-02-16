@@ -85,5 +85,20 @@ module.exports = defineConfig({
         defaultLocale: process.env.STRAPI_DEFAULT_LOCALE || "en",
       },
     },
+    {
+      resolve: "@medusajs/medusa/payment",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/payment-card-to-card",
+            id: "card-to-card",
+            options: {
+              instructions:
+                "Transfer to card 1234-5678-9012-3456, then upload receipt via /store/orders/{order_id}/upload-receipt",
+            },
+          },
+        ],
+      },
+    },
   ],
 });

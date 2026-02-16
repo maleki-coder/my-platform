@@ -100,7 +100,7 @@ const CartDropdown = ({
 
   return (
     <div onMouseEnter={openAndCancel} onMouseLeave={close}>
-      <Popover open={true}>
+      <Popover open={cartDropdownOpen}>
         <PopoverTrigger id="cart-popover-trigger">
           <LocalizedClientLink href="/cart" data-testid="nav-cart-link">
             <div className="flex items-center relative top-0.5">
