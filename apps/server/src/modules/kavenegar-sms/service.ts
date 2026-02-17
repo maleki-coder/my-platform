@@ -8,7 +8,7 @@ type InjectedDependencies = {};
 
 type KavenegarSmsOptions = {
   apikey: string;
-  from: string;
+  from: string; // your sender number (e.g. 1000xxxxxx or dedicated line)
 };
 
 class KavenegarSmsService extends AbstractNotificationProviderService {
@@ -25,63 +25,93 @@ class KavenegarSmsService extends AbstractNotificationProviderService {
   }
   static validateOptions(options: KavenegarSmsOptions): void | never {
     if (!options.apikey) {
-      throw new Error("api is required");
+      throw new Error("apikey is required");
     }
     if (!options.from) {
-      throw new Error("From is required");
+      throw new Error("from is required");
     }
   }
-  async send(
-    notification: ProviderSendNotificationDTO
-  ): Promise<ProviderSendNotificationResultsDTO> {
-    // Destructure the required information from the notification object
-    const { to, channel, data } = notification;
 
-    // Ensure the notification is for the SMS channel
+  async send(
+    notification: ProviderSendNotificationDTO,
+  ): Promise<ProviderSendNotificationResultsDTO> {
+    const { to, channel, template, data } = notification;
+
     if (channel !== "sms") {
       throw new Error(`Unsupported channel: ${channel}`);
     }
 
-    // Extract message content and recipient phone number from data
-    // Fallback for 'to' ensures compatibility
-    const message = data?.message || data?.body;
     const receptor = data?.receptor || to;
-    const otp = data?.otp;
-    if (!otp) {
-      throw new Error("An OTP is required");
-    }
-    // Validate that required fields are present
-    if (!message) {
-      throw new Error("A 'message' is required in the notification data.");
-    }
     if (!receptor) {
-      throw new Error("A recipient ('to') is required.");
+      throw new Error(
+        "Recipient phone number ('to' or data.receptor) is required.",
+      );
     }
-    const finalMessage = String(message) + String(otp);
 
-    // Wrap the Kavenegar callback-based API in a Promise
+    // ── OTP / Lookup mode ── (your existing logic, slightly cleaned)
+    if (template === "otp-template" && data?.otp) {
+      // Assuming you use VerifyLookup for OTPs
+      return new Promise((resolve, reject) => {
+        this.client.VerifyLookup(
+          {
+            receptor,
+            token: String(data.otp),
+            template: template, // e.g. "verify", "login", "test"...
+            // token2, token3 if your template needs more
+          },
+          (response: any, status: number) => {
+            if (status === 200) {
+              resolve({
+                id: response.messageid?.toString() || `${Date.now()}`,
+              });
+            } else {
+              reject(
+                new Error(
+                  `Kavenegar VerifyLookup error (Status: ${status}). Response: ${JSON.stringify(response)}`,
+                ),
+              );
+            }
+          },
+        );
+      });
+    }
+
+    // ── Normal SMS mode (for order notifications) ──
+    let message = data?.message || data?.body || data?.text;
+    console.log("kavehnegar message : " + message);
+    if (!message) {
+      throw new Error(
+        "Message content is required for normal SMS (data.message / data.body)",
+      );
+    }
+
+    // Optional: append extra info, format nicely, etc.
+    // message = `Your order #${data?.order?.display_id || 'N/A'} - ${message}`;
+
     return new Promise((resolve, reject) => {
-      this.client.VerifyLookup(
+      this.client.Send(
         {
-          token: String(otp), // Your sender number from options
-          receptor: receptor, // The recipient's phone number
-          template: "test", // The text message to send
+          sender: this.from,
+          receptor,
+          message: String(message),
+          // Optional params you can expose later via data:
+          // date: data?.date,   // schedule
+          // type: data?.type,
+          // localid: data?.localId,
         },
         (response: any, status: number) => {
-          // Handle the API response
           if (status === 200) {
-            // Success: Resolve with the result expected by Medusa
-            resolve({
-              id: response.messageid?.toString() || `${Date.now()}`,
-            });
+            // response is usually an array of send results
+            const msgId = response[0]?.messageid || `${Date.now()}`;
+            resolve({ id: msgId.toString() });
           } else {
-            // Error: Reject with a descriptive message
             reject(
-              new Error(`Kavenegar API error (Status: ${status}).
-                    Response: ${JSON.stringify(response)}`)
+              new Error(
+                `Kavenegar Send error (Status: ${status}). Response: ${JSON.stringify(response)}`,
+              ),
             );
           }
-        }
+        },
       );
     });
   }

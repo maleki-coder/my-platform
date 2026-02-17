@@ -1,0 +1,79 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Server: Debug (Medusa Backend)",
+      "type": "node",
+      "request": "launch",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["run", "dev"],
+      "cwd": "${workspaceFolder}/apps/server",
+      "console": "integratedTerminal",
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    {
+      "name": "Storefront: Debug Server-Side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/store-front",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "Storefront: Debug Client-Side",
+      "type": "chrome",
+      "request": "attach",
+      "url": "http://localhost:8000",
+      "webRoot": "${workspaceFolder}/apps/store-front",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "CMS: Debug Server-Side",
+      "type": "node-terminal",
+      "request": "launch",
+      "command": "pnpm run dev",
+      "cwd": "${workspaceFolder}/apps/cms",
+      "internalConsoleOptions": "neverOpen"
+    },
+    {
+      "name": "CMS: Debug Client-Side",
+      "type": "chrome",
+      "request": "attach",
+      "url": "http://localhost:7000",
+      "webRoot": "${workspaceFolder}/apps/cms",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Storefront: Full Stack",
+      "configurations": [
+        "Storefront: Debug Server-Side",
+        "Storefront: Debug Client-Side"
+      ],
+      "stopAll": true
+    },
+    {
+      "name": "CMS: Full Stack",
+      "configurations": ["CMS: Debug Server-Side", "CMS: Debug Client-Side"],
+      "stopAll": true
+    },
+    {
+      "name": "Debug All",
+      "configurations": [
+        "Server: Debug (Medusa Backend)",
+        "Storefront: Debug Server-Side",
+        "Storefront: Debug Client-Side",
+        "CMS: Debug Server-Side",
+        "CMS: Debug Client-Side"
+      ],
+      "stopAll": true
+    }
+  ]
+}
