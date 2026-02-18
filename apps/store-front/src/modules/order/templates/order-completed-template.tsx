@@ -1,4 +1,3 @@
-// import { h2 } from "@medusajs/ui"
 import { cookies as nextCookies } from "next/headers"
 
 import CartTotals from "@modules/common/components/cart-totals"
@@ -26,24 +25,19 @@ export default async function OrderCompletedTemplate({
       <div className="content-container flex flex-col justify-center items-center gap-y-10 max-w-4xl h-full w-full">
         {isOnboarding && <OnboardingCta orderId={order.id} />}
         <div
-          className="flex flex-col gap-4 max-w-4xl h-full bg-white w-full py-10"
+          className="flex flex-col gap-4 max-w-4xl h-full bg-white w-full py-2"
           data-testid="order-complete-container"
         >
           <h2
-            
-            className="flex flex-col gap-y-3 text-ui-fg-base text-3xl mb-4"
+            className="flex flex-col gap-y-3 text-ui-fg-base text-3xl"
           >
-            <span>Thank you!</span>
-            <span>Your order was placed successfully.</span>
+            <span className="text-green-500">سفارش شما با موفقیت ثبت شد</span>
           </h2>
           <OrderDetails order={order} />
-          <h2  className="flex flex-row text-3xl-regular">
-            Summary
-          </h2>
           <Items order={order} />
-          <CartTotals totals={order} />
           <ShippingDetails order={order} />
           <PaymentDetails order={order} />
+          <CartTotals totals={order} />
           <Help />
         </div>
       </div>

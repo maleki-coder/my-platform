@@ -1,7 +1,6 @@
 "use client"
 
 import { clx } from "@lib/util/clx"
-// import { Heading, Text, clx } from "@medusajs/ui"
 
 import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"

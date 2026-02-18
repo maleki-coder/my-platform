@@ -1,6 +1,6 @@
 "use client"
 import { HttpTypes } from "@medusajs/types"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import AddressSelect from "../address-select"
 
 const ShippingAddress = ({
@@ -12,6 +12,7 @@ const ShippingAddress = ({
   cart: HttpTypes.StoreCart | null
   onSelectChanged: (checked: boolean) => void
 }) => {
+  const isInitialMount = useRef(true)
   // Instead of using dot notation, prepare the data differently
   const [addressData, setAddressData] = useState({
     first_name: cart?.shipping_address?.first_name || "",
@@ -49,8 +50,10 @@ const ShippingAddress = ({
       })
     }
 
-    const checked = address?.id ? true : false
-    onSelectChanged(checked)
+    if (!isInitialMount.current) {
+      const checked = address?.id ? true : false
+      onSelectChanged(checked)
+    }
 
     if (email) {
       setEmail(email)
@@ -65,6 +68,7 @@ const ShippingAddress = ({
     if (cart && !cart.email && customer?.email) {
       setEmail(customer.email)
     }
+    isInitialMount.current = false
   }, [cart])
 
   return (

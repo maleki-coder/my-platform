@@ -34,6 +34,10 @@ export const paymentInfoMap: Record<
     title: "Manual Payment",
     icon: <CreditCard />,
   },
+  "pp_card-to-card_card-to-card": {
+    title: "کارت به کارت",
+    icon: <CreditCard />,
+  },
   // Add more payment providers here
 }
 
@@ -49,6 +53,9 @@ export const isPaypal = (providerId?: string) => {
 }
 export const isManual = (providerId?: string) => {
   return providerId?.startsWith("pp_system_default")
+}
+export const isCardToCard = (providerId?: string) => {
+  return providerId?.startsWith("pp_card")
 }
 
 // Add currencies that don't need to be divided by 100

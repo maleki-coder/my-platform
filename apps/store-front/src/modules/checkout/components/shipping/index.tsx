@@ -335,10 +335,6 @@ const Shipping: React.FC<ShippingProps> = ({
           )}
 
           <div className="flex justify-end">
-            <ErrorMessage
-              error={error}
-              data-testid="delivery-option-error-message"
-            />
             <Button
               disabled={isButtonDisabled}
               onClick={handleSubmit}
@@ -347,6 +343,10 @@ const Shipping: React.FC<ShippingProps> = ({
             >
               {isNavigating ? <Spinner /> : <span>ادامه خرید</span>}
             </Button>
+            <ErrorMessage
+              error={error}
+              data-testid="delivery-option-error-message"
+            />
           </div>
         </>
       ) : (
@@ -384,9 +384,7 @@ const Shipping: React.FC<ShippingProps> = ({
               </div>
             </div>
           ) : (
-            <div>
-              <Spinner />
-            </div>
+            null
           )}
         </div>
       )}
