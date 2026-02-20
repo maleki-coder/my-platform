@@ -18,7 +18,7 @@ export const updateProductInStrapiStep = createStep(
     const strapiService: StrapiModuleService = container.resolve(STRAPI_MODULE)
 
     // Fetch current Strapi product data for compensation
-    const originalProduct = await strapiService.findByMedusaId(Collection.PRODUCTS, product.id)
+    const originalProduct = await strapiService.findByMedusaId(Collection.PRODUCTS, product.id, ['images'])
 
     // Update product in Strapi
     const updated = await strapiService.update(Collection.PRODUCTS, originalProduct.documentId, {
