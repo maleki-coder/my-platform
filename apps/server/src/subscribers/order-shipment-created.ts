@@ -9,6 +9,7 @@ export default async function orderShippedHandler({
 }: SubscriberArgs<{ id }>) {
   const query = container.resolve(ContainerRegistrationKeys.QUERY);
   const notificationModule = container.resolve(Modules.NOTIFICATION);
+  const logger = container.resolve("logger");
   const { data: fulfillments } = await query.graph({
     entity: "fulfillment",
     filters: { id: id },
@@ -26,7 +27,7 @@ export default async function orderShippedHandler({
     ],
   });
   if (!fulfillments || fulfillments.length === 0) {
-    console.log("No fulfillment found for ID:", id);
+    logger.info("No fulfillment found for ID:" +  id);
     return;
   }
   const fulfillment = fulfillments[0];
