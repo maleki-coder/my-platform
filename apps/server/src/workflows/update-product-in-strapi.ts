@@ -41,7 +41,11 @@ export const updateProductInStrapiWorkflow = createWorkflow(
     // 2. If the product doesn't exist in Strapi, create it
     const created = when(
       { product },
-      (data) => !data.product.metadata?.strapi_id,
+      (data) => {
+        // Use a type assertion to help TypeScript
+        const metadata = (data.product as any).metadata;
+        return !metadata?.strapi_id;
+      }
     ).then(() => {
       return createProductInStrapiWorkflow.runAsStep({
         input: { id: input.id },
@@ -79,7 +83,7 @@ export const updateProductInStrapiWorkflow = createWorkflow(
         { product, uploadedImages, uploadedThumbnail },
         (data) => ({
           id: data.product.id, // Medusa product ID
-          strapiId: data.product.metadata.strapi_id, // Existing Strapi ID
+          strapiId: data.product.metadata!.strapi_id, // Existing Strapi ID
           title: data.product.title,
           subtitle: data.product.subtitle,
           description: data.product.description,

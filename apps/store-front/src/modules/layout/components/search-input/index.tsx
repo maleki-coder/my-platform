@@ -21,6 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@lib/components/ui/dialog"
+import { Spinner } from "@lib/components/ui/spinner"
 
 export default function HeaderSearchInput() {
   const [open, setOpen] = useState(false)
@@ -65,7 +66,7 @@ export default function HeaderSearchInput() {
     setOpen(newOpen)
   }
   if (error) {
-    return <div>test</div>
+    return <div>error</div>
   }
   if (isMobile) {
     return (
@@ -109,7 +110,7 @@ export default function HeaderSearchInput() {
           <div className="flex-1 w-full overflow-auto p-3">
             <PopOverContentSearchContainer searchTerm={searchTerm}>
               {products?.map((product) => (
-                <SearchedProductBox key={product.id} product={product} />
+                <SearchedProductBox key={product.id} product={product} onNavigate={() => setOpen(false)} />
               ))}
             </PopOverContentSearchContainer>
           </div>
@@ -137,11 +138,13 @@ export default function HeaderSearchInput() {
         style={{ width: inputWidth, height: "calc(100vh - 10rem)" }}
         className="mt-2 p-3 rounded-xl shadow-lg border z-200 overflow-auto"
       >
-        <PopOverContentSearchContainer searchTerm={searchTerm}>
-          {products!.map((product) => (
-            <SearchedProductBox key={product.id} product={product} />
-          ))}
-        </PopOverContentSearchContainer>
+        {isLoading ? <Spinner /> :
+          <PopOverContentSearchContainer searchTerm={searchTerm}>
+            {products!.map((product) => (
+              <SearchedProductBox key={product.id} product={product} onNavigate={() => setOpen(false)} />
+            ))}
+          </PopOverContentSearchContainer>
+        }
       </PopoverContent>
     </Popover>
   )

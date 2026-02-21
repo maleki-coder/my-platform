@@ -35,17 +35,17 @@
       "type": "media",
       "multiple": true,
       "required": false,
-      "allowedTypes": ["images"]
+      "allowedTypes": [
+        "images"
+      ]
     },
     "thumbnail": {
       "type": "media",
       "multiple": false,
       "required": false,
-      "allowedTypes": ["images"]
-    },
-    "locale": {
-      "type": "string",
-      "default": "en"
+      "allowedTypes": [
+        "images"
+      ]
     },
     "variants": {
       "type": "relation",
@@ -58,6 +58,12 @@
       "relation": "oneToMany",
       "target": "api::product-option.product-option",
       "mappedBy": "product"
+    },
+    "seo": {
+      "type": "component",
+      "component": "shared.seo",
+      "repeatable": false,
+      "required": true
     }
   }
 }
