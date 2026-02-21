@@ -34,8 +34,8 @@ const Addresses = ({
   const [message, formAction, isPending] = useActionState(setAddresses, null)
 
   return (
-    <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
+    <div className="bg-white flex flex-col gap-y-2">
+      <div className="flex flex-row items-center justify-between">
         <CheckoutStepHeader isOpen={isOpen} title={"آدرس تحویل"} />
       </div>
       {isOpen ? (
@@ -62,7 +62,7 @@ const Addresses = ({
       ) : (
         <div className="text-small-regular">
           {cart && cart.shipping_address ? (
-            <div className="flex justify-between mt-3 rounded-2xl border-none bg-indigo-50 px-8 py-5">
+            <div className="flex justify-between rounded-2xl border-none bg-indigo-50 px-8 py-5">
               <div className="flex max-w-[64%] items-center gap-6">
                 <div className="flex w-full flex-col gap-y-1.5">
                   <div className="flex items-center gap-3 leading-9 xl:leading-7.5 text-sm font-medium text-gray-800">

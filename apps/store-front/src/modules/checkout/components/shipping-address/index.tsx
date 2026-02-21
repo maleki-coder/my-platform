@@ -49,7 +49,7 @@ const ShippingAddress = ({
       })
     }
 
-    const checked = address?.id ? true : false
+    const checked = address?.address_1 ? true : false
     onSelectChanged(checked)
 
     if (email) {
@@ -69,14 +69,13 @@ const ShippingAddress = ({
 
   return (
     <>
-      {customer && (
+      {customer && customer.addresses.length > 0 && (
         <div className="flex flex-col w-full">
-          <AddressSelect
-            addresses={customer.addresses}
-            addressInput={addressData as HttpTypes.StoreCartAddress}
-            onSelect={setFormAddress}
-          />
-
+            <AddressSelect
+              addresses={customer.addresses}
+              addressInput={addressData as HttpTypes.StoreCartAddress}
+              onSelect={setFormAddress}
+            />
           {/* Use array-style names for nested objects */}
           {Object.entries(addressData).map(([key, value]) => (
             <input

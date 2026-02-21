@@ -8,7 +8,7 @@ export const CheckoutStepHeader = ({
   title: string
 }) => {
   return (
-    <header className="flex gap-4">
+    <header className="flex gap-4 md:px-3">
       <p className="text-lg font-bold">{title}</p>
       <span>{!isOpen && <CheckCircleIcon />}</span>
     </header>

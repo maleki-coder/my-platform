@@ -62,9 +62,60 @@ export interface SharedSeo extends Struct.ComponentSchema {
     name: 'Seo';
   };
   attributes: {
-    metaDescription: Schema.Attribute.Text & Schema.Attribute.Required;
-    metaTitle: Schema.Attribute.String & Schema.Attribute.Required;
-    shareImage: Schema.Attribute.Media<'images'>;
+    canonical_url: Schema.Attribute.String;
+    change_frequency: Schema.Attribute.Enumeration<
+      ['always', 'hourly', 'daily', 'weekly', 'monthly', 'yearly', 'never']
+    > &
+      Schema.Attribute.DefaultTo<'daily'>;
+    keywords: Schema.Attribute.String;
+    meta_json_extra: Schema.Attribute.JSON;
+    og_description: Schema.Attribute.Text &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 200;
+      }>;
+    og_image: Schema.Attribute.Media<'images'>;
+    og_title: Schema.Attribute.String &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 70;
+      }>;
+    prevent_indexing: Schema.Attribute.Boolean &
+      Schema.Attribute.DefaultTo<false>;
+    priority: Schema.Attribute.Decimal &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 1;
+          min: 0;
+        },
+        number
+      > &
+      Schema.Attribute.DefaultTo<0.5>;
+    robots: Schema.Attribute.Enumeration<
+      [
+        'index, follow',
+        'index, nofollow',
+        'noindex, follow',
+        'noindex, nofollow',
+      ]
+    > &
+      Schema.Attribute.DefaultTo<'index, follow'>;
+    schema_json: Schema.Attribute.JSON;
+    seo_description: Schema.Attribute.Text &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 160;
+      }>;
+    seo_title: Schema.Attribute.String &
+      Schema.Attribute.Required &
+      Schema.Attribute.SetMinMaxLength<{
+        maxLength: 60;
+      }>;
+    twitter_card_type: Schema.Attribute.Enumeration<
+      ['summary', 'summary_large_image', 'app', 'player']
+    > &
+      Schema.Attribute.DefaultTo<'summary_large_image'>;
+    twitter_description: Schema.Attribute.Text;
+    twitter_image: Schema.Attribute.Media<'images'>;
+    twitter_title: Schema.Attribute.String;
   };
 }
 

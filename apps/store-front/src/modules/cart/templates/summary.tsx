@@ -72,11 +72,9 @@ const Summary = ({ cart }: SummaryProps) => {
       style={{
         marginBottom: isMobile ? "10rem" : undefined,
       }}
-      className="flex flex-col gap-y-3"
+      className="flex flex-col gap-y-2"
     >
-      <header className="flex md:px-2 px-8">
-        <p className="text-lg font-bold">صورتحساب</p>
-      </header>
+      <header className="flex text-lg font-bold md:px-3">صورتحساب</header>
       <CartTotals totals={cart} cart={cart} />
       <div className="md:block hidden">
         <Button

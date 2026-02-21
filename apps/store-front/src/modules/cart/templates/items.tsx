@@ -31,7 +31,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
 
   return (
     <>
-      <div className="flex w-full items-center justify-between px-4 pb-4 xl:px-6">
+      <div className="flex w-full items-center justify-between px-4 pb-4 md:px-3">
         <div className="flex items-center gap-x-1.5 xl:gap-x-3">
           <p className="text-sm font-bold xl:text-xl leading-5.5">
             سبد خرید شما
