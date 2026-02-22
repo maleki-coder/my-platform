@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
 }
 const myFont = localFont({
-  src: "../../public/fonts/IRANYekanWebMedium.woff",
+  src: "../../../public/fonts/IRANYekanWebMedium.woff",
   variable: "--font-inter",
 })
 

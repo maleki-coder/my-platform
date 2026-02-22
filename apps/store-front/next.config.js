@@ -1,5 +1,5 @@
 const checkEnvVariables = require("./check-env-variables")
-
+const { withPayload } = require("@payloadcms/next/withPayload")
 checkEnvVariables()
 
 /**
@@ -28,4 +28,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = withPayload(nextConfig)

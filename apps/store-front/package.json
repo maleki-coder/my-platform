@@ -18,6 +18,10 @@
     "@headlessui/react": "^2.2.0",
     "@medusajs/icons": "^2.11.3",
     "@medusajs/js-sdk": "latest",
+    "@payloadcms/db-postgres": "^3.77.0",
+    "@payloadcms/next": "^3.77.0",
+    "@payloadcms/richtext-lexical": "^3.77.0",
+    "@payloadcms/translations": "^3.77.0",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-dialog": "^1.1.15",
     "@radix-ui/react-label": "^2.1.8",
@@ -36,9 +40,11 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
+    "graphql": "^16.12.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.554.0",
     "next": "^15.3.1",
+    "payload": "^3.77.0",
     "pg": "^8.11.3",
     "qs": "^6.12.1",
     "react": "19.0.0-rc-66855b96-20241106",
@@ -46,6 +52,7 @@
     "react-dom": "19.0.0-rc-66855b96-20241106",
     "react-phone-number-input": "^3.4.14",
     "server-only": "^0.0.1",
+    "sharp": "^0.34.5",
     "tailwind-merge": "^3.4.0",
     "tailwindcss-radix": "^2.8.0",
     "webpack": "^5"
@@ -73,10 +80,12 @@
   "packageManager": "yarn@4.6.0",
   "resolutions": {
     "@types/react": "npm:types-react@19.0.0-rc.1",
-    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
+    "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1",
+    "undici": "5.20.0"
   },
   "overrides": {
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "undici": "5.20.0"
   }
 }
