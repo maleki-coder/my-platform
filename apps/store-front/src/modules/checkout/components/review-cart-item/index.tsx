@@ -3,6 +3,7 @@
 import { convertToLocale } from "@lib/util/money"
 import { ArrowUpMini } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
+import { VariantTagScroll } from "@modules/cart/components/variant-tag-scroll"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { CalendarCheck, CreditCard, Mailbox } from "lucide-react"
 import { useState } from "react"
@@ -117,43 +118,8 @@ const ReviewCartItem: React.FC<ReviewItemsProps> = ({
                                             </div>
                                             <div className="w-full h-2.5 lg:h-5"></div>
                                             <div className="flex items-center justify-center gap-1 xl:gap-1.5">
-                                                <div
-                                                    className="flex items-center justify-center bg-white outline outline-1 outline-gray-300 h-6.5 w-6.5 rounded-md"
-                                                >
-                                                    <p
-                                                        className="font-semiBold text-gray-700 text-smm leading-4"
-                                                    >
-                                                        {item.quantity}
-                                                    </p>
-                                                </div>
-                                                <div>
-                                                    <div className="relative flex w-full items-center">
-                                                        <div className="overflow-x-auto no-scrollbar">
-                                                            <div
-                                                                className="flex items-center scroll-smooth lg:pr-0"
-                                                            >
-                                                                <div
-                                                                    className="flex items-center gap-2.5 w-fit flex-nowrap"
-                                                                >
-                                                                    <div>
-                                                                        <div
-                                                                            className="flex w-max items-center border p-[3px] h-5.5  lg:h-[26px]  rounded-[6px] border-gray-300 bg-white !border !border-gray-300 !bg-white !rounded-[6px] !text-gray-600 !text-xs "
-                                                                        >
-                                                                            <p
-                                                                                className="mx-2 select-none whitespace-nowrap text-xs leading-5 font-medium text-gray-600"
-                                                                            >
-                                                                                {item.variant_title}
-                                                                            </p>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                <span
-                                                                    className="flex h-1 w-1 p-1 lg:h-0.5 lg:w-0.5 lg:p-0.5"
-                                                                ></span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <VariantTagScroll variantTitle={item.quantity as unknown as string} />
+                                                <VariantTagScroll variantTitle={item.variant_title} />
                                             </div>
                                         </div>
                                     </div>
