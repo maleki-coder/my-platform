@@ -64,7 +64,9 @@ const CartDropdown = ({
       clearTimeout(activeTimer)
     }
 
-    open()
+    if (!pathname.includes("ir/cart")){
+      open()
+    }
   }
 
   // Clean up the timer when the component unmounts
@@ -80,7 +82,7 @@ const CartDropdown = ({
 
   // open cart dropdown when modifying the cart items, but only if we're not on the cart page
   useEffect(() => {
-    if (itemRef.current !== totalItems && !pathname.includes("/cart")) {
+    if (itemRef.current !== totalItems && !pathname.includes("ir/cart")) {
       timedOpen()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

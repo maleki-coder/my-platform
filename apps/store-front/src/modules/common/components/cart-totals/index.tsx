@@ -10,22 +10,17 @@ type CartTotalsProps = {
   }
   totals: {
     total?: number | null
-    subtotal?: number | null
-    tax_total?: number | null
-    // currency_code: string
-    item_subtotal?: number | null
-    shipping_subtotal?: number | null
+    item_total: number | null
+    shipping_total?: number | null
     discount_subtotal?: number | null
   }
 }
 
 const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
   const {
-    // currency_code,
     total,
-    // tax_total,
-    item_subtotal,
-    shipping_subtotal,
+    item_total,
+    shipping_total,
     discount_subtotal,
   } = totals
   // const mycart = cart;
@@ -36,27 +31,29 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
           <div className="flex justify-between">
             <p className="text-sm font-medium text-shadow-2xs">قیمت محصولات</p>
             <p className="text-sm font-medium text-shadow-2xs">
-              {convertToLocale({ amount: item_subtotal ?? 0 })}
+              {convertToLocale({ amount: item_total ?? 0 })}
               <span className="text-shadow-2xs text-xs font-medium mr-1">
                 تومان
               </span>
             </p>
           </div>
-          <div className="flex justify-between">
-            <p className="text-sm font-semiBold text-red-500">تخفیف محصولات</p>
-            <p className="text-sm font-semiBold text-red-500">
-              {convertToLocale({
-                amount: discount_subtotal ?? 0,
-              })}
-              <span className="font-medium mr-1 text-xs">تومان</span>
-            </p>
-          </div>
-          {shipping_subtotal! > 0 && (
+          {discount_subtotal! > 0 &&
             <div className="flex justify-between">
-              <p className="text-sm font-semiBold text-red-500">هزینه ارسال</p>
+              <p className="text-sm font-semiBold text-red-500">تخفیف محصولات</p>
               <p className="text-sm font-semiBold text-red-500">
                 {convertToLocale({
-                  amount: shipping_subtotal ?? 0,
+                  amount: discount_subtotal ?? 0,
+                })}
+                <span className="font-medium mr-1 text-xs">تومان</span>
+              </p>
+            </div>
+          }
+          {shipping_total! > 0 && (
+            <div className="flex justify-between">
+              <p className="text-sm font-semiBold text-red-500">هزینه بسته بندی و ارسال</p>
+              <p className="text-sm font-semiBold text-red-500">
+                {convertToLocale({
+                  amount: shipping_total ?? 0,
                 })}
                 <span className="font-medium mr-1 text-xs">تومان</span>
               </p>

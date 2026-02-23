@@ -44,9 +44,9 @@ function formatAddress(address: HttpTypes.StoreCartAddress) {
     ret += `, ${address.postal_code} ${address.city}`
   }
 
-  if (address.country_code) {
-    ret += `, ${address.country_code.toUpperCase()}`
-  }
+  // if (address.country_code) {
+  //   ret += `, ${address.country_code.toUpperCase()}`
+  // }
 
   return ret
 }
@@ -223,7 +223,7 @@ const Shipping: React.FC<ShippingProps> = ({
                       data-testid="delivery-option-radio"
                       disabled={isDisabled}
                       className={clx(
-                        "flex items-center justify-between text-small-regular cursor-pointer py-4 border rounded-rounded px-8 hover:shadow-borders-interactive-with-active",
+                        "flex items-center justify-between mt-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 hover:shadow-borders-interactive-with-active",
                         {
                           "border-ui-border-interactive":
                             option.id === shippingMethodId,
@@ -236,21 +236,26 @@ const Shipping: React.FC<ShippingProps> = ({
                         <MedusaRadio checked={option.id === shippingMethodId} />
                         <span className="text-base-regular">{option.name}</span>
                       </div>
-                      <span className="justify-self-end text-ui-fg-base">
+                      <div className="flex justify-self-end gap-2 font-bold text-ui-fg-base">
                         {option.price_type === "flat" ? (
-                          convertToLocale({
-                            amount: option.amount!,
-                          })
+                          <span>
+                            {convertToLocale({
+                              amount: option.amount!,
+                            })}
+                          </span>
                         ) : calculatedPricesMap[option.id] ? (
-                          convertToLocale({
-                            amount: calculatedPricesMap[option.id],
-                          })
+                          <span>
+                            {convertToLocale({
+                              amount: calculatedPricesMap[option.id],
+                            })}
+                          </span>
                         ) : isLoadingPrices ? (
                           <Loader />
                         ) : (
-                          "-"
+                          null
                         )}
-                      </span>
+                        <span>تومان</span>
+                      </div>
                     </Radio>
                   )
                 })}
@@ -305,11 +310,18 @@ const Shipping: React.FC<ShippingProps> = ({
                             </span>
                           </div>
                         </div>
-                        <span className="justify-self-end text-ui-fg-base">
-                          {convertToLocale({
-                            amount: option.amount!,
-                          })}
-                        </span>
+                        {option.amount > 0 &&
+                          <div className="flex font-bold gap-2">
+                            <span className="justify-self-end  text-ui-fg-base">
+                              {convertToLocale({
+                                amount: option.amount!,
+                              })}
+                            </span>
+                            <span>
+                              تومان
+                            </span>
+                          </div>
+                        }
                       </Radio>
                     )
                   })}

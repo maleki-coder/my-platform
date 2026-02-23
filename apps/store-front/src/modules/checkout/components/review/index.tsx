@@ -4,6 +4,9 @@ import { clx } from "@lib/util/clx"
 
 import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"
+import CartDropdownItems from "@modules/layout/components/cart-dropdown-items"
+import ReviewCartItem from "../review-cart-item"
+import { CheckoutStepHeader } from "../checkout-step-header"
 
 const Review = ({ cart }: { cart: any }) => {
   const searchParams = useSearchParams()
@@ -19,33 +22,16 @@ const Review = ({ cart }: { cart: any }) => {
     (cart.payment_collection || paidByGiftcard)
 
   return (
-    <div className="bg-white">
-      <div className="flex flex-row items-center justify-between mb-6">
-        <h2
-          // level="h2"
-          className={clx(
-            "flex flex-row text-3xl-regular gap-x-2 items-baseline",
-            {
-              "opacity-50 pointer-events-none select-none": !isOpen,
-            }
-          )}
-        >
-          Review
-        </h2>
+    <div className="bg-white flex flex-col gap-y-2">
+      <div className="flex flex-row items-center justify-between">
+        <CheckoutStepHeader isOpen={isOpen} title={"سفارش در یک نگاه"} />
+        {isOpen && previousStepsCompleted &&
+          <PaymentButton cart={cart} data-testid="submit-order-button" />
+        }
       </div>
       {isOpen && previousStepsCompleted && (
         <>
-          <div className="flex items-start gap-x-1 w-full mb-6">
-            <div className="w-full">
-              <p className="txt-medium-plus text-ui-fg-base mb-1">
-                By clicking the Place Order button, you confirm that you have
-                read, understand and accept our Terms of Use, Terms of Sale and
-                Returns Policy and acknowledge that you have read Medusa
-                Store&apos;s Privacy Policy.
-              </p>
-            </div>
-          </div>
-          <PaymentButton cart={cart} data-testid="submit-order-button" />
+          <ReviewCartItem cart={cart} />
         </>
       )}
     </div>

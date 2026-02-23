@@ -33,7 +33,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
       )
     case isCardToCard(paymentSession?.provider_id):
       return (
-        <ManualTestPaymentButton notReady={notReady} data-testid={dataTestId} />
+        <CardToCardPaymentButton notReady={notReady} data-testid={dataTestId} />
       )
     default:
       return <button disabled>لطفا یک روش پرداخت انتخاب کنید</button>
@@ -70,7 +70,46 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         className="cursor-pointer text-xs w-22"
         data-testid="add-discount-button"
       >
-        {submitting ? <Spinner /> : <span>ادامه خرید</span>}
+        {submitting ? <Spinner /> : <span>پرداخت</span>}
+      </Button>
+      <ErrorMessage
+        error={errorMessage}
+        data-testid="manual-payment-error-message"
+      />
+    </>
+  )
+}
+const CardToCardPaymentButton = ({ notReady }: { notReady: boolean }) => {
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const onPaymentCompleted = async () => {
+    await placeOrder()
+      .catch((err) => {
+        setErrorMessage(err.message)
+      })
+      .finally(() => {
+        setSubmitting(false)
+      })
+  }
+
+  const handlePayment = () => {
+    setSubmitting(true)
+
+    onPaymentCompleted()
+  }
+
+  return (
+    <>
+      <Button
+        disabled={notReady}
+        type="submit"
+        size={"sm"}
+        onClick={handlePayment}
+        className="cursor-pointer text-xs w-22"
+        data-testid="add-discount-button"
+      >
+        {submitting ? <Spinner /> : <span>ثبت سفارش</span>}
       </Button>
       <ErrorMessage
         error={errorMessage}
