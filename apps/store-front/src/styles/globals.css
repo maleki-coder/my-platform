@@ -11,8 +11,7 @@
   --transition-property-bg: background-color;
   --transition-property-display: display opacity;
   --transition-property-visibility: visibility;
-  --transition-property-padding: padding-top padding-right padding-bottom
-    padding-left;
+  --transition-property-padding: padding-top padding-right padding-bottom padding-left;
 
   --color-grey-0: #ffffff;
   --color-grey-5: #f9fafb;
@@ -50,15 +49,11 @@
     Ubuntu, sans-serif;
 
   --animate-ring: ring 2.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  --animate-fade-in-right: fade-in-right 0.3s cubic-bezier(0.5, 0, 0.5, 1)
-    forwards;
+  --animate-fade-in-right: fade-in-right 0.3s cubic-bezier(0.5, 0, 0.5, 1) forwards;
   --animate-fade-in-top: fade-in-top 0.2s cubic-bezier(0.5, 0, 0.5, 1) forwards;
-  --animate-fade-out-top: fade-out-top 0.2s cubic-bezier(0.5, 0, 0.5, 1)
-    forwards;
-  --animate-accordion-open: accordion-slide-down 300ms
-    cubic-bezier(0.87, 0, 0.13, 1) forwards;
-  --animate-accordion-close: accordion-slide-up 300ms
-    cubic-bezier(0.87, 0, 0.13, 1) forwards;
+  --animate-fade-out-top: fade-out-top 0.2s cubic-bezier(0.5, 0, 0.5, 1) forwards;
+  --animate-accordion-open: accordion-slide-down 300ms cubic-bezier(0.87, 0, 0.13, 1) forwards;
+  --animate-accordion-close: accordion-slide-up 300ms cubic-bezier(0.87, 0, 0.13, 1) forwards;
   --animate-enter: enter 200ms ease-out;
   --animate-slide-in: slide-in 1.2s cubic-bezier(0.41, 0.73, 0.51, 1.02);
   --animate-leave: leave 150ms ease-in forwards;
@@ -67,87 +62,105 @@
     0% {
       transform: rotate(0deg);
     }
+
     100% {
       transform: rotate(360deg);
     }
   }
+
   @keyframes fade-in-right {
     0% {
       opacity: 0;
       transform: translateX(10px);
     }
+
     100% {
       opacity: 1;
       transform: translateX(0);
     }
   }
+
   @keyframes fade-in-top {
     0% {
       opacity: 0;
       transform: translateY(-10px);
     }
+
     100% {
       opacity: 1;
       transform: translateY(0);
     }
   }
+
   @keyframes fade-out-top {
     0% {
       height: 100%;
     }
+
     99% {
       height: 0;
     }
+
     100% {
       visibility: hidden;
     }
   }
+
   @keyframes accordion-slide-up {
     0% {
       height: var(--radix-accordion-content-height);
       opacity: 1;
     }
+
     100% {
       height: 0;
       opacity: 0;
     }
   }
+
   @keyframes accordion-slide-down {
     0% {
       min-height: 0;
       max-height: 0;
       opacity: 0;
     }
+
     100% {
       min-height: var(--radix-accordion-content-height);
       max-height: none;
       opacity: 1;
     }
   }
+
   @keyframes enter {
     0% {
       transform: scale(0.9);
       opacity: 0;
     }
+
     100% {
       transform: scale(1);
       opacity: 1;
     }
   }
+
   @keyframes leave {
     0% {
       transform: scale(1);
       opacity: 1;
     }
+
     100% {
       transform: scale(0.9);
       opacity: 0;
     }
   }
+
   @keyframes slide-in {
     0% {
       transform: translateY(-100%);
     }
+
     100% {
       transform: translateY(0);
     }
@@ -163,6 +176,7 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
+
   *,
   ::after,
   ::before,
@@ -173,16 +187,26 @@
 }
 
 @utility no-scrollbar {
-  /* Chrome, Safari and Opera */
+  /* All browsers - hide scrollbar */
+  scrollbar-width: none !important;
+  /* Firefox */
+  -ms-overflow-style: none !important;
+  /* IE/Edge */
+
+  /* Chrome/Safari/Edge (Chromium) */
   &::-webkit-scrollbar {
-    display: none;
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
   }
 
-  &::-webkit-scrollbar-track {
-    background-color: transparent;
+  /* Hide all scrollbar parts */
+  &::-webkit-scrollbar-track,
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-corner {
+    display: none !important;
   }
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
 @utility content-container {
@@ -247,12 +271,12 @@
 
 @layer utilities {
 
-  input:focus ~ label,
-  input:not(:placeholder-shown) ~ label {
+  input:focus~label,
+  input:not(:placeholder-shown)~label {
     @apply -translate-y-2 text-xsmall-regular;
   }
 
-  input:focus ~ label {
+  input:focus~label {
     @apply left-0;
   }
 
@@ -278,9 +302,12 @@
     -webkit-appearance: none;
   }
 }
+
 ::-webkit-scrollbar {
-  width: 6px;      /* vertical scrollbar width */
-  height: 6px;     /* horizontal scrollbar height */
+  width: 6px;
+  /* vertical scrollbar width */
+  height: 6px;
+  /* horizontal scrollbar height */
 }
 
 ::-webkit-scrollbar-track {
@@ -301,6 +328,7 @@
   scrollbar-width: thin;
   scrollbar-color: #c4c4c4 #f0f0f0;
 }
+
 .grab-scroll {
   cursor: grab;
   user-select: none;
@@ -309,6 +337,7 @@
 .grab-scroll:active {
   cursor: grabbing;
 }
+
 /*
   ---break---
 */
@@ -436,6 +465,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }

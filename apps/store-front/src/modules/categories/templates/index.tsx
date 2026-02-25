@@ -7,7 +7,9 @@ import RefinementList from "@modules/store/components/refinement-list"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 import PaginatedProducts from "@modules/store/templates/paginated-products"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { HttpTypes } from "@medusajs/types"
+import { HttpTypes, StoreProductCategory } from "@medusajs/types"
+import BreadCrumbs from "@modules/common/components/bread-crumbs"
+import { CategoryImage, CategoryWithImages } from "types/global"
 
 export default function CategoryTemplate({
   category,
@@ -45,8 +47,8 @@ export default function CategoryTemplate({
       className="flex flex-col small:flex-row small:items-start py-6 content-container"
       data-testid="category-container"
     >
-      <RefinementList sortBy={sort} data-testid="sort-by-container" />
-      <div className="w-full">
+      <BreadCrumbs category={category} />
+      {/* <div className="w-full">
         <div className="flex flex-row mb-8 text-2xl-semi gap-4">
           {parents &&
             parents.map((parent) => (
@@ -95,7 +97,7 @@ export default function CategoryTemplate({
             countryCode={countryCode}
           />
         </Suspense>
-      </div>
+      </div> */}
     </div>
   )
 }

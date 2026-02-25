@@ -8,6 +8,7 @@ export function DeviceDetector() {
     const updateDeviceCookie = () => {
       const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
       document.cookie = `device=${isMobile ? 'mobile' : 'desktop'}; path=/; max-age=3600`
+      window.dispatchEvent(new CustomEvent('deviceChange'))
     }
 
     // Update on mount and resize

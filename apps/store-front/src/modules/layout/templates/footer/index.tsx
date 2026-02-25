@@ -21,12 +21,12 @@ interface Collection {
 interface FooterProps {
   categories: Category[]
   collections: Collection[]
-  bottomMargin :string;
+  bottomMargin: string;
 }
 
 export default function Footer({ categories, collections, bottomMargin }: FooterProps) {
   return (
-    <footer style={{ marginBottom: bottomMargin }} className="m-4 lg:mt-12 mt-6 relative left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
+    <footer style={{ marginBottom: bottomMargin }} className="m-4 lg:mt-12 mt-6 left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
       <div className="px-4 mx-auto w-full lg:px-8 xl:px-6 max-w-screen-2xl">
         <div className="px-8">
           <div className="flex w-full justify-between pt-16 lg:pt-20">

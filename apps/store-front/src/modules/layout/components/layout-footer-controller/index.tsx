@@ -29,19 +29,19 @@ export default function LayoutFooterController({
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent
-      setIsMobile(
-        /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-          userAgent
-        )
-      )
-    }
+    const getIsMobile = () => {
+      const cookies = document.cookie.split('; ').find(row => row.startsWith('device='));
+      if (cookies) return cookies.split('=')[1] === 'mobile';
+      // fallback (optional)
+      return /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(navigator.userAgent);
+    };
 
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
+    const updateIsMobile = () => setIsMobile(getIsMobile());
+
+    updateIsMobile();
+    window.addEventListener('deviceChange', updateIsMobile);
+    return () => window.removeEventListener('deviceChange', updateIsMobile);
+  }, []);
 
   const showFooter = !isMobile || (isMobile && !isMobileNavRoute);
   const footerBottomMargin = (isMobile && !isMobileNavRoute) ? '7rem' : "2rem";
@@ -52,8 +52,8 @@ export default function LayoutFooterController({
       {showFooter && (
         <Footer bottomMargin={footerBottomMargin} categories={categories} collections={collections} />
       )}
-      {showMobileBottomNav && <MobileBottomNav cart={cart}/>}
-      <MobileMenuSheet categories={categories}/>
+      {showMobileBottomNav && <MobileBottomNav cart={cart} />}
+      <MobileMenuSheet categories={categories} />
     </>
   )
 }

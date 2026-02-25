@@ -35,6 +35,32 @@ export const listCategories = async (query?: Record<string, any>) => {
 
   return nestedCategories
 }
+export const listCategoriesForBreadCrumbs = async (query?: Record<string, any>) => {
+  const next = {
+    ...(await getCacheOptions("breadCrumb_categories")),
+  }
+
+  const limit = query?.limit || 100
+
+  const flatCategories = await sdk.client
+    .fetch<{ product_categories: HttpTypes.StoreProductCategory[] }>(
+      "/store/product-categories",
+      {
+        query: {
+          ...query,
+          fields: "*category_children, *parent_category",
+          limit,
+          include_descendants_tree: true,
+          parent_category_id: null, // top-level only
+        },
+        next,
+        cache: "force-cache",
+      }
+    )
+    .then(({ product_categories }) => product_categories)
+  const nestedCategories = buildCategoryTree(flatCategories)
+  return nestedCategories;
+}
 
 export const getCategoryByHandle = async (categoryHandle: string[]) => {
   const handle = `${categoryHandle.join("/")}`

@@ -1,12 +1,9 @@
 "use client"
-
-import { clx } from "@lib/util/clx"
-
 import PaymentButton from "../payment-button"
 import { useSearchParams } from "next/navigation"
-import CartDropdownItems from "@modules/layout/components/cart-dropdown-items"
 import ReviewCartItem from "../review-cart-item"
 import { CheckoutStepHeader } from "../checkout-step-header"
+import Divider from "@modules/common/components/divider"
 
 const Review = ({ cart }: { cart: any }) => {
   const searchParams = useSearchParams()
@@ -30,10 +27,9 @@ const Review = ({ cart }: { cart: any }) => {
         }
       </div>
       {isOpen && previousStepsCompleted && (
-        <>
           <ReviewCartItem cart={cart} />
-        </>
       )}
+      <Divider className="mt-4" />
     </div>
   )
 }

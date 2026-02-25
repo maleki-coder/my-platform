@@ -3,7 +3,6 @@ import { HttpTypes } from "@medusajs/types"
 import MobileCategoryButton from "@modules/layout/components/mobile-category-button"
 import { NavItem } from "@modules/layout/components/mobile-nav-item"
 import { BookAIcon, HomeIcon, ShoppingCart, UserIcon } from "lucide-react"
-import { CategoryWithImages } from "types/global"
 
 export default function MobileBottomNav({
   cart: cartState,
@@ -18,9 +17,10 @@ export default function MobileBottomNav({
     <div className="fixed bottom-0 left-0 w-full border-t-2 border-gray-300 bg-white z-2000">
       <div className="w-full mx-auto max-w-480 min-h-20">
         <div className="flex w-full justify-between items-center">
-          <NavItem href="/" icon={<HomeIcon />} label="خانه" />
-          <MobileCategoryButton />
+          <NavItem href="/" icon={<HomeIcon />} className="flex-1" label="خانه" />
+          <MobileCategoryButton className="flex-1" />
           <NavItem
+            className="flex-1"
             href="/cart"
             icon={<ShoppingCart />}
             label="سبد خرید"
@@ -32,8 +32,8 @@ export default function MobileBottomNav({
               ) : null
             }
           />
-          <NavItem href="/blog" icon={<BookAIcon />} label="بلاگ" />
-          <NavItem href="/account" icon={<UserIcon />} label="حساب" />
+          <NavItem className="flex-1" href="/blog" icon={<BookAIcon />} label="بلاگ" />
+          <NavItem className="flex-1" href="/account" icon={<UserIcon />} label="حساب" />
         </div>
       </div>
     </div>
