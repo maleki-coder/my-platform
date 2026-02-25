@@ -35,7 +35,9 @@ export const listCategories = async (query?: Record<string, any>) => {
 
   return nestedCategories
 }
-export const listCategoriesForBreadCrumbs = async (query?: Record<string, any>) => {
+export const listCategoriesForBreadCrumbs = async (
+  query?: Record<string, any>
+) => {
   const next = {
     ...(await getCacheOptions("breadCrumb_categories")),
   }
@@ -48,7 +50,8 @@ export const listCategoriesForBreadCrumbs = async (query?: Record<string, any>) 
       {
         query: {
           ...query,
-          fields: "*category_children, *parent_category",
+          fields:
+            "id,name,handle,parent_category_id,parent_category.id,parent_category.name,parent_category.handle,category_children.id,category_children.name,category_children.handle",
           limit,
           include_descendants_tree: true,
           parent_category_id: null, // top-level only
@@ -59,7 +62,7 @@ export const listCategoriesForBreadCrumbs = async (query?: Record<string, any>) 
     )
     .then(({ product_categories }) => product_categories)
   const nestedCategories = buildCategoryTree(flatCategories)
-  return nestedCategories;
+  return nestedCategories
 }
 
 export const getCategoryByHandle = async (categoryHandle: string[]) => {
