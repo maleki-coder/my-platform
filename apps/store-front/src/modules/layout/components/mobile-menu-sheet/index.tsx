@@ -11,13 +11,20 @@ import { X } from "lucide-react"
 import { CategoryImage, CategoryWithImages } from "types/global"
 import Image from "next/image"
 import { useState } from "react"
-import { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "@radix-ui/react-accordion"
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@radix-ui/react-accordion"
+import { MOBILE_FOOTER_HEIGHT, MOBILE_HEADER_HEIGHT } from "@lib/util/constants"
 type SheetSidebarProps = {
   categories: CategoryWithImages[]
 }
 export function MobileMenuSheet({ categories }: SheetSidebarProps) {
   const { open, setOpen } = useSideBarSheet()
-  const [activeCategory, setActiveCategory] = useState<CategoryWithImages | null>(null)
+  const [activeCategory, setActiveCategory] =
+    useState<CategoryWithImages | null>(null)
   function hasChildrenAndImage(
     item: CategoryWithImages
   ): item is CategoryWithImages & {
@@ -34,7 +41,10 @@ export function MobileMenuSheet({ categories }: SheetSidebarProps) {
   return (
     <Sheet open={open} onOpenChange={setOpen} modal={true}>
       <SheetContent
-        style={{ top: "2.6rem", height: "calc(100vh - 8rem)" }}
+        style={{
+          top: MOBILE_HEADER_HEIGHT,
+          height: `calc(100vh - ${MOBILE_FOOTER_HEIGHT} - ${MOBILE_HEADER_HEIGHT})`,
+        }}
         className="min-w-full overflow-y-scroll [&>button]:hidden gap-0"
       >
         <SheetTitle>

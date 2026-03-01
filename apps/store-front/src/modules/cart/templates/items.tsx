@@ -122,7 +122,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                                   <span className="line-through">
                                     {convertToLocale({
                                       amount:
-                                        item.total! + item.discount_total!,
+                                        item.original_subtotal!,
                                     })}
                                   </span>
                                 </div>

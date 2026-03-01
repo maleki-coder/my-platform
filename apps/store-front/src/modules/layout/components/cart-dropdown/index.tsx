@@ -107,7 +107,7 @@ const CartDropdown = ({
           <LocalizedClientLink href="/cart" data-testid="nav-cart-link">
             <div className="flex items-center relative top-0.5">
               <ShoppingCart
-                size={20}
+                size={25}
                 className="text-indigo-500"
               ></ShoppingCart>
               {totalItems > 0 && (

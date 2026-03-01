@@ -10,6 +10,7 @@ import HeaderNavBarBottomContent from "@modules/layout/components/navbar-bottom-
 import { UserStatusButton } from "@modules/layout/components/user-status-button"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
+import { DESKTOP_HEADER_HEIGHT } from "@lib/util/constants"
 
 const LOGO_URL = "https://www.technolife.com/image/static_logo_techno_new.svg"
 
@@ -23,7 +24,7 @@ const MobileHeader = () => (
 
 // Desktop navigation component
 const DesktopNavigation = () => (
-  <nav className="flex flex-start items-stretch h-9 gap-4">
+  <nav className="flex flex-start items-stretch gap-4">
     <UserStatusButton />
     <HeaderIconBox>
       <Suspense fallback={<CartFallback />}>
@@ -48,7 +49,7 @@ const CartFallback = () => (
 const LogoLink = () => (
   <LocalizedClientLink href="/store">
     <Thumbnail
-      className="w-[60px]"
+      className="w-15"
       thumbnail={LOGO_URL}
       images={null}
       rounded={false}
@@ -67,15 +68,12 @@ const DesktopBottomNavBar = () => (
 // Main Header component
 export default async function Header() {
   const { isMobile } = await getDeviceFromCookie()
-
   return (
-    <header className="fixed max-h-32 w-full left-0 right-0 top-0 z-100 flex flex-col border-b border-brand-border bg-white">
+    <header className={`fixed max-h-${DESKTOP_HEADER_HEIGHT} w-full left-0 right-0 top-0 z-100 flex flex-col border-b border-brand-border bg-white`}>
       <div className="w-full mx-auto px-4 lg:px-8">
         <div className="flex w-full flex-col items-center justify-between py-1 md:pt-4">
-          
           {/* Top header section */}
           <div className="flex w-full items-center justify-between md:pb-2.5">
-            
             {/* Left section - Logo and Search */}
             <div className="flex w-full items-center">
               {isMobile ? (
@@ -94,7 +92,6 @@ export default async function Header() {
 
           {/* Bottom navbar - Desktop only */}
           {!isMobile && <DesktopBottomNavBar />}
-          
         </div>
       </div>
     </header>

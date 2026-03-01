@@ -48,7 +48,7 @@ export default function HeaderNavBarBottom({
       className={`
         w-full flex flex-wrap items-center transition-all ease-in-out duration-300
         ${isVisible
-          ? "h-9 opacity-100 visible mt-[3px] mb-[9px]"
+          ? "h-9 opacity-100 visible mt-0.75 mb-2.25"
           : "h-0 opacity-0 invisible mt-0 mb-0"
         }
         ${className}

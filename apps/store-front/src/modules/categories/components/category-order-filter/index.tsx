@@ -13,6 +13,7 @@ import {
 } from "@lib/components/ui/sheet"
 import { Badge } from "@lib/components/ui/badge"
 import { useSidebar } from "@lib/components/ui/sidebar"
+import { MOBILE_FOOTER_HEIGHT } from "@lib/util/constants"
 
 interface CategoryOrderFilterProps {
   className?: string
@@ -113,10 +114,10 @@ const { openMobile, setOpenMobile, toggleSidebar } = useSidebar()
         {/* Bottom Sheet Content */}
         <SheetContent 
           side="bottom" 
-          className="h-auto max-h-[80vh] p-0 rounded-t-xl"
+          className={`h-auto max-h-[80vh] p-0 rounded-t-xl bottom-20`}
         >
           <SheetHeader className="p-4 border-b sticky top-0 bg-white">
-            <SheetTitle className="text-center text-gray-900">مرتب‌سازی</SheetTitle>
+            <SheetTitle className="text-center text-gray-900">مرتب‌ سازی</SheetTitle>
           </SheetHeader>
           
           <div className="overflow-y-auto p-2">
@@ -124,7 +125,7 @@ const { openMobile, setOpenMobile, toggleSidebar } = useSidebar()
               <button
                 key={key}
                 onClick={() => handleOrderSelect(key)}
-                className={`w-full text-right p-4 border-b last:border-b-0 hover:bg-gray-50 transition-colors ${
+                className={`w-full text-right p-4 border-b last:border-b-0 hover:bg-gray-50 text-xs leading-4 transition-colors ${
                   selectedOrder === key ? "bg-blue-50" : ""
                 }`}
               >
@@ -137,20 +138,8 @@ const { openMobile, setOpenMobile, toggleSidebar } = useSidebar()
               </button>
             ))}
           </div>
-          
-          {/* Optional: Close button at bottom */}
-          <div className="p-4 border-t sticky bottom-0 bg-white">
-            <Button 
-              variant="outline" 
-              className="w-full"
-              onClick={() => setSheetOpen(false)}
-            >
-              بستن
-            </Button>
-          </div>
         </SheetContent>
       </Sheet>
-
       {/* Additional button that triggers parent event */}
       <Button 
         variant="secondary"

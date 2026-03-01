@@ -13,6 +13,7 @@ type CartTotalsProps = {
     item_total: number | null
     shipping_total?: number | null
     discount_subtotal?: number | null
+    original_total?: number | null
   }
 }
 
@@ -22,6 +23,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
     item_total,
     shipping_total,
     discount_subtotal,
+    original_total,
   } = totals
   // const mycart = cart;
   return (
@@ -31,15 +33,17 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
           <div className="flex justify-between">
             <p className="text-sm font-medium text-shadow-2xs">قیمت محصولات</p>
             <p className="text-sm font-medium text-shadow-2xs">
-              {convertToLocale({ amount: item_total ?? 0 })}
+              {convertToLocale({ amount: (original_total! - shipping_total!)})}
               <span className="text-shadow-2xs text-xs font-medium mr-1">
                 تومان
               </span>
             </p>
           </div>
-          {discount_subtotal! > 0 &&
+          {discount_subtotal! > 0 && (
             <div className="flex justify-between">
-              <p className="text-sm font-semiBold text-red-500">تخفیف محصولات</p>
+              <p className="text-sm font-semiBold text-red-500">
+                تخفیف محصولات
+              </p>
               <p className="text-sm font-semiBold text-red-500">
                 {convertToLocale({
                   amount: discount_subtotal ?? 0,
@@ -47,10 +51,12 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
                 <span className="font-medium mr-1 text-xs">تومان</span>
               </p>
             </div>
-          }
+          )}
           {shipping_total! > 0 && (
             <div className="flex justify-between">
-              <p className="text-sm font-semiBold text-red-500">هزینه بسته بندی و ارسال</p>
+              <p className="text-sm font-semiBold text-red-500">
+                هزینه بسته بندی و ارسال
+              </p>
               <p className="text-sm font-semiBold text-red-500">
                 {convertToLocale({
                   amount: shipping_total ?? 0,

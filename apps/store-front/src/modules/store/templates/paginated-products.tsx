@@ -72,13 +72,30 @@ export default async function PaginatedProducts({
         className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
         data-testid="products-list"
       >
-        {products.map((p) => {
-          return (
-            <li key={p.id}>
-              <ProductPreview product={p} region={region} />
-            </li>
-          )
-        })}
+        {products
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .concat(products[0])
+          .map((p) => {
+            return (
+              <li key={p.id}>
+                <ProductPreview product={p} region={region} />
+              </li>
+            )
+          })}
       </ul>
       {totalPages > 1 && (
         <Pagination

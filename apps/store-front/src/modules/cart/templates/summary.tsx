@@ -8,6 +8,7 @@ import { useState, useEffect, useTransition } from "react"
 import { useCustomer } from "@lib/context/customer-context"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@lib/components/ui/spinner"
+import { MOBILE_FOOTER_HEIGHT } from "@lib/util/constants"
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart & {
@@ -85,7 +86,9 @@ const Summary = ({ cart }: SummaryProps) => {
         </Button>
       </div>
       <div className="md:hidden block">
-        <div className="fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-3 px-6 py-4 bg-gray-100!">
+        <div
+          className={`fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-3 px-6 py-4 bg-gray-100!`}
+        >
           <Button
             onClick={handleLoginOrOrder}
             className="w-full hover:bg-sky-700 bg-sky-700 cursor-pointer items-center justify-center text-white rounded-sm py-6"

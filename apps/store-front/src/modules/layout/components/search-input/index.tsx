@@ -22,6 +22,7 @@ import {
   DialogTrigger,
 } from "@lib/components/ui/dialog"
 import { Spinner } from "@lib/components/ui/spinner"
+import { MOBILE_FOOTER_HEIGHT } from "@lib/util/constants"
 
 export default function HeaderSearchInput() {
   const [open, setOpen] = useState(false)
@@ -70,7 +71,7 @@ export default function HeaderSearchInput() {
   }
   if (isMobile) {
     return (
-      <Dialog modal={true} open={open} onOpenChange={setOpen}>
+      <Dialog defaultOpen={false} modal={true} open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <button
             type="button"
@@ -82,14 +83,15 @@ export default function HeaderSearchInput() {
         </DialogTrigger>
         <DialogContent
           showCloseButton={false}
-          className="flex flex-col p-0 h-screen min-w-full m-0 rounded-none z-1000"
+          className="flex flex-col p-0 min-w-full m-0 rounded-none z-100 top-0 translate-y-0"
+          style={{height : `calc(100vh - ${MOBILE_FOOTER_HEIGHT})`}}
         >
           <VisuallyHidden>
             <DialogTitle>جستجوی محصولات</DialogTitle>
           </VisuallyHidden>
           <div className="flex items-center gap-3 p-4 border-b">
             <Input
-              autoFocus
+              autoFocus={false}
               value={searchTerm}
               placeholder="جستجو کنید"
               onChange={handleInputChange}
@@ -107,7 +109,7 @@ export default function HeaderSearchInput() {
           </div>
 
           {/* Results */}
-          <div className="flex-1 w-full overflow-auto p-3">
+          <div className="flex-1 w-full overflow-auto p-0 md:p-3">
             <PopOverContentSearchContainer searchTerm={searchTerm}>
               {products?.map((product) => (
                 <SearchedProductBox key={product.id} product={product} onNavigate={() => setOpen(false)} />

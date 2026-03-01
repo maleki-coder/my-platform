@@ -1,6 +1,4 @@
 "use client"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import MedusaCTA from "@modules/layout/components/medusa-cta"
 import QuickAccessNav from "@modules/layout/components/quick-access-nav"
 import { ChevronUp } from "lucide-react"
 
@@ -30,11 +28,11 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
       <div className="px-4 mx-auto w-full lg:px-8 xl:px-6 max-w-screen-2xl">
         <div className="px-8">
           <div className="flex w-full justify-between pt-16 lg:pt-20">
-            <div>image</div>
-            <div className="h-[50px] md:w-[180px] w-[130px]">
-              <button className="transition-all relative rounded-xl p-4 bg-primary-shade text-white cursor-pointer flex h-9! w-full! items-center gap-2 justify-center bg-white! 2md:!h-12 px-[22px]! 2md:!px-8 ">
+            {/* <div>image</div> */}
+            <div className="h-12.5 md:w-45 w-32.5">
+              <button className="transition-all relative rounded-xl p-4 bg-primary-shade text-white cursor-pointer flex h-9! w-full! items-center gap-2 justify-center bg-white! 2md:!h-12 px-5.5! 2md:!px-8 ">
                 <ChevronUp className="fill-primary w-4 h-4 md:w-7 md:h-7" />
-                <span className="select-none pt-1 lg:font-medium text-primary text-sm leading-[18px]">
+                <span className="select-none pt-1 lg:font-medium text-primary text-sm leading-4.5">
                   بازگشت به بالا
                 </span>
               </button>
@@ -55,11 +53,11 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
           <div className="flex border-t border-white-50! pb-10.5 text-white">
             <nav className="grid w-full grid-cols-1 gap-4  md:grid-cols-3  pt-14">
               <div className="flex flex-col">
-                <p className="mb-6 lg:mb-[22px] text-base leading-6 lg:leading-7 lg:text-lg font-medium text-white">
+                <p className="mb-6 lg:mb-5.5 text-base leading-6 lg:leading-7 lg:text-lg font-medium text-white">
                   ارتباط با ما
                 </p>
                 <div className="mb-4 flex flex-wrap gap-3">
-                  <p className="whitespace-nowrap text-sm font-medium leading-[22px]">
+                  <p className="whitespace-nowrap text-sm font-medium leading-5.5">
                     تلفن :
                   </p>
                   <div className="flex">
@@ -85,7 +83,7 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
                   </div>
                 </div>
                 <div className="mb-4 flex flex-wrap gap-3">
-                  <p className="whitespace-nowrap text-sm font-medium leading-[22px]">
+                  <p className="whitespace-nowrap text-sm font-medium leading-5.5">
                     ایمیل :
                   </p>
                   <div className="flex">
@@ -117,7 +115,7 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
                       <img
                         src="/image/footerImgsnd3HZ.webp"
                         alt="اینستاگرام تکنولایف"
-                        className="socialImage w-8 h-8 lg:w-[30px] lg:h-[30px]"
+                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
                         loading="lazy"
                         fetchPriority="auto"
                       />
@@ -133,7 +131,7 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
                       <img
                         src="/image/footerImgLueLo3.webp"
                         alt="آپارات تکنو لایف"
-                        className="socialImage w-8 h-8 lg:w-[30px] lg:h-[30px]"
+                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
                         loading="lazy"
                         fetchPriority="auto"
                       />
@@ -149,7 +147,7 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
                       <img
                         src="/image/footerImgcHi6f1.webp"
                         alt="تلگرام تکنولایف"
-                        className="socialImage w-8 h-8 lg:w-[30px] lg:h-[30px]"
+                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
                         loading="lazy"
                         fetchPriority="auto"
                       />
@@ -165,7 +163,7 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
                       <img
                         src="/image/footerImg7ujbp2.webp"
                         alt="یوتیوب تکنولایف"
-                        className="socialImage w-8 h-8 lg:w-[30px] lg:h-[30px]"
+                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
                         loading="lazy"
                         fetchPriority="auto"
                       />
@@ -183,19 +181,19 @@ export default function Footer({ categories, collections, bottomMargin }: Footer
                       rel="nofollow noopener noreferrer"
                       href="https://cafebazaar.ir/app/com.technolife"
                       target="_blank"
-                      className="flex h-12 min-w-[148px] max-w-1/2 lg:w-[88px] bg-white rounded p-2 items-center justify-center "
+                      className="flex h-12 min-w-37 max-w-1/2 lg:w-22 bg-white rounded p-2 items-center justify-center "
                     ></a>
                     <a
                       rel="nofollow noopener noreferrer"
                       href="https://sibapp.com/applications/Technolife"
                       target="_blank"
-                      className="flex h-12 min-w-[148px] max-w-1/2 lg:w-[88px] bg-white rounded p-2 items-center justify-center "
+                      className="flex h-12 min-w-37 max-w-1/2 lg:w-22 bg-white rounded p-2 items-center justify-center "
                     ></a>
                     <a
                       rel="nofollow noopener noreferrer"
                       href="https://myket.ir/app/com.technolife"
                       target="_blank"
-                      className="flex h-12 min-w-[148px] max-w-1/2 lg:w-[88px] bg-white rounded p-2 items-center justify-center "
+                      className="flex h-12 min-w-37 max-w-1/2 lg:w-22 bg-white rounded p-2 items-center justify-center "
                     ></a>
                   </div>
                 </div>

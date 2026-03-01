@@ -86,7 +86,7 @@ export const UserProfileButton = () => {
         <PopoverTrigger id="profile-popover-trigger">
           <LocalizedClientLink href="/account" data-testid="nav-cart-link">
             <div className="flex items-center relative top-0.5">
-              <User2Icon size={20} className="text-indigo-500"></User2Icon>
+              <User2Icon size={25} className="text-indigo-500"></User2Icon>
             </div>
           </LocalizedClientLink>
         </PopoverTrigger>
