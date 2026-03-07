@@ -48,7 +48,8 @@ const CartDropdown = ({
       return acc + item.quantity
     }, 0) || 0
 
-  const total = cartState?.total ?? 0
+  const total = ((cartState?.total ?? 0) - (cartState?.shipping_total ?? 0));
+
   const itemRef = useRef<number>(totalItems || 0)
 
   const timedOpen = () => {
@@ -64,7 +65,7 @@ const CartDropdown = ({
       clearTimeout(activeTimer)
     }
 
-    if (!pathname.includes("ir/cart")){
+    if (!pathname.includes("ir/cart")) {
       open()
     }
   }
@@ -128,7 +129,7 @@ const CartDropdown = ({
           align="center"
           side="bottom"
           style={{ width: "400px", maxHeight: "calc(100vh - 10rem)" }}
-          className="rounded-xl left-6 top-4 shadow-[0_4px_14px_-3px_rgba(0,0,0,0.22)] border z-200 overflow-auto p-0 m-0 relative flex flex-col"
+          className="rounded-xl left-6 top-4 shadow-custom border z-200 overflow-auto p-0 m-0 relative flex flex-col"
         >
           <CartDropdownHeader
             cartState={cartState}

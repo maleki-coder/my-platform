@@ -38,22 +38,15 @@ const CartDropdownItems = ({ cartState }: Props) => {
                 </div>
 
                 <div className="flex flex-col justify-between pl-4">
-                  <h2 className="text-xs font-semiBold leading-6.5 text-primary-shade-1 wrap-break-word">
+                  <h2 className="text-xs font-semibold leading-6.5 wrap-break-word">
                     {item.title}
                   </h2>
-
                   <div className="mt-2.5 flex flex-col">
-                    <div className="flex items-center">
-                      <div className="flex h-2 w-5 items-center justify-center">
-                        <span className="circle-dot bg-primary-tint-1"></span>
-                      </div>
-                    </div>
-
                     <div className="flex items-center text-indigo-500">
                       <div className="me-2 flex h-5 w-5 items-center justify-center">
                         <BoxIcon size={18} />
                       </div>
-                      <p className="text-xs font-semiBold">موجود در انبار</p>
+                      <p className="text-xs font-semibold">موجود در انبار</p>
                     </div>
                   </div>
                 </div>
@@ -92,7 +85,6 @@ const CartDropdownItems = ({ cartState }: Props) => {
                           <span>{getDiscountPercent(item)?.toFixed(0)}</span>
                           <span>%</span>
                         </div>
-
                         <div className="mb-1 mt-2 text-xs flex gap-1 text-grey-40">
                           <span className="line-through">
                             {convertToLocale({
@@ -107,6 +99,7 @@ const CartDropdownItems = ({ cartState }: Props) => {
                     <div className="flex gap-1">
                       <p className="font-semibold">
                         {convertToLocale({ amount: item.total! })}
+                        {item.variant?.calculated_price?.calculated_amount}
                       </p>
                       <span className="text-xs self-center">تومان</span>
                     </div>

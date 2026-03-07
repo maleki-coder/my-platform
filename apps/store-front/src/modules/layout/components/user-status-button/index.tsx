@@ -18,7 +18,7 @@ export const UserStatusButton = () => {
     <div
       className={`flex h-12 ${
         isLoading || error || !customer ? "" : "w-12"
-      } p-2 rounded-md shadow-[0_4px_14px_-3px_rgba(0,0,0,0.22)] cursor-pointer items-center justify-center`}
+      } p-2 rounded-md shadow-custom cursor-pointer items-center justify-center`}
     >
       {content}
     </div>

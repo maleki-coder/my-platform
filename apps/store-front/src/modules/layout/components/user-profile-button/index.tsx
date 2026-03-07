@@ -97,7 +97,7 @@ export const UserProfileButton = () => {
           align="center"
           side="bottom"
           style={{ width: "300px", maxHeight: "calc(100vh - 10rem)" }}
-          className="rounded-xl shadow-[0_4px_14px_-3px_rgba(0,0,0,0.22)] left-18 top-4 border z-200 overflow-auto py-4 px-0 m-0 relative flex flex-col gap-2"
+          className="rounded-xl shadow-custom left-18 top-4 border z-200 overflow-auto py-4 px-0 m-0 relative flex flex-col gap-2"
         >
           {profileItems.map((item, index) => (
             <Item

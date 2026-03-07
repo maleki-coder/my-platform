@@ -1,5 +1,7 @@
-import { listProductsWithSort } from "@lib/data/products"
+import { listProducts, listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
+import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
+import MobileProductPreview from "@modules/products/components/mobile-product-preview"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/store/components/pagination"
 import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
@@ -57,19 +59,19 @@ export default async function PaginatedProducts({
 
   let {
     response: { products, count },
-  } = await listProductsWithSort({
-    page,
+  } = await listProducts({
+    pageParam: 1,
     queryParams,
-    sortBy,
     countryCode,
+    regionId: region.id,
   })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
-
+  const { isMobile } = await getDeviceFromCookie()
   return (
     <>
       <ul
-        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
+        className="w-full grid grid-cols-1 small:grid-cols-3 medium:grid-cols-3 gap-2"
         data-testid="products-list"
       >
         {products
@@ -92,18 +94,22 @@ export default async function PaginatedProducts({
           .map((p) => {
             return (
               <li key={p.id}>
-                <ProductPreview product={p} region={region} />
+                {isMobile ? (
+                  <MobileProductPreview product={p} />
+                ) : (
+                  <ProductPreview product={p} />
+                )}
               </li>
             )
           })}
       </ul>
-      {totalPages > 1 && (
-        <Pagination
-          data-testid="product-pagination"
-          page={page}
-          totalPages={totalPages}
-        />
-      )}
+      {/* {totalPages > 1 && ( */}
+      <Pagination
+        data-testid="product-pagination"
+        page={page}
+        totalPages={totalPages}
+      />
+      {/* )} */}
     </>
   )
 }

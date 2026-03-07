@@ -1,21 +1,20 @@
 "use client"
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import {
+  SidebarGroupAction,
+  SidebarGroupLabel,
+  SidebarTrigger,
   Sidebar,
   SidebarContent,
   SidebarGroup,
-  SidebarGroupAction,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarTrigger,
   useSidebar,
 } from "@lib/components/ui/sidebar"
-import { FilterIcon, HomeIcon, Plus, XIcon } from "lucide-react"
-import { MOBILE_HEADER_HEIGHT } from "@lib/util/constants"
+import { FilterIcon, HomeIcon, XIcon } from "lucide-react"
 
 interface CategoryImage {
   url: string
@@ -71,17 +70,17 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({}) => {
           : "lg:top-22"
       }`}
       variant="floating"
-      collapsible="icon"
+      collapsible="offcanvas"
     >
       <SidebarContent>
-        <SidebarHeader className="sticky border-b-2 w-full flex-row! flex-nowrap! flex justify-between px-4 py-3.5">
+        <SidebarHeader className="sticky rounded-t-md h-fit top-0 z-1 bg-white border-b-2 w-full flex-row! flex-nowrap! flex justify-between px-4 py-3.5">
           <div className="flex gap-1.5">
             <FilterIcon className="fill-gray-700 w-4 h-4" />
-            <p className=" text-xs font-semiBold leading-4 text-gray-800">
+            <p className=" text-xs font-semibold leading-4 text-gray-800">
               فیلترها
             </p>
           </div>
-          <XIcon className="w-4 h-4" onClick={toggleSidebar} />
+          <XIcon className="w-4 h-4 sm:invisible md:block" onClick={toggleSidebar} />
         </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupContent>
@@ -204,6 +203,54 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({}) => {
                 <SidebarMenuButton tooltip="Categories">
                   <HomeIcon />
                   <span>Dashboard 20</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 21</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 22</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 23</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 24</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 25</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 26</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 27</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton tooltip="Categories">
+                  <HomeIcon />
+                  <span>Dashboard 28</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>

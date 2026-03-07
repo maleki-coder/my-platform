@@ -49,7 +49,7 @@ const CartFallback = () => (
 const LogoLink = () => (
   <LocalizedClientLink href="/store">
     <Thumbnail
-      className="w-15"
+      className="min-w-32 min-h-10"
       thumbnail={LOGO_URL}
       images={null}
       rounded={false}
@@ -69,7 +69,9 @@ const DesktopBottomNavBar = () => (
 export default async function Header() {
   const { isMobile } = await getDeviceFromCookie()
   return (
-    <header className={`fixed max-h-${DESKTOP_HEADER_HEIGHT} w-full left-0 right-0 top-0 z-100 flex flex-col border-b border-brand-border bg-white`}>
+    <header
+      className={`mx-auto w-full max-w-screen-2xl fixed max-h-${DESKTOP_HEADER_HEIGHT} w-full left-0 right-0 top-0 z-100 flex flex-col border-b border-brand-border bg-white`}
+    >
       <div className="w-full mx-auto px-4 lg:px-8">
         <div className="flex w-full flex-col items-center justify-between py-1 md:pt-4">
           {/* Top header section */}
@@ -79,7 +81,7 @@ export default async function Header() {
               {isMobile ? (
                 <MobileHeader />
               ) : (
-                <div className="flex w-full items-center gap-1 md:gap-9">
+                <div className="flex w-full items-center gap-1 md:gap-8">
                   <LogoLink />
                   <HeaderSearchInput />
                 </div>

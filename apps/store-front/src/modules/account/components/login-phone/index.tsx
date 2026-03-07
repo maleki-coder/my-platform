@@ -43,7 +43,7 @@ const LoginPhone = ({ setCurrentView }: Props) => {
 
   return (
     <div
-      className="max-w-sm w-full flex flex-col gap-8 items-center border rounded-sm px-8 py-12 shadow-[0_4px_14px_-3px_rgba(0,0,0,0.22)]"
+      className="max-w-sm w-full flex flex-col gap-8 items-center border rounded-sm px-8 py-12 shadow-custom"
       data-testid="login-page"
     >
       <div className="relative h-8 w-full">

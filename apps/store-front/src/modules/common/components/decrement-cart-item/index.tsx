@@ -29,7 +29,7 @@ const DecrementCartItem = ({
 
   return (
     <div
-      className={`w-8 h-8 border flex justify-center items-center shadow-2xl rounded disabled:opacity-50 disabled:cursor-not-allowed ${
+      className={`w-10 h-10 border flex justify-center items-center shadow-2xl rounded disabled:opacity-50 disabled:cursor-not-allowed ${
         className ?? ""
       }`}
     >
@@ -42,7 +42,7 @@ const DecrementCartItem = ({
         // 2) normal decrement button
         <button
           onClick={handleClick}
-          className="text-indigo-500 text-2xl font-bold cursor-pointer w-full"
+          className="text-indigo-500 text-2xl font-bold cursor-pointer w-full h-full"
         >
           -
         </button>
@@ -50,7 +50,7 @@ const DecrementCartItem = ({
         // 3) delete button
         <DeleteButton
           id={id}
-          className="w-8 h-8 flex items-center justify-center"
+          className="w-10 h-10 flex items-center justify-center"
         />
       )}
     </div>

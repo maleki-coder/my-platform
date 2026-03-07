@@ -33,7 +33,7 @@ const IncrementCartItem = ({
     <button
       onClick={handleClick}
       disabled={!canIncrement}
-      className={`w-8 h-8 border flex cursor-pointer justify-center items-center shadow-2xl rounded disabled:opacity-50 disabled:cursor-not-allowed ${
+      className={`w-10 h-10 border flex cursor-pointer justify-center items-center shadow-2xl rounded disabled:opacity-50 disabled:cursor-not-allowed ${
         className ?? ""
       }`}
       title={
@@ -45,7 +45,7 @@ const IncrementCartItem = ({
           <LoaderCircle size={16} className="text-indigo-500" />
         </div>
       ) : (
-        <span className="text-indigo-500 text-base font-bold">+</span>
+        <span className="text-indigo-500 text-xl font-bold">+</span>
       )}
     </button>
   )

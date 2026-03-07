@@ -212,6 +212,10 @@
   }
 }
 
+@utility shadow-custom {
+  box-shadow: 0 4px 14px -3px rgba(0, 0, 0, 0.22);
+}
+
 @utility content-container {
   @apply max-w-[1440px] w-full mx-auto px-6;
 }

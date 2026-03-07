@@ -9,7 +9,7 @@ import Divider from "@modules/common/components/divider"
 import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
 import CategorySidebarWrapper from "../components/category-filter-sidebar-wrapper"
 
-export default async function  CategoryTemplate({
+export default async function CategoryTemplate({
   category,
   sortBy,
   page,
@@ -42,8 +42,11 @@ export default async function  CategoryTemplate({
   ]
 
   return (
-    <div className="py-6 content-container" data-testid="category-container">
-      <BreadCrumbs category={category} />
+    <div
+      className="mx-auto w-full max-w-screen-2xl px-4 lg:px-20"
+      data-testid="category-container"
+    >
+      <BreadCrumbs data-testid="bread-crumb" category={category} />
       <Divider />
       <div className="mt-8 flex gap-4">
         <CategorySidebarWrapper isMobile={isMobile}>
@@ -67,8 +70,11 @@ export default async function  CategoryTemplate({
   )
 }
 
-      {/* <Divider/> */}
-      {/* <article className="flex w-full items-start justify-between gap-8">
+{
+  /* <Divider/> */
+}
+{
+  /* <article className="flex w-full items-start justify-between gap-8">
         <section className="flex min-w-142 grow rounded-2xl border-primary-tint-8 xl:min-w-185.5 2xl:min-w-0 2xl:max-w-292 2xl:border">
           <div className="relative flex w-[55%] flex-col items-start pb-10 pr-4 pt-6 2xl:pr-10.5 2xl:pt-10.5">
             <div className="flex w-full flex-wrap items-center gap-x-2.5">
@@ -86,8 +92,10 @@ export default async function  CategoryTemplate({
           <section className="flex w-[45%] flex-col pb-10.5 pr-5 pt-7 2xl:pl-13 2xl:pr-11.5 2xl:pt-9.5"></section>
         </section>
         <section className="relative mt-10 w-77.25 pl-4 xl:w-98 2xl:mr-3 2xl:mt-0 2xl:min-h-169.5 2xl:w-96 2xl:pl-0"></section>
-      </article> */}
-      {/* <div className="w-full">
+      </article> */
+}
+{
+  /* <div className="w-full">
         <div className="flex flex-row mb-8 text-2xl-semi gap-4">
           {parents &&
             parents.map((parent) => (
@@ -122,8 +130,9 @@ export default async function  CategoryTemplate({
             </ul>
           </div>
         )}
-          */}
-    // </div>
-    // </div>
+          */
+}
+// </div>
+// </div>
 //   )
 // }

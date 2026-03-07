@@ -33,7 +33,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   return (
     <div
       className={clx(
-        "relative w-full border-1 overflow-hidden p-4 group-hover:shadow-elevation-card-hover transition-shadow ease-in-out duration-150",
+        "relative w-full overflow-hidden p-4 group-hover:shadow-elevation-card-hover transition-shadow ease-in-out duration-150",
         {
           "rounded-large": rounded,
           "aspect-11/14": isFeatured && !hasCustomSize,
@@ -71,7 +71,7 @@ const ImageOrPlaceholder = ({
       )}
       draggable={false}
       quality={50}
-      sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
+        sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
       fill
     />
   ) : (

@@ -20,7 +20,7 @@ const DeleteButton = ({
 
   return (
       <button
-        className="w-full flex justify-center items-center cursor-pointer"
+        className="w-full h-full flex justify-center items-center cursor-pointer"
         onClick={() => handleDelete(id)}
       >
         {isDeleting ? (
@@ -28,7 +28,7 @@ const DeleteButton = ({
             <LoaderCircle size={16} className="text-indigo-500" />
           </div>
         ) : (
-          <TrashIcon size={16} className="text-indigo-500" />
+          <TrashIcon size={16} className="text-indigo-500 font-bold" />
         )}
       </button>
   )

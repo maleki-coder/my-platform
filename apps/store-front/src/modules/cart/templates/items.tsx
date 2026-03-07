@@ -103,17 +103,15 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                           <div className="ml-4">
                             <VariantTagScroll variantTitle={item.variant?.title} />
                           </div>
-                          <div className="mt-0 flex max-w-max flex-row items-center justify-between gap-0 3xl:w-full 3xl:max-w-none">
-                            <div className="min-w-6 lg:min-w-7 flex h-4.5 items-center! justify-center gap-1 rounded-[3px] px-1 lg:h-4.75 bg-red-60">
+                          <div className="mt-0 flex max-w-max flex-row items-center justify-between gap-0 2xl:w-full 2xl:max-w-none">
+                            <div className="min-w-6 lg:min-w-7 flex h-4.5 items-center! justify-center gap-1 rounded-md px-1 lg:h-4.75 bg-red-60">
                               {isVariantDiscounted(item) && (
-                                <div className="flex flex-nowrap flex-row-reverse items-center gap-1 rounded-sm p-0.5 text-xs bg-red-700 text-white">
                                   <div className="flex flex-nowrap flex-row-reverse items-center gap-1 rounded-sm p-0.5 text-xs bg-red-700 text-white">
                                     <span>
                                       {getDiscountPercent(item)!.toFixed(0)}
                                     </span>
                                     <span>%</span>
                                   </div>
-                                </div>
                               )}
                             </div>
                             <div className=" mr-4 flex flex-row items-center gap-2 3xl:mr-0">

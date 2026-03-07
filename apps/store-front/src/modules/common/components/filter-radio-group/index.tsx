@@ -31,7 +31,7 @@ const FilterRadioGroup = ({
       <div
         key={i.value}
         className={clx("flex gap-x-2 items-center", {
-          "ml-[-23px]": isSelected,
+          "-ml-5.75": isSelected,
         })}
       >
         {/* Selected Icon */}
