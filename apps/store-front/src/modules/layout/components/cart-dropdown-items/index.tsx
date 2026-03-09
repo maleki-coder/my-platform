@@ -19,7 +19,7 @@ const CartDropdownItems = ({ cartState }: Props) => {
   const { countryCode } = useParams() as { countryCode: string }
 
   return (
-    <div className="max-w-full flex flex-col pb-2 pr-8 pl-8 overflow-x-hidden">
+    <div className="max-w-full flex flex-col pb-2 px-4 md:px-8 overflow-x-hidden">
       {cartState
         ?.items!.sort((a, b) =>
           (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
@@ -64,7 +64,7 @@ const CartDropdownItems = ({ cartState }: Props) => {
               </LocalizedClientLink>
             </div>
 
-            <div className="mt-3.5 w-full flex flex-col">
+            <div className="w-full flex flex-col">
               <div className="flex items-stretch">
                 <div className="flex flex-1 flex-col justify-between">
                   <VariantTagScroll variantTitle={item.variant?.title} />
@@ -77,7 +77,7 @@ const CartDropdownItems = ({ cartState }: Props) => {
                 </div>
 
                 {/* PRICE SECTION */}
-                <div className="flex flex-1 flex-col justify-end pr-4">
+                <div className="flex flex-1 flex-col justify-end pr-4 pb-2">
                   <div className="flex flex-col items-end justify-end">
                     {isVariantDiscounted(item) && (
                       <>

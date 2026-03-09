@@ -1,10 +1,10 @@
-import { listProducts, listProductsWithSort } from "@lib/data/products"
+import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
+import { SortOptions } from "@modules/categories/components/category-order-filter"
 import MobileProductPreview from "@modules/products/components/mobile-product-preview"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/store/components/pagination"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
 
 const PRODUCT_LIMIT = 12
 
@@ -59,11 +59,11 @@ export default async function PaginatedProducts({
 
   let {
     response: { products, count },
-  } = await listProducts({
-    pageParam: 1,
+  } = await listProductsWithSort({
+    page: 1,
     queryParams,
+    sortBy,
     countryCode,
-    regionId: region.id,
   })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
@@ -75,22 +75,22 @@ export default async function PaginatedProducts({
         data-testid="products-list"
       >
         {products
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
-          .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
+          // .concat(products[0])
           .map((p) => {
             return (
               <li key={p.id}>

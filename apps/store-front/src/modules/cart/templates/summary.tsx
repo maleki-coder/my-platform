@@ -75,7 +75,7 @@ const Summary = ({ cart }: SummaryProps) => {
       }}
       className="flex flex-col gap-y-2"
     >
-      <header className="flex text-lg font-bold md:px-3">صورتحساب</header>
+      <header className="flex text-lg font-bold px-4">صورتحساب</header>
       <CartTotals totals={cart} cart={cart} />
       <div className="md:block hidden">
         <Button

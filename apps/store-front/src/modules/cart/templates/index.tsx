@@ -17,7 +17,7 @@ const CartTemplate = ({
 }) => {
   return (
     <div
-      className="content-container md:px-12 px-0 mt-8"
+      className="content-container md:px-12 px-0 mt-2 md:mt-8"
       data-testid="cart-container"
     >
       {cart?.items?.length ? (

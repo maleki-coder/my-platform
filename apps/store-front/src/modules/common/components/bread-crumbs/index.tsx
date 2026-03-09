@@ -59,7 +59,7 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
 
   return (
     <nav data-testid={dataTestId} className="w-full" aria-label="bread-crumb">
-      <ul className="no-scrollbar flex gap-1 mt-4 overflow-scroll px-4 xs:max-w-full md:mb-1.25 lg:px-0 xl:gap-1.75">
+      <ul className="no-scrollbar flex gap-1 mt-4 overflow-scroll mx-0 md:px-4 xs:max-w-full md:mb-1.25 lg:px-0 xl:gap-1.75">
         {/* Home/Root link */}
         <li className="inline-flex items-center">
           <Link

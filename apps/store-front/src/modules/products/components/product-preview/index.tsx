@@ -1,21 +1,19 @@
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import PreviewPrice from "./price"
-import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
+import PreviewPrice from "@modules/products/components/product-preview/price"
 import Image from "next/image"
-import TimedDiscountBadge from "../timed-discount-badge"
+import TimedDiscountBadge from "@modules/products/components/timed-discount-badge"
 
 export default async function ProductPreview({
   product,
 }: {
   product: HttpTypes.StoreProduct
 }) {
-  // const { isMobile } = getDeviceFromCookie()
   const { cheapestPrice } = getProductPrice({
     product,
   })
-
+  
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group">
       <section
@@ -44,7 +42,7 @@ export default async function ProductPreview({
           {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
         </div>
         <div className="absolute top-4 w-full px-5">
-          <TimedDiscountBadge/>
+          <TimedDiscountBadge />
         </div>
       </section>
     </LocalizedClientLink>

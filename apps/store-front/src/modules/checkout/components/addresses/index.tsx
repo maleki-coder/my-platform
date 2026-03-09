@@ -65,16 +65,14 @@ const Addresses = ({
             <div className="flex justify-between rounded-2xl border-none bg-indigo-50 px-8 py-5">
               <div className="flex max-w-[64%] items-center gap-6">
                 <div className="flex w-full flex-col gap-y-1.5">
-                  <div className="flex items-center gap-3 leading-9 xl:leading-7.5 text-sm font-medium text-gray-800">
+                  <div className="flex items-center gap-3 leading-7 xl:leading-7.5 text-xs md:text-sm font-medium text-gray-800">
                     <span>
                       <LocationEdit size={14} />
                     </span>
                     <span>{cart.shipping_address.address_1}</span>
                   </div>
-                  <div className="flex items-center gap-3 leading-9 xl:leading-7.5 text-sm font-medium text-gray-800">
-                    <span>
-                      <Phone size={14} />
-                    </span>
+                  <div className="flex items-center gap-3 leading-7 xl:leading-7.5 text-sm font-medium text-gray-800">
+                    <Phone size={14} className="mb-1" />
                     <span>{cart.shipping_address.phone}</span>
                   </div>
                 </div>
@@ -84,7 +82,7 @@ const Addresses = ({
                   <>
                     <span
                       onClick={handleEdit}
-                      className="inline-block text-sm leading-5 xl:text-sm"
+                      className="inline-block text-xs leading-5 md:text-sm"
                     >
                       {isNavigating ? <Spinner /> : <span>ویرایش</span>}
                     </span>

@@ -1,9 +1,9 @@
 "use client"
 import React, { useEffect, useState } from "react"
 import {
-  SidebarGroupAction,
-  SidebarGroupLabel,
-  SidebarTrigger,
+  // SidebarGroupAction,
+  // SidebarGroupLabel,
+  // SidebarTrigger,
   Sidebar,
   SidebarContent,
   SidebarGroup,
@@ -65,9 +65,7 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({}) => {
       side="right"
       style={isVisible ? { top: "8.5rem" } : { top: "5.5rem" }}
       className={`md:sticky p-0 md:z-1 z-5000 h-fit${
-        isVisible
-          ? "lg:top-34"
-          : "lg:top-22"
+        isVisible ? "lg:top-34" : "lg:top-22"
       }`}
       variant="floating"
       collapsible="offcanvas"
@@ -80,7 +78,10 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({}) => {
               فیلترها
             </p>
           </div>
-          <XIcon className="w-4 h-4 sm:invisible md:block" onClick={toggleSidebar} />
+          <XIcon
+            className="w-4 h-4 sm:invisible md:block"
+            onClick={toggleSidebar}
+          />
         </SidebarHeader>
         <SidebarGroup>
           <SidebarGroupContent>

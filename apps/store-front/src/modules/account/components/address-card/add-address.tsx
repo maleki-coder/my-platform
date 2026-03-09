@@ -58,7 +58,7 @@ const AddAddress = ({
         </button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-150 w-full max-h-[90vh] overflow-y-auto z-1000"
+        className="sm:max-w-150 w-full max-h-screen md:max-h-[90vh] overflow-y-auto z-10000"
         data-testid="add-address-modal"
       >
         <DialogHeader>

@@ -42,10 +42,10 @@ const IncrementCartItem = ({
     >
       {isIncrementing ? (
         <div className="animate-spin">
-          <LoaderCircle size={16} className="text-indigo-500" />
+          <LoaderCircle size={16} className="text-indigo-500 font-semibold" />
         </div>
       ) : (
-        <span className="text-indigo-500 text-xl font-bold">+</span>
+        <span className="text-indigo-500 text-xl font-semibold">+</span>
       )}
     </button>
   )

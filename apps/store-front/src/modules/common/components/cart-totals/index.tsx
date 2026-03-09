@@ -10,7 +10,6 @@ type CartTotalsProps = {
   }
   totals: {
     total?: number | null
-    item_total: number | null
     shipping_total?: number | null
     discount_subtotal?: number | null
     original_total?: number | null
@@ -20,19 +19,17 @@ type CartTotalsProps = {
 const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
   const {
     total,
-    item_total,
     shipping_total,
     discount_subtotal,
     original_total,
   } = totals
-  // const mycart = cart;
   return (
     <div className="w-full">
       <div className="flex flex-col rounded-t-2xl px-8 pt-8 pb-6 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
         <div className=" flex flex-col gap-4">
           <div className="flex justify-between">
-            <p className="text-sm font-medium text-shadow-2xs">قیمت محصولات</p>
-            <p className="text-sm font-medium text-shadow-2xs">
+            <p className="text-sm font-semibold text-shadow-2xs">قیمت محصولات</p>
+            <p className="text-sm font-semibold text-shadow-2xs">
               {convertToLocale({ amount: (original_total! - shipping_total!)})}
               <span className="text-shadow-2xs text-xs font-medium mr-1">
                 تومان
@@ -41,10 +38,10 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
           </div>
           {discount_subtotal! > 0 && (
             <div className="flex justify-between">
-              <p className="text-sm font-semiBold text-red-500">
+              <p className="text-sm font-semibold text-red-500">
                 تخفیف محصولات
               </p>
-              <p className="text-sm font-semiBold text-red-500">
+              <p className="text-sm font-semibold text-red-500">
                 {convertToLocale({
                   amount: discount_subtotal ?? 0,
                 })}
@@ -54,10 +51,10 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
           )}
           {shipping_total! > 0 && (
             <div className="flex justify-between">
-              <p className="text-sm font-semiBold text-red-500">
+              <p className="text-sm font-semibold text-red-500">
                 هزینه بسته بندی و ارسال
               </p>
-              <p className="text-sm font-semiBold text-red-500">
+              <p className="text-sm font-semibold text-red-500">
                 {convertToLocale({
                   amount: shipping_total ?? 0,
                 })}
@@ -66,8 +63,8 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
             </div>
           )}
           <div className="flex justify-between">
-            <p className="text-sm font-semiBold">جمع کل</p>
-            <p className="text-sm font-medium text-shadow-2xs">
+            <p className="text-sm font-semibold">جمع کل</p>
+            <p className="text-sm font-semibold text-shadow-2xs">
               {convertToLocale({ amount: total ?? 0 })}
               <span className="font-medium mr-1 text-xs">تومان</span>
             </p>

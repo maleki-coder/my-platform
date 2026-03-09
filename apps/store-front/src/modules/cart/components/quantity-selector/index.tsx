@@ -61,13 +61,19 @@ export function QuantitySelector({ item, countryCode }: QuantitySelectorProps) {
   if (isLoading && item.variant?.manage_inventory) {
     return (
       <div className="flex items-center gap-2">
-        <button disabled className="w-8 h-8 border rounded disabled:opacity-50">
+        <button
+          disabled
+          className="w-10 h-10 border rounded disabled:opacity-50"
+        >
           +
         </button>
-        <span className="text-sm font-medium min-w-8 text-center">
+        <span className="text-md font-bold min-w-8 text-center">
           {convertToLocale({ amount: Number(currentQty) })}
         </span>
-        <button disabled className="w-8 h-8 border rounded disabled:opacity-50">
+        <button
+          disabled
+          className="w-10 h-10 border rounded disabled:opacity-50"
+        >
           -
         </button>
       </div>
@@ -83,7 +89,7 @@ export function QuantitySelector({ item, countryCode }: QuantitySelectorProps) {
         available={available}
         onIncrement={handleIncrement}
       />
-      <span className="text-sm font-medium min-w-8 text-center">
+      <span className="text-md font-bold min-w-8 text-center">
         {convertToLocale({ amount: Number(currentQty) })}
       </span>
 

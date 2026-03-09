@@ -15,7 +15,7 @@ export default async function MobileProductPreview({
 
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group">
-      <div
+      <section
         key={product.id}
         className="w-full border-b mt-1 border-gray-200 last:border-none"
       >
@@ -26,7 +26,6 @@ export default async function MobileProductPreview({
               <h2 className="text-xs font-semibold leading-6.5 wrap-break-word">
                 {product.title}
               </h2>
-
               <div className="mt-2.5 flex flex-col">
                 <div className="flex items-center">
                   <div className="flex h-2 w-5 items-center justify-center">
@@ -46,36 +45,10 @@ export default async function MobileProductPreview({
             height={118}
           />
         </div>
-        <div className="flex items-center gap-x-2 mt-8">
+        <div className="flex items-center gap-x-2 mt-4">
           {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
         </div>
-      </div>
-      {/* <section
-        className="relative w-full rounded-md bg-white pt-13 border shadow-custom"
-        data-testid="product-wrapper"
-      >
-        <div className="mb-5.5 flex h-51.5 gap-2.25">
-          <div className="relative mx-auto">
-            <Image
-              src={product.thumbnail || (product.images?.[0]?.url as string)}
-              alt="Thumbnail"
-              draggable={false}
-              quality={50}
-              loading="lazy"
-              width={206}
-              height={206}
-            />
-          </div>
-        </div>
-        <div className="px-4 pt-2.5">
-          <h2 className="line-clamp-3 h-18.75 overflow-hidden text-sm font-medium leading-6.5 text-gray-800">
-            {product.title}
-          </h2>
-        </div>
-          <div className="flex items-center gap-x-2">
-            {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
-          </div>
-        </section> */}
+      </section>
     </LocalizedClientLink>
   )
 }

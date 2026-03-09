@@ -1,5 +1,5 @@
 import { getBaseURL } from "@lib/util/env"
-import { Metadata } from "next"
+import { Metadata, Viewport } from "next"
 import "styles/globals.css"
 import localFont from "next/font/local"
 import ReactQueryProvider from "@lib/context/react-query-context"
@@ -8,6 +8,12 @@ import { SidebarProvider } from "@lib/components/ui/sidebar"
 import { DeviceDetector } from "@lib/util/client-device-detector"
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+}
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 }
 const myFont = localFont({
   src: "../../public/fonts/IRANYekanWebMedium.woff",
