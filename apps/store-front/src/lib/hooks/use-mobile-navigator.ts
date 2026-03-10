@@ -1,3 +1,4 @@
+import { MOBILE_REGEX } from "@lib/util/constants"
 import { useEffect, useState } from "react"
 
 export function useIsMobileNavigator(): boolean {
@@ -8,10 +9,7 @@ export function useIsMobileNavigator(): boolean {
 
     const userAgent = navigator.userAgent
 
-    const mobileRegex =
-      /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i
-
-    setIsMobile(mobileRegex.test(userAgent))
+    setIsMobile(MOBILE_REGEX.test(userAgent))
   }, [])
 
   return isMobile

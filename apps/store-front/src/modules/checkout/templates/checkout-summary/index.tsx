@@ -1,4 +1,3 @@
-// import ItemsPreviewTemplate from "@modules/cart/templates/preview"
 import DiscountCode from "@modules/checkout/components/discount-code"
 import CartTotals from "@modules/common/components/cart-totals"
 
@@ -8,7 +7,6 @@ const CheckoutSummary = ({ cart }: { cart: any }) => {
       <div className="w-full bg-white flex flex-col gap-y-2">
         <header className="flex text-lg font-bold px-4">صورتحساب</header>
         <CartTotals totals={cart} />
-        {/* <ItemsPreviewTemplate cart={cart} /> */}
         <DiscountCode cart={cart} />
       </div>
     </div>

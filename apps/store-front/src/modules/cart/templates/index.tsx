@@ -1,19 +1,17 @@
-import ItemsTemplate from "./items"
-import Summary from "./summary"
-import EmptyCartMessage from "../components/empty-cart-message"
+import ItemsTemplate from "@modules/cart/templates/items"
+import Summary from "@modules/cart/templates/summary"
+import EmptyCartMessage from "@modules/cart/components/empty-cart-message"
 import { HttpTypes } from "@medusajs/types"
-import CartDropdownItems from "@modules/layout/components/cart-dropdown-items"
+import CartDropdownItem from "@modules/layout/components/cart-dropdown-item"
 
 const CartTemplate = ({
   cart,
-  customer,
 }: {
   cart:
     | (HttpTypes.StoreCart & {
         promotions: HttpTypes.StorePromotion[]
       })
     | null
-  customer: HttpTypes.StoreCustomer | null
 }) => {
   return (
     <div
@@ -27,7 +25,15 @@ const CartTemplate = ({
               <ItemsTemplate cart={cart} />
             </div>
             <div className="md:hidden block">
-              <CartDropdownItems cartState={cart} />
+              <div className="max-w-full flex flex-col pb-2 px-4 md:px-8 overflow-x-hidden">
+                {cart
+                  ?.items!.sort((a, b) =>
+                    (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                  )
+                  .map((item) => (
+                    <CartDropdownItem cartItem={item} />
+                  ))}
+              </div>
             </div>
           </div>
           <div className="relative">

@@ -9,7 +9,6 @@ import HeaderNavBarBottom from "@modules/layout/components/navbar-bottom"
 import HeaderNavBarBottomContent from "@modules/layout/components/navbar-bottom-content"
 import { UserStatusButton } from "@modules/layout/components/user-status-button"
 import Thumbnail from "@modules/products/components/thumbnail"
-import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
 import { DESKTOP_HEADER_HEIGHT } from "@lib/util/constants"
 
 const LOGO_URL = "https://www.technolife.com/image/static_logo_techno_new.svg"
@@ -64,10 +63,11 @@ const DesktopBottomNavBar = () => (
     <HeaderNavBarBottomContent />
   </HeaderNavBarBottom>
 )
-
+interface Props {
+  isMobile: boolean
+}
 // Main Header component
-export default async function Header() {
-  const { isMobile } = await getDeviceFromCookie()
+export default function Header({ isMobile }: Props) {
   return (
     <header
       className={`mx-auto w-full max-w-screen-2xl fixed max-h-${DESKTOP_HEADER_HEIGHT} w-full left-0 right-0 top-0 z-100 flex flex-col border-b border-brand-border bg-white`}

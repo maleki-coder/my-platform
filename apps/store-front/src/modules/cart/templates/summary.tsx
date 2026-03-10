@@ -1,14 +1,12 @@
 "use client"
 
 import CartTotals from "@modules/common/components/cart-totals"
-import DiscountCode from "@modules/checkout/components/discount-code"
 import { HttpTypes } from "@medusajs/types"
 import { Button } from "@lib/components/ui/button"
-import { useState, useEffect, useTransition } from "react"
+import { useTransition } from "react"
 import { useCustomer } from "@lib/context/customer-context"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@lib/components/ui/spinner"
-import { MOBILE_FOOTER_HEIGHT } from "@lib/util/constants"
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart & {
@@ -28,23 +26,8 @@ function getCheckoutStep(cart: HttpTypes.StoreCart) {
 
 const Summary = ({ cart }: SummaryProps) => {
   const step = getCheckoutStep(cart)
-  const [isMobile, setIsMobile] = useState(false)
   const router = useRouter()
   const [isNavigating, startTransition] = useTransition()
-  useEffect(() => {
-    const checkMobile = () => {
-      const userAgent = navigator.userAgent
-      setIsMobile(
-        /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(
-          userAgent
-        )
-      )
-    }
-
-    checkMobile()
-    window.addEventListener("resize", checkMobile)
-    return () => window.removeEventListener("resize", checkMobile)
-  }, [])
   const { customer, isLoading, error } = useCustomer()
   const handleLoginOrOrder = () => {
     if (isLoading || error || !customer) {
@@ -69,12 +52,7 @@ const Summary = ({ cart }: SummaryProps) => {
   })()
 
   return (
-    <div
-      style={{
-        marginBottom: isMobile ? "10rem" : undefined,
-      }}
-      className="flex flex-col gap-y-2"
-    >
+    <div className="flex flex-col gap-y-2 md:mb-0 mb-40">
       <header className="flex text-lg font-bold px-4">صورتحساب</header>
       <CartTotals totals={cart} cart={cart} />
       <div className="md:block hidden">
@@ -97,7 +75,6 @@ const Summary = ({ cart }: SummaryProps) => {
           </Button>
         </div>
       </div>
-      <DiscountCode cart={cart} />
     </div>
   )
 }

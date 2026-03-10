@@ -2,7 +2,7 @@ import repeat from "@lib/util/repeat"
 import { translateFulfillmentStatus } from "@lib/util/translate-fullfilment-status"
 import { HttpTypes } from "@medusajs/types"
 import Item from "@modules/order/components/item"
-import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item"
+import SkeletonLineItem from "@modules/skeletons/components/skeleton-line-item-desktop"
 import { ReceiptText } from "lucide-react"
 
 type ItemsProps = {

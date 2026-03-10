@@ -1,3 +1,4 @@
+import { MOBILE_REGEX } from "@lib/util/constants"
 import { HttpTypes } from "@medusajs/types"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -100,86 +101,86 @@ async function getCountryCode(
   }
 }
 
-/**
- * Device detection middleware
- */
-function handleDeviceDetection(request: NextRequest, response: NextResponse) {
-  const userAgent = request.headers.get('user-agent') || ''
-  const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(userAgent)
+  /**
+   * Device detection middleware
+   */
+  function handleDeviceDetection(request: NextRequest, response: NextResponse) {
+    const userAgent = request.headers.get('user-agent') || ''
+    const isMobile = MOBILE_REGEX.test(userAgent)
 
-  // Set device cookie
-  response.cookies.set('device', isMobile ? 'mobile' : 'desktop', {
-    maxAge: 60 * 60, // 1 hour
-    path: '/',
-    sameSite: 'lax',
-  })
-
-  return response
-}
-/**
- * Middleware to handle region selection and onboarding status.
- */
-export async function middleware(request: NextRequest) {
-  // First, create the response
-  let response = NextResponse.next()
-
-  // 1. Handle device detection (always run this)
-  response = handleDeviceDetection(request, response)
-  let redirectUrl = request.nextUrl.href
-
-  // let response = NextResponse.redirect(redirectUrl, 307)
-
-  let cacheIdCookie = request.cookies.get("_medusa_cache_id")
-
-  let cacheId = cacheIdCookie?.value || crypto.randomUUID()
-
-  const regionMap = await getRegionMap(cacheId)
-
-  const countryCode = regionMap && (await getCountryCode(request, regionMap))
-
-  const urlHasCountryCode =
-    countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
-
-  // if one of the country codes is in the url and the cache id is set, return next
-  if (urlHasCountryCode && cacheIdCookie) {
-    return response;
-  }
-
-  // if one of the country codes is in the url and the cache id is not set, set the cache id and redirect
-  if (urlHasCountryCode && !cacheIdCookie) {
-    response.cookies.set("_medusa_cache_id", cacheId, {
-      maxAge: 60 * 60 * 24,
+    // Set device cookie
+    response.cookies.set('device', isMobile ? 'mobile' : 'desktop', {
+      maxAge: 60 * 60, // 1 hour
+      path: '/',
+      sameSite: 'lax',
     })
 
     return response
   }
+  /**
+   * Middleware to handle region selection and onboarding status.
+   */
+  export async function middleware(request: NextRequest) {
+    // First, create the response
+    let response = NextResponse.next()
 
-  // check if the url is a static asset
-  if (request.nextUrl.pathname.includes(".")) {
+    // 1. Handle device detection (always run this)
+    response = handleDeviceDetection(request, response)
+    let redirectUrl = request.nextUrl.href
+
+    // let response = NextResponse.redirect(redirectUrl, 307)
+
+    let cacheIdCookie = request.cookies.get("_medusa_cache_id")
+
+    let cacheId = cacheIdCookie?.value || crypto.randomUUID()
+
+    const regionMap = await getRegionMap(cacheId)
+
+    const countryCode = regionMap && (await getCountryCode(request, regionMap))
+
+    const urlHasCountryCode =
+      countryCode && request.nextUrl.pathname.split("/")[1].includes(countryCode)
+
+    // if one of the country codes is in the url and the cache id is set, return next
+    if (urlHasCountryCode && cacheIdCookie) {
+      return response;
+    }
+
+    // if one of the country codes is in the url and the cache id is not set, set the cache id and redirect
+    if (urlHasCountryCode && !cacheIdCookie) {
+      response.cookies.set("_medusa_cache_id", cacheId, {
+        maxAge: 60 * 60 * 24,
+      })
+
+      return response
+    }
+
+    // check if the url is a static asset
+    if (request.nextUrl.pathname.includes(".")) {
+      return response
+    }
+
+    const redirectPath =
+      request.nextUrl.pathname === "/" ? "" : request.nextUrl.pathname
+
+    const queryString = request.nextUrl.search ? request.nextUrl.search : ""
+
+    // If no country code is set, we redirect to the relevant region.
+    if (!urlHasCountryCode && countryCode) {
+      redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
+      response = NextResponse.redirect(`${redirectUrl}`, 307)
+      // Re-apply device cookie on redirect response
+      response = handleDeviceDetection(request, response)
+    } else if (!urlHasCountryCode && !countryCode) {
+      // Handle case where no valid country code exists (empty regions)
+      return new NextResponse(
+        "No valid regions configured. Please set up regions with countries in your Medusa Admin.",
+        { status: 500 }
+      )
+    }
+
     return response
   }
-
-  const redirectPath =
-    request.nextUrl.pathname === "/" ? "" : request.nextUrl.pathname
-
-  const queryString = request.nextUrl.search ? request.nextUrl.search : ""
-
-  // If no country code is set, we redirect to the relevant region.
-  if (!urlHasCountryCode && countryCode) {
-    redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
-    response = NextResponse.redirect(`${redirectUrl}`, 307)
-    // Re-apply device cookie on redirect response
-    response = handleDeviceDetection(request, response)
-  } else if (!urlHasCountryCode && !countryCode) {
-    // Handle case where no valid country code exists (empty regions)
-    return new NextResponse(
-      "No valid regions configured. Please set up regions with countries in your Medusa Admin.",
-      { status: 500 }
-    )
-  }
-
-  return response
-}
 
 export const config = {
   matcher: [

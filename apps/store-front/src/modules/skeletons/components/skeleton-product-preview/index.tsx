@@ -40,4 +40,4 @@ const SkeletonProductPreview = () => {
   )
 }
 
-export default SkeletonProductPreview;
+export default SkeletonProductPreview

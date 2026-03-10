@@ -5,7 +5,8 @@ import { getCollectionByHandle, listCollections } from "@lib/data/collections"
 import { listRegions } from "@lib/data/regions"
 import { StoreCollection, StoreRegion } from "@medusajs/types"
 import CollectionTemplate from "@modules/collections/templates"
-import { SortOptions } from "@modules/store/components/refinement-list/sort-products"
+import { SortOptions } from "@modules/categories/components/category-order-filter"
+import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
 
 type Props = {
   params: Promise<{ handle: string; countryCode: string }>
@@ -70,10 +71,11 @@ export default async function CollectionPage(props: Props) {
   const searchParams = await props.searchParams
   const params = await props.params
   const { sortBy, page } = searchParams
-
+  const { isMobile } = await getDeviceFromCookie()
   const collection = await getCollectionByHandle(params.handle).then(
     (collection: StoreCollection) => collection
   )
+  
 
   if (!collection) {
     notFound()
@@ -85,6 +87,7 @@ export default async function CollectionPage(props: Props) {
       page={page}
       sortBy={sortBy}
       countryCode={params.countryCode}
+      isMobile={isMobile}
     />
   )
 }

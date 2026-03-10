@@ -23,6 +23,7 @@ export default async function PaginatedProducts({
   categoryIds,
   productsIds,
   countryCode,
+  isMobile
 }: {
   sortBy?: SortOptions
   page: number
@@ -30,6 +31,7 @@ export default async function PaginatedProducts({
   categoryIds?: string[]
   productsIds?: string[]
   countryCode: string
+  isMobile: boolean
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -67,7 +69,7 @@ export default async function PaginatedProducts({
   })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
-  const { isMobile } = await getDeviceFromCookie()
+  
   return (
     <>
       <ul

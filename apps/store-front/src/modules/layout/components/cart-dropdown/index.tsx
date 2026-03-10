@@ -13,9 +13,9 @@ import LocalizedClientLink from "@modules/common/components/localized-client-lin
 import { ShoppingCart } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"
-import CartDropdownHeader from "../cart-dropdown-header"
-import CartDropdownItems from "../cart-dropdown-items"
-import CartDropdownFooter from "../cart-dropdown-footer"
+import CartDropdownHeader from "@modules/layout/components/cart-dropdown-header"
+import CartDropdownItem from "@modules/layout/components/cart-dropdown-item"
+import CartDropdownFooter from "@modules/layout/components/cart-dropdown-footer"
 import EmptyCart from "@modules/common/components/empty-cart"
 import { getTotalQuantity } from "@lib/util/get-total-quantity"
 function getCheckoutStep(cart: HttpTypes.StoreCart) {
@@ -48,7 +48,7 @@ const CartDropdown = ({
       return acc + item.quantity
     }, 0) || 0
 
-  const total = ((cartState?.total ?? 0) - (cartState?.shipping_total ?? 0));
+  const total = (cartState?.total ?? 0) - (cartState?.shipping_total ?? 0)
 
   const itemRef = useRef<number>(totalItems || 0)
 
@@ -137,7 +137,15 @@ const CartDropdown = ({
           />
           {cartState && cartState.items?.length ? (
             <>
-              <CartDropdownItems cartState={cartState} />
+              <div className="max-w-full flex flex-col pb-2 px-4 md:px-8 overflow-x-hidden">
+                {cartState
+                  ?.items!.sort((a, b) =>
+                    (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
+                  )
+                  .map((item) => (
+                    <CartDropdownItem cartItem={item} />
+                  ))}
+              </div>
               <CartDropdownFooter
                 total={total}
                 isNavigating={isNavigating}

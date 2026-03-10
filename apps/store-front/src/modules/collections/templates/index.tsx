@@ -10,11 +10,13 @@ export default function CollectionTemplate({
   collection,
   page,
   countryCode,
+  isMobile,
 }: {
   sortBy?: SortOptions
   collection: HttpTypes.StoreCollection
   page?: string
   countryCode: string
+  isMobile: boolean
 }) {
   const pageNumber = page ? parseInt(page) : 1
   const sort = sortBy || "created_at"
@@ -30,6 +32,7 @@ export default function CollectionTemplate({
           fallback={
             <SkeletonProductGrid
               numberOfProducts={collection.products?.length}
+              isMobile={isMobile}
             />
           }
         >
@@ -38,6 +41,7 @@ export default function CollectionTemplate({
             page={pageNumber}
             collectionId={collection.id}
             countryCode={countryCode}
+            isMobile={isMobile}
           />
         </Suspense>
       </div>
