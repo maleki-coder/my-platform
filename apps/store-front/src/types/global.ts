@@ -33,3 +33,10 @@ export type CategoryImage = {
 export type CategoryWithImages = HttpTypes.StoreProductCategory & {
   product_category_image?: CategoryImage[]
 }
+export type CategoryOption = {
+  title: string
+  values: string[]
+}
+export type CategoryOptionsResponse = {
+  options: CategoryOption[]
+}

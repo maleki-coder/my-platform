@@ -1,6 +1,5 @@
 import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
-import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
 import MobileProductPreview from "@modules/products/components/mobile-product-preview"
 import ProductPreview from "@modules/products/components/product-preview"
@@ -23,7 +22,8 @@ export default async function PaginatedProducts({
   categoryIds,
   productsIds,
   countryCode,
-  isMobile
+  isMobile,
+  optionsFilters,
 }: {
   sortBy?: SortOptions
   page: number
@@ -32,6 +32,7 @@ export default async function PaginatedProducts({
   productsIds?: string[]
   countryCode: string
   isMobile: boolean
+  optionsFilters: Record<string, string[]>
 }) {
   const queryParams: PaginatedProductsParams = {
     limit: 12,
@@ -66,10 +67,11 @@ export default async function PaginatedProducts({
     queryParams,
     sortBy,
     countryCode,
+    optionsFilters
   })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
-  
+
   return (
     <>
       <ul

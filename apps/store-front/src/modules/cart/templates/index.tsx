@@ -31,7 +31,7 @@ const CartTemplate = ({
                     (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
                   )
                   .map((item) => (
-                    <CartDropdownItem cartItem={item} />
+                    <CartDropdownItem key={item.id} cartItem={item} />
                   ))}
               </div>
             </div>

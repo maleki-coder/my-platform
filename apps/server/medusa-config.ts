@@ -8,6 +8,13 @@ import {
 loadEnv(process.env.NODE_ENV || "development", process.cwd());
 
 module.exports = defineConfig({
+  admin: {
+    vite: () => ({
+      define: {
+        __MAX_UPLOAD_FILE_SIZE__: JSON.stringify(10 * 1024 * 1024), // 10MB
+      },
+    }),
+  },
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     http: {

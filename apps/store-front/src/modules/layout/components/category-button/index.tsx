@@ -21,7 +21,7 @@ export default function CategoryButton() {
         <ListIcon className="size-4" />
       </ItemMedia>
       <ItemContent>
-        <ItemTitle className="text-xs">دسته‌بندی محصولات</ItemTitle>
+        <ItemTitle className="text-xs"> دسته بندی محصولات</ItemTitle>
       </ItemContent>
     </Item>
   )

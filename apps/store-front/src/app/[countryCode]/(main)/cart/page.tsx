@@ -9,13 +9,7 @@ export const metadata: Metadata = {
   description: "View your cart",
 }
 
-function delay(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
 export default async function Cart() {
-  await delay(30000) // simulate slow network (5s)
-
   const cart = await retrieveCart().catch((error) => {
     console.error(error)
     return notFound()

@@ -16,21 +16,32 @@
       }
     },
     {
-      "name": "Storefront: Debug Server-Side",
-      "type": "node-terminal",
+      "name": "Storefront Server",
+      "type": "node",
       "request": "launch",
-      "command": "pnpm run dev",
       "cwd": "${workspaceFolder}/apps/store-front",
-      "internalConsoleOptions": "neverOpen"
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "--inspect",
+        "./node_modules/next/dist/bin/next",
+        "dev",
+        "-p",
+        "8000"
+      ],
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"]
     },
     {
-      "name": "Storefront: Debug Client-Side",
+      "name": "Storefront Browser",
       "type": "chrome",
-      "request": "attach",
+      "request": "launch",
       "url": "http://localhost:8000",
       "webRoot": "${workspaceFolder}/apps/store-front",
-      "sourceMaps": true,
-      "skipFiles": ["<node_internals>/**"]
+      "sourceMaps": true
     },
     {
       "name": "CMS: Debug Server-Side",
@@ -54,8 +65,8 @@
     {
       "name": "Storefront: Full Stack",
       "configurations": [
-        "Storefront: Debug Server-Side",
-        "Storefront: Debug Client-Side"
+        "Storefront Server",
+        "Storefront Browser"
       ],
       "stopAll": true
     },
@@ -68,8 +79,8 @@
       "name": "Debug All",
       "configurations": [
         "Server: Debug (Medusa Backend)",
-        "Storefront: Debug Server-Side",
-        "Storefront: Debug Client-Side",
+        "Storefront Server",
+        "Storefront Browser",
         "CMS: Debug Server-Side",
         "CMS: Debug Client-Side"
       ],

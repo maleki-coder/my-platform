@@ -1,7 +1,11 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { getCategoryByHandle, listCategories } from "@lib/data/categories"
+import {
+  getCategoryByHandle,
+  getProductCategoryOptions,
+  listCategories,
+} from "@lib/data/categories"
 import { listRegions } from "@lib/data/regions"
 import { StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
@@ -9,10 +13,7 @@ import { SortOptions } from "@modules/categories/components/category-order-filte
 
 type Props = {
   params: Promise<{ category: string[]; countryCode: string }>
-  searchParams: Promise<{
-    sortBy?: SortOptions
-    page?: string
-  }>
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }
 
 export async function generateStaticParams() {
@@ -66,19 +67,35 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams
   const params = await props.params
-  const { sortBy, page } = searchParams
+  const sortBy = searchParams.sortBy as SortOptions
+  const page = searchParams.page ? parseInt(searchParams.page as string) : 1
 
   const productCategory = await getCategoryByHandle(params.category)
-
+  const filterOptions = await getProductCategoryOptions(productCategory.id)
   if (!productCategory) {
     notFound()
   }
+  const standardParams = ["sortBy", "page", "countryCode"]
+  const optionsFilters: Record<string, string[]> = {}
 
+  Object.keys(searchParams).forEach((key) => {
+    if (!standardParams.includes(key) && searchParams[key]) {
+      const paramValue = searchParams[key]
+
+      if (typeof paramValue === "string") {
+        optionsFilters[key] = paramValue.split(",")
+      } else if (Array.isArray(paramValue)) {
+        optionsFilters[key] = paramValue.flatMap((v) => v.split(","))
+      }
+    }
+  })
   return (
     <CategoryTemplate
       category={productCategory}
       sortBy={sortBy}
-      page={page}
+      filterOptions={filterOptions}
+      page={String(page)}
+      optionsFilters={optionsFilters}
       countryCode={params.countryCode}
     />
   )

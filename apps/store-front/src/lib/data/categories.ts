@@ -2,7 +2,11 @@
 import { sdk } from "@lib/config"
 import { HttpTypes } from "@medusajs/types"
 import { getCacheOptions } from "./cookies"
-import { CategoryWithImages } from "types/global"
+import {
+  CategoryOption,
+  CategoryOptionsResponse,
+  CategoryWithImages,
+} from "types/global"
 import { buildCategoryTree } from "@lib/util/build-category-tree"
 
 export const listCategories = async (query?: Record<string, any>) => {
@@ -106,4 +110,29 @@ export const listHeroCategories = async (
       }
     )
     .then(({ product_categories }) => product_categories)
+}
+
+export const getProductCategoryOptions = async (
+  categoryId: string,
+  query?: Record<string, any>
+): Promise<CategoryOption[]> => {
+  if (!categoryId) {
+    return []
+  }
+  return sdk.client
+    .fetch<CategoryOptionsResponse>(`/store/categories/${categoryId}/options`, {
+      query: {
+        ...query,
+      },
+      cache: "force-cache",
+      next: {
+        tags: [`category-options-${categoryId}`],
+        revalidate: 1, // کش کردن اطلاعات برای ۱ ساعت (اختیاری اما به شدت توصیه می‌شود)
+      },
+    })
+    .then(({ options }) => options)
+    .catch((error) => {
+      console.error(`Error fetching options for category ${categoryId}:`, error)
+      return []
+    })
 }

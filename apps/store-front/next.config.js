@@ -12,6 +12,7 @@ const nextConfig = {
       fullUrl: true,
     },
   },
+  productionBrowserSourceMaps: true,
   eslint: {
     ignoreDuringBuilds: true,
   },

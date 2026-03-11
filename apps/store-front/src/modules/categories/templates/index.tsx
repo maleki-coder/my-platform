@@ -8,17 +8,22 @@ import Divider from "@modules/common/components/divider"
 import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
 import CategorySidebarWrapper from "@modules/categories/components/category-filter-sidebar-wrapper"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
+import { CategoryOption } from "types/global"
 
 export default async function CategoryTemplate({
   category,
   sortBy,
   page,
   countryCode,
+  filterOptions,
+  optionsFilters
 }: {
   category: HttpTypes.StoreProductCategory
   sortBy?: SortOptions
   page?: string
   countryCode: string
+  filterOptions: CategoryOption[]
+  optionsFilters: Record<string, string[]>
 }) {
   const { isMobile } = await getDeviceFromCookie()
   const pageNumber = page ? parseInt(page) : 1
@@ -49,7 +54,7 @@ export default async function CategoryTemplate({
       <BreadCrumbs data-testid="bread-crumb" category={category} />
       <Divider />
       <div className="mt-4 md:mt-8 flex gap-4">
-        <CategorySidebarWrapper isMobile={isMobile} sortBy={sort}>
+        <CategorySidebarWrapper filterOptions={filterOptions} isMobile={isMobile} sortBy={sort}>
           <Suspense
             fallback={
               <SkeletonProductGrid
@@ -60,6 +65,7 @@ export default async function CategoryTemplate({
           >
             <PaginatedProducts
               sortBy={sort}
+              optionsFilters={optionsFilters}
               page={pageNumber}
               categoryIds={categoryIds}
               countryCode={countryCode}
