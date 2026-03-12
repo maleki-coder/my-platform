@@ -1,18 +1,20 @@
 import { HttpTypes } from "@medusajs/types"
 import React from "react"
 import Link from "next/link"
-import { listCategoriesForBreadCrumbs } from "@lib/data/categories"
+import { getCategoryByHandle, listCategories } from "@lib/data/categories"
+// import { listCategoriesForBreadCrumbs } from "@lib/data/categories"
 
 type BreadCrumbsProps = {
-  category: HttpTypes.StoreProductCategory
+  categoryHandle: string[]
   "data-testid"?: string
 }
 
 const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
-  category,
+  categoryHandle,
   "data-testid": dataTestId,
 }) => {
-  const categories = await listCategoriesForBreadCrumbs();
+  const productCategory = await getCategoryByHandle(categoryHandle);
+  const categories = await listCategories();
   // Create a lookup map for quick category access by ID
   const createCategoryMap = (cats: any[]): Map<string, any> => {
     const map = new Map()
@@ -55,7 +57,7 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
     return trail
   }
 
-  const breadcrumbTrail = getBreadcrumbTrail(category)
+  const breadcrumbTrail = getBreadcrumbTrail(productCategory)
 
   return (
     <nav data-testid={dataTestId} className="w-full" aria-label="bread-crumb">

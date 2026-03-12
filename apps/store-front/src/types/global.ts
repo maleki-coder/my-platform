@@ -40,3 +40,13 @@ export type CategoryOption = {
 export type CategoryOptionsResponse = {
   options: CategoryOption[]
 }
+
+export type CustomFilterParams = {
+  categoryId?: string
+  optionsFilters: Record<string, string[]>
+  inStock?: boolean
+  minPrice?: number
+  maxPrice?: number
+  limit?: number
+  offset?: number
+}

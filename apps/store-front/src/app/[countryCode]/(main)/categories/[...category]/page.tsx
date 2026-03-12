@@ -1,11 +1,7 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import {
-  getCategoryByHandle,
-  getProductCategoryOptions,
-  listCategories,
-} from "@lib/data/categories"
+import { getCategoryByHandle, listCategories } from "@lib/data/categories"
 import { listRegions } from "@lib/data/regions"
 import { StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
@@ -67,17 +63,29 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams
   const params = await props.params
-  const sortBy = searchParams.sortBy as SortOptions
-  const page = searchParams.page ? parseInt(searchParams.page as string) : 1
 
-  const productCategory = await getCategoryByHandle(params.category)
-  const filterOptions = await getProductCategoryOptions(productCategory.id)
-  if (!productCategory) {
+  // بررسی وجود دسته‌بندی پیش از هر پردازشی
+  if (!params.category) {
     notFound()
   }
-  const standardParams = ["sortBy", "page", "countryCode"]
+
+  const sortBy = searchParams.sortBy as SortOptions // فرض بر این است که SortOptions تایپ شده است
+  const page = searchParams.page ? parseInt(searchParams.page as string) : 1
+
+  // ۱. اضافه کردن فیلترهای جدید به لیست پارامترهای سیستمی (رزرو شده)
+  // این کار مانع از این می‌شود که کلیدهای قیمت و موجودی وارد optionsFilters (مثل رنگ و سایز) شوند
+  const standardParams = [
+    "sortBy",
+    "page",
+    "countryCode",
+    "in_stock",
+    "min_price",
+    "max_price",
+  ]
+  
   const optionsFilters: Record<string, string[]> = {}
 
+  // ۲. استخراج فیلترهای گزینه‌ای (رنگ، سایز و ...)
   Object.keys(searchParams).forEach((key) => {
     if (!standardParams.includes(key) && searchParams[key]) {
       const paramValue = searchParams[key]
@@ -89,14 +97,33 @@ export default async function CategoryPage(props: Props) {
       }
     }
   })
+
+  // ۳. استخراج فیلتر موجودی (تبدیل مستقیم به Boolean)
+  const inStock = searchParams.in_stock === "true"
+
+  // ۴. استخراج و تبدیل فیلترهای قیمت به Number (همراه با اعتبارسنجی)
+  const minPriceStr = searchParams.min_price as string | undefined
+  const minPrice = minPriceStr && !isNaN(parseInt(minPriceStr, 10))
+    ? parseInt(minPriceStr, 10)
+    : undefined
+
+  const maxPriceStr = searchParams.max_price as string | undefined
+  const maxPrice = maxPriceStr && !isNaN(parseInt(maxPriceStr, 10))
+    ? parseInt(maxPriceStr, 10)
+    : undefined
+
+  // ۵. ارسال تمام داده‌های پردازش‌شده به CategoryTemplate
   return (
     <CategoryTemplate
-      category={productCategory}
+      categoryHandle={params.category}
       sortBy={sortBy}
-      filterOptions={filterOptions}
       page={String(page)}
       optionsFilters={optionsFilters}
       countryCode={params.countryCode}
+      // پاس دادن فیلترهای جدید به عنوان Props
+      inStock={inStock}
+      minPrice={minPrice!}
+      maxPrice={maxPrice!}
     />
   )
 }

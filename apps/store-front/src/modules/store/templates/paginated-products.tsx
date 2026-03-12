@@ -1,3 +1,4 @@
+import { getCategoryByHandle } from "@lib/data/categories"
 import { listProductsWithSort } from "@lib/data/products"
 import { getRegion } from "@lib/data/regions"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
@@ -13,29 +14,43 @@ type PaginatedProductsParams = {
   category_id?: string[]
   id?: string[]
   order?: string
+  in_stock?: string
+  min_price?: number
+  max_price?: number
 }
 
 export default async function PaginatedProducts({
   sortBy,
   page,
   collectionId,
-  categoryIds,
   productsIds,
   countryCode,
   isMobile,
   optionsFilters,
+  categoryHandle,
+  inStock,
+  minPrice,
+  maxPrice,
 }: {
   sortBy?: SortOptions
   page: number
   collectionId?: string
-  categoryIds?: string[]
   productsIds?: string[]
   countryCode: string
   isMobile: boolean
   optionsFilters: Record<string, string[]>
+  categoryHandle: string[]
+  inStock?: boolean
+  minPrice?: number
+  maxPrice?: number
 }) {
+  const productCategory = await getCategoryByHandle(categoryHandle)
+  const categoryIds: string[] = [
+    productCategory.id,
+    ...(productCategory.category_children?.map((c) => c.id) ?? []),
+  ]
   const queryParams: PaginatedProductsParams = {
-    limit: 12,
+    limit: PRODUCT_LIMIT,
   }
 
   if (collectionId) {
@@ -54,6 +69,18 @@ export default async function PaginatedProducts({
     queryParams["order"] = "created_at"
   }
 
+  if (inStock === true) {
+    queryParams["in_stock"] = String(inStock)
+  }
+
+  if (minPrice) {
+    queryParams["min_price"] = minPrice
+  }
+
+  if (maxPrice) {
+    queryParams["max_price"] = maxPrice
+  }
+
   const region = await getRegion(countryCode)
 
   if (!region) {
@@ -67,7 +94,7 @@ export default async function PaginatedProducts({
     queryParams,
     sortBy,
     countryCode,
-    optionsFilters
+    optionsFilters,
   })
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)

@@ -8,13 +8,24 @@ import {
   CategoryWithImages,
 } from "types/global"
 import { buildCategoryTree } from "@lib/util/build-category-tree"
+import { cache } from "react"
 
-export const listCategories = async (query?: Record<string, any>) => {
+export const listCategories = cache(async (query?: Record<string, any>) => {
   const next = {
     ...(await getCacheOptions("categories")),
   }
 
   const limit = query?.limit || 100
+
+  const combinedFields = [
+    "id",
+    "name",
+    "handle",
+    "parent_category_id",
+    "*category_children",
+    "*product_category_image",
+    "*parent_category",
+  ].join(",")
 
   const flatCategories = await sdk.client
     .fetch<{ product_categories: CategoryWithImages[] }>(
@@ -22,40 +33,7 @@ export const listCategories = async (query?: Record<string, any>) => {
       {
         query: {
           ...query,
-          fields:
-            "*category_children, *product_category_image, *parent_category",
-          limit,
-          include_descendants_tree: true,
-          parent_category_id: null, // top-level only
-        },
-        next,
-        cache: "no-cache",
-      }
-    )
-    .then(({ product_categories }) => product_categories)
-
-  // Build nested tree
-  const nestedCategories = buildCategoryTree(flatCategories)
-
-  return nestedCategories
-}
-export const listCategoriesForBreadCrumbs = async (
-  query?: Record<string, any>
-) => {
-  const next = {
-    ...(await getCacheOptions("breadCrumb_categories")),
-  }
-
-  const limit = query?.limit || 100
-
-  const flatCategories = await sdk.client
-    .fetch<{ product_categories: HttpTypes.StoreProductCategory[] }>(
-      "/store/product-categories",
-      {
-        query: {
-          ...query,
-          fields:
-            "id,name,handle,parent_category_id,parent_category.id,parent_category.name,parent_category.handle,category_children.id,category_children.name,category_children.handle",
+          fields: combinedFields,
           limit,
           include_descendants_tree: true,
           parent_category_id: null, // top-level only
@@ -65,11 +43,14 @@ export const listCategoriesForBreadCrumbs = async (
       }
     )
     .then(({ product_categories }) => product_categories)
-  const nestedCategories = buildCategoryTree(flatCategories)
-  return nestedCategories
-}
 
-export const getCategoryByHandle = async (categoryHandle: string[]) => {
+  // Build nested tree
+  const nestedCategories = buildCategoryTree(flatCategories)
+
+  return nestedCategories
+})
+
+export const getCategoryByHandle = cache(async (categoryHandle: string[]) => {
   const handle = `${categoryHandle.join("/")}`
 
   const next = {
@@ -89,7 +70,7 @@ export const getCategoryByHandle = async (categoryHandle: string[]) => {
       }
     )
     .then(({ product_categories }) => product_categories[0])
-}
+})
 
 export const listHeroCategories = async (
   metadataTag: string = "home-page",
@@ -112,27 +93,38 @@ export const listHeroCategories = async (
     .then(({ product_categories }) => product_categories)
 }
 
-export const getProductCategoryOptions = async (
-  categoryId: string,
-  query?: Record<string, any>
-): Promise<CategoryOption[]> => {
-  if (!categoryId) {
-    return []
-  }
-  return sdk.client
-    .fetch<CategoryOptionsResponse>(`/store/categories/${categoryId}/options`, {
-      query: {
-        ...query,
-      },
-      cache: "force-cache",
-      next: {
-        tags: [`category-options-${categoryId}`],
-        revalidate: 1, // کش کردن اطلاعات برای ۱ ساعت (اختیاری اما به شدت توصیه می‌شود)
-      },
-    })
-    .then(({ options }) => options)
-    .catch((error) => {
-      console.error(`Error fetching options for category ${categoryId}:`, error)
+export const getProductCategoryOptions = cache(
+  async (
+    categoryId: string,
+    query?: Record<string, any>
+  ): Promise<CategoryOption[]> => {
+    if (!categoryId) {
       return []
-    })
-}
+    }
+    const cacheTagsConfig = {
+      ...(await getCacheOptions("category-options")),
+    }
+    return sdk.client
+      .fetch<CategoryOptionsResponse>(
+        `/store/categories/${categoryId}/options`,
+        {
+          query: {
+            ...query,
+          },
+          cache: "force-cache",
+          next: {
+            ...cacheTagsConfig,
+            revalidate: 3600,
+          },
+        }
+      )
+      .then(({ options }) => options)
+      .catch((error) => {
+        console.error(
+          `Error fetching options for category ${categoryId}:`,
+          error
+        )
+        return []
+      })
+  }
+)

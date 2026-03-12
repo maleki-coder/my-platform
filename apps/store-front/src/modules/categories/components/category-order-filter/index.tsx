@@ -14,7 +14,6 @@ import {
 import { Badge } from "@lib/components/ui/badge"
 import { useSidebar } from "@lib/components/ui/sidebar"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { MOBILE_FOOTER_HEIGHT } from "@lib/util/constants"
 
 interface CategoryOrderFilterProps {
   className?: string

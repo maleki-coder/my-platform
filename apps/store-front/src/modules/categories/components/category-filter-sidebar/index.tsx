@@ -22,6 +22,10 @@ import {
   ChevronUp,
 } from "lucide-react"
 import { CategoryOption } from "types/global"
+import { Input } from "@lib/components/ui/input"
+import { Label } from "@lib/components/ui/label"
+import { Button } from "@lib/components/ui/button"
+import { Switch } from "@lib/components/ui/switch"
 
 interface CategoryFilterSidebarProps {
   filterOptions: CategoryOption[]
@@ -39,7 +43,8 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
   const [expandedSections, setExpandedSections] = useState<string[]>(() => {
     const active: string[] = []
     if (searchParams.get("in_stock")) active.push("availability")
-    if (searchParams.get("min_price") || searchParams.get("max_price")) active.push("price")
+    if (searchParams.get("min_price") || searchParams.get("max_price"))
+      active.push("price")
     filterOptions.forEach((opt) => {
       if (searchParams.get(opt.title)) active.push(opt.title)
     })
@@ -72,7 +77,15 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
         : [...prev, sectionName]
     )
   }
-
+  // Helper function for smooth scrolling to top
+  const scrollToTop = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      })
+    }
+  }
   const toggleFilter = useCallback(
     (optionTitle: string, value: string) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -93,9 +106,21 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
       }
 
       router.push(`${pathname}?${params.toString()}`, { scroll: false })
+      scrollToTop()
     },
     [searchParams, pathname, router]
   )
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY
+      if (currentScroll < 0) return
+      setIsVisible(currentScroll < lastScroll || currentScroll === 0)
+      setLastScroll(currentScroll)
+    }
+    window.addEventListener("scroll", handleScroll, { passive: true })
+    return () => window.removeEventListener("scroll", handleScroll)
+  }, [lastScroll])
 
   const applyPriceFilter = () => {
     const params = new URLSearchParams(searchParams.toString())
@@ -116,7 +141,7 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
     return (
       <button
         onClick={() => toggleSection(id)}
-        className="flex w-full items-center justify-between mb-2 px-2 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
+        className="flex w-full items-center cursor-pointer justify-between mb-2 px-2 py-1 text-sm font-semibold text-gray-900 hover:bg-gray-50 rounded-md transition-colors"
       >
         <span className="text-right">{title}</span>
         {isOpen ? (
@@ -152,7 +177,7 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
           </div>
           <button
             onClick={toggleSidebar}
-            className="sm:invisible md:block text-gray-500 hover:text-gray-900"
+            className="md:hidden block text-gray-500 hover:text-gray-900"
           >
             <XIcon className="w-4 h-4" />
           </button>
@@ -160,117 +185,130 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
 
         <SidebarGroup>
           <SidebarGroupContent>
-            <div className="mb-4 border-b border-gray-100 pb-4">
-              <AccordionHeader title="وضعیت موجودی" id="availability" />
-              {expandedSections.includes("availability") && (
-                <SidebarMenu>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton
-                      onClick={() => toggleFilter("in_stock", "true")}
-                      className={`flex items-center gap-2.5 transition-colors cursor-pointer hover:bg-gray-50 rounded-md p-2 ${
-                        isFilterSelected("in_stock", "true")
-                          ? "text-blue-600 bg-blue-50/50"
-                          : "text-gray-700"
-                      }`}
-                    >
-                      {isFilterSelected("in_stock", "true") ? (
-                        <CheckSquare className="w-4 h-4 text-blue-600" />
-                      ) : (
-                        <Square className="w-4 h-4 text-gray-400" />
-                      )}
-                      <span
-                        className={`text-xs ${
-                          isFilterSelected("in_stock", "true")
-                            ? "font-semibold"
-                            : "font-normal"
-                        }`}
-                      >
-                        فقط کالاهای موجود
-                      </span>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </SidebarMenu>
-              )}
+            <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-4 px-2">
+              <Label
+                htmlFor="in-stock-toggle"
+                className="text-sm font-semibold text-gray-700 cursor-pointer select-none"
+              >
+                فقط کالاهای موجود
+              </Label>
+              <Switch
+                id="in-stock-toggle"
+                checked={isFilterSelected("in_stock", "true")}
+                onCheckedChange={() => toggleFilter("in_stock", "true")}
+              />
             </div>
 
-            <div className="mb-4 border-b border-gray-100 pb-4">
-              <AccordionHeader title="محدوده قیمت" id="price" />
+            <div className="mb-4 border-b border-gray-100">
+              <AccordionHeader title="فیلتر بر اساس قیمت" id="price" />
               {expandedSections.includes("price") && (
-                <div className="px-2 pt-2 flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <input
-                      type="number"
-                      placeholder="از"
-                      value={minPrice}
-                      onChange={(e) => setMinPrice(e.target.value)}
-                      className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-shadow"
-                    />
-                    <span className="text-xs text-gray-400">-</span>
-                    <input
-                      type="number"
-                      placeholder="تا"
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(e.target.value)}
-                      className="w-full px-2 py-1.5 text-xs border border-gray-200 rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-shadow"
-                    />
+                <div className="px-4 pt-2 flex flex-col gap-3">
+                  <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="min_price">محدوده قیمت از</Label>
+                      <div className="relative w-full">
+                        <Input
+                          id="min_price"
+                          name="min_price"
+                          value={
+                            minPrice
+                              ? Number(minPrice).toLocaleString("en-US")
+                              : ""
+                          }
+                          onChange={(e) => {
+                            const rawValue = e.target.value.replace(/\D/g, "")
+                            setMinPrice(rawValue)
+                          }}
+                          className="pl-14 pr-3 text-left rtl:text-right"
+                          dir="ltr"
+                          data-testid="min-price-input"
+                          placeholder="0"
+                        />
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+                          تومان
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="max_price">محدوده قیمت تا</Label>
+                      <div className="relative w-full">
+                        <Input
+                          id="max_price"
+                          name="max_price"
+                          value={
+                            maxPrice
+                              ? Number(maxPrice).toLocaleString("en-US")
+                              : ""
+                          }
+                          onChange={(e) => {
+                            const rawValue = e.target.value.replace(/\D/g, "")
+                            setMaxPrice(rawValue)
+                          }}
+                          className="pl-14 pr-3 text-left rtl:text-right"
+                          dir="ltr"
+                          data-testid="max-price-input"
+                          placeholder="0"
+                        />
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500 pointer-events-none">
+                          تومان
+                        </span>
+                      </div>
+                    </div>
                   </div>
-                  <button
-                    onClick={applyPriceFilter}
-                    className="w-full py-1.5 bg-gray-900 text-white text-xs rounded-md hover:bg-gray-800 transition-colors"
-                  >
-                    اعمال قیمت
-                  </button>
+
+                  <Button className="cursor-pointer" onClick={applyPriceFilter}>اعمال قیمت</Button>
                 </div>
               )}
             </div>
 
-            {filterOptions.length === 0 ? (
-              null
-            ) : (
-              filterOptions.map((option) => (
-                <div
-                  key={option.title}
-                  className="mb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0"
-                >
-                  <AccordionHeader title={option.title} id={option.title} />
+            {filterOptions.length === 0
+              ? null
+              : filterOptions.map((option) => (
+                  <div
+                    key={option.title}
+                    className="mb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0"
+                  >
+                    <AccordionHeader title={option.title} id={option.title} />
 
-                  {expandedSections.includes(option.title) && (
-                    <div className="mt-1">
-                      <SidebarMenu>
-                        {option.values.map((val) => {
-                          const selected = isFilterSelected(option.title, val)
-                          return (
-                            <SidebarMenuItem key={val}>
-                              <SidebarMenuButton
-                                onClick={() => toggleFilter(option.title, val)}
-                                className={`flex items-center gap-2.5 transition-colors cursor-pointer hover:bg-gray-50 rounded-md p-2 ${
-                                  selected
-                                    ? "text-blue-600 bg-blue-50/50"
-                                    : "text-gray-700"
-                                }`}
-                              >
-                                {selected ? (
-                                  <CheckSquare className="w-4 h-4 text-blue-600" />
-                                ) : (
-                                  <Square className="w-4 h-4 text-gray-400" />
-                                )}
-                                <span
-                                  className={`text-xs ${
-                                    selected ? "font-semibold" : "font-normal"
+                    {expandedSections.includes(option.title) && (
+                      <div className="mt-1">
+                        <SidebarMenu>
+                          {option.values.map((val) => {
+                            const selected = isFilterSelected(option.title, val)
+                            return (
+                              <SidebarMenuItem key={val}>
+                                <SidebarMenuButton
+                                  onClick={() =>
+                                    toggleFilter(option.title, val)
+                                  }
+                                  className={`flex items-center gap-2.5 transition-colors cursor-pointer hover:bg-gray-50 rounded-md p-2 ${
+                                    selected
+                                      ? "text-blue-600 bg-blue-50/50"
+                                      : "text-gray-700"
                                   }`}
                                 >
-                                  {val}
-                                </span>
-                              </SidebarMenuButton>
-                            </SidebarMenuItem>
-                          )
-                        })}
-                      </SidebarMenu>
-                    </div>
-                  )}
-                </div>
-              ))
-            )}
+                                  {selected ? (
+                                    <CheckSquare className="w-10 h-10 text-blue-600" />
+                                  ) : (
+                                    <Square className="w-10 h-10 text-gray-400" />
+                                  )}
+                                  <span
+                                    className={`text-sm ${
+                                      selected ? "font-semibold" : "font-normal"
+                                    }`}
+                                  >
+                                    {val}
+                                  </span>
+                                </SidebarMenuButton>
+                              </SidebarMenuItem>
+                            )
+                          })}
+                        </SidebarMenu>
+                      </div>
+                    )}
+                  </div>
+                ))}
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>

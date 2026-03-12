@@ -6,6 +6,7 @@ import { HttpTypes } from "@medusajs/types"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
 import { getRegion, retrieveRegion } from "./regions"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
+import { CustomFilterParams } from "types/global"
 
 export type SelectedFilters = Record<string, string[]>
 
@@ -17,7 +18,9 @@ export const listProducts = async ({
   optionsFilters,
 }: {
   pageParam?: number
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductListParams
+  queryParams?: HttpTypes.FindParams &
+    HttpTypes.StoreProductListParams &
+    Record<string, any>
   countryCode?: string
   regionId?: string
   optionsFilters?: SelectedFilters
@@ -30,24 +33,34 @@ export const listProducts = async ({
     throw new Error("Country code or region ID is required")
   }
 
-  const params = queryParams || {}
-  const limit = queryParams?.limit || 12
+  const { min_price, max_price, in_stock, ...medusaParams } = queryParams || {}
+
+  // const params = queryParams || {}
+  const limit = medusaParams.limit || 12
   const _pageParam = Math.max(pageParam, 1)
   const offset = _pageParam === 1 ? 0 : (_pageParam - 1) * limit
 
   let totalFilteredCount: number | undefined = undefined
+  const hasCustomFilters =
+    (optionsFilters && Object.keys(optionsFilters).length > 0) ||
+    min_price !== undefined ||
+    max_price !== undefined ||
+    in_stock !== undefined
 
-  const hasOptionsFilter =
-    optionsFilters && Object.keys(optionsFilters).length > 0
+  if (hasCustomFilters) {
+    const categoryId = medusaParams.category_id
+      ? medusaParams.category_id[0]
+      : undefined
 
-  if (hasOptionsFilter) {
-    const categoryId = params.category_id ? params.category_id[0] : undefined
-
+    // ارسال تمامی فیلترهای سفارشی به متد بک‌اند شما
     const filteredData = await getCustomFilteredProductsIds({
       categoryId,
-      optionsFilters,
-      limit: params.limit,
-      offset: params.offset,
+      optionsFilters: (optionsFilters || {}) as Record<string, string[]>,
+      limit, // استفاده از متغیر محاسبه شده‌ی بالا
+      offset, // استفاده از متغیر محاسبه شده‌ی بالا
+      minPrice: min_price ? parseInt(min_price as string) : undefined,
+      maxPrice: max_price ? parseInt(max_price as string) : undefined,
+      inStock: in_stock,
     })
 
     // اگر فیلتر اعمال شد اما هیچ محصولی پیدا نشد، سریعاً آرایه خالی برمی‌گردانیم
@@ -58,7 +71,8 @@ export const listProducts = async ({
       }
     }
 
-    params.id = filteredData.product_ids
+    // قرار دادن آیدی‌های فیلتر شده در آبجکت استاندارد مدوسا
+    medusaParams.id = filteredData.product_ids
     totalFilteredCount = filteredData.count
   }
 
@@ -87,7 +101,7 @@ export const listProducts = async ({
           region_id: region?.id,
           fields:
             "*variants.calculated_price,+variants.inventory_quantity,*variants.images,+metadata,+tags,",
-          ...params,
+          ...medusaParams,
         },
         headers,
         next,
@@ -205,31 +219,56 @@ export const fetchVariantInventory = async ({
 export async function getCustomFilteredProductsIds({
   categoryId,
   optionsFilters,
+  inStock,
+  minPrice,
+  maxPrice,
   limit = 100,
   offset = 0,
-}: {
-  categoryId?: string
-  optionsFilters: Record<string, string[]>
-  limit?: number
-  offset?: number
-}): Promise<{ product_ids: string[]; count: number }> {
+}: CustomFilterParams): Promise<{ product_ids: string[]; count: number }> {
   try {
-    const filterValues = Object.values(optionsFilters).flat().join(",")
     const queryParams = new URLSearchParams({
-      options: filterValues,
       limit: limit.toString(),
       offset: offset.toString(),
     })
 
+    // ۲. اضافه کردن شناسه دسته‌بندی (در صورت وجود)
     if (categoryId) {
       queryParams.append("category_id", categoryId)
     }
 
+    // ۳. پردازش و اضافه کردن فیلترهای گزینه‌ای (همان لاجیک قبلی شما)
+    if (optionsFilters && Object.keys(optionsFilters).length > 0) {
+      const filterValues = Object.values(optionsFilters)
+        .flat()
+        .filter(Boolean)
+        .join(",")
+      if (filterValues) {
+        queryParams.append("options", filterValues)
+      }
+    }
+
+    // ۴. اضافه کردن فیلترهای جدید (قیمت و موجودی)
+    if (inStock) {
+      queryParams.append("in_stock", "true")
+    }
+
+    if (minPrice !== undefined && !isNaN(minPrice)) {
+      queryParams.append("min_price", minPrice.toString())
+    }
+
+    if (maxPrice !== undefined && !isNaN(maxPrice)) {
+      queryParams.append("max_price", maxPrice.toString())
+    }
+
+    // ۵. ارسال درخواست به بک‌اند مدوسا از طریق SDK
     const response = await sdk.client.fetch<{
       product_ids: string[]
       count: number
     }>(`/store/filtered-products?${queryParams.toString()}`, {
       method: "GET",
+      // نکته مهم: برای فیلترهای پویا، کش شدن می‌تواند باعث نمایش داده‌های اشتباه شود
+      // ترکیب cache: 'no-store' برای اطمینان از دریافت داده‌های لحظه‌ای توصیه می‌شود
+      cache: "no-store",
       next: { tags: ["products"] },
     })
 
