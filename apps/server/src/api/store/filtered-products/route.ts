@@ -1,9 +1,12 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
+import { Modules } from "@medusajs/framework/utils";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const query = req.scope.resolve("query");
+  // فراخوانی مستقیم ماژول قیمت‌گذاری برای دور زدن محدودیت‌های Query Graph
+  const pricingModuleService = req.scope.resolve(Modules.PRICING);
 
-  // ۱. استخراج پارامترها
+  // ۱. استخراج و استانداردسازی پارامترها
   const categoryId = req.query.category_id as string | undefined;
   const optionsParam = req.query.options as string | undefined;
   const limit = parseInt((req.query.limit as string) || "100", 10);
@@ -12,6 +15,10 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const inStockParam = req.query.in_stock as string | undefined;
   const minPriceParam = req.query.min_price as string | undefined;
   const maxPriceParam = req.query.max_price as string | undefined;
+
+  let rawCurrency = req.query.currency_code;
+  if (Array.isArray(rawCurrency)) rawCurrency = rawCurrency[0];
+  const currencyCode = ((rawCurrency as string) || "irr").toLowerCase().trim();
 
   const minPrice =
     minPriceParam !== undefined && !isNaN(parseInt(minPriceParam, 10))
@@ -23,7 +30,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       : undefined;
   const requireInStock = inStockParam === "true";
 
-  // ۲. ساخت فیلترهای مجاز دیتابیس (فقط فیلدهای بومی ماژول Product)
+  // ۲. فیلترهای اولیه پایگاه داده
   let dbFilters: any = { status: "published" };
 
   if (categoryId) {
@@ -38,7 +45,7 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
   }
 
   try {
-    // ۳. واکشی داده‌ها به همراه اطلاعات Remote Links
+    // مرحله اول: واکشی امنِ داده‌ها بدون درگیری با Calculated Price
     const { data: products } = await query.graph({
       entity: "product",
       fields: [
@@ -47,74 +54,100 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
         "variants.manage_inventory",
         "variants.allow_backorder",
         "variants.inventory_items.inventory.location_levels.available_quantity",
-        "variants.price_set.prices.amount",
+        // کلید طلایی: فقط آیدی Price Set را می‌گیریم، نه قیمت محاسبه شده را
+        "variants.price_set.id",
       ],
       filters: dbFilters,
       pagination: { skip: 0, take: 5000 },
     });
 
-    // ۴. فیلترینگ ضدضربه درون‌حافظه (Bulletproof In-Memory Filtering)
+    // مرحله دوم: استخراج تمام شناسه‌های مجموعه قیمتی (Price Set IDs)
+    const priceSetIds = new Set<string>();
+    products.forEach((product: any) => {
+      product.variants?.forEach((variant: any) => {
+        if (variant.price_set?.id) {
+          priceSetIds.add(variant.price_set.id);
+        }
+      });
+    });
+
+    // مرحله سوم: محاسبه مستقیم قیمت‌ها از طریق سرویس Pricing
+    const priceMap: Record<string, number> = {};
+    if (priceSetIds.size > 0) {
+      // استفاده از متد قدرتمند calculatePrices که مستقیماً کانتکست را می‌پذیرد
+      const calculatedPrices = await pricingModuleService.calculatePrices(
+        { id: Array.from(priceSetIds) },
+        {
+          context: {
+            currency_code: currencyCode,
+          },
+        },
+      );
+
+      // ساخت یک دیکشنری (Map) برای دسترسی سریع (O(1)) به قیمت‌ها
+      calculatedPrices.forEach((cp: any) => {
+        if (
+          cp.id &&
+          cp.calculated_amount !== null &&
+          cp.calculated_amount !== undefined
+        ) {
+          priceMap[cp.id] = cp.calculated_amount;
+        }
+      });
+    }
+
+    // مرحله چهارم: پردازش و فیلترینگ نهایی
     const filteredProducts = products.filter((product: any) => {
-      // اگر محصول واریانت نداشته باشد، نمایش داده نمی‌شود
       if (
         !product?.variants ||
         !Array.isArray(product.variants) ||
         product.variants.length === 0
-      )
+      ) {
         return false;
+      }
 
-      // بررسی اینکه آیا حداقل یک واریانت شرایط فیلترها را دارد یا خیر
       return product.variants.some((variant: any) => {
         let isPriceMatch = true;
         let isStockMatch = true;
 
-        // --- بررسی دقیق و ایمن شرط قیمت ---
+        // --- بررسی شرط قیمت با استفاده از دیکشنری قیمت‌ها ---
         if (minPrice !== undefined || maxPrice !== undefined) {
-          const variantPrices = Array.isArray(variant?.price_set?.prices)
-            ? variant.price_set.prices
-            : [];
+          // دریافت قیمت نهایی از روی آیدی Price Set و دیکشنری
+          const effectivePrice = variant.price_set?.id
+            ? priceMap[variant.price_set.id]
+            : undefined;
 
-          if (variantPrices.length === 0) {
-            isPriceMatch = false; // فاقد قیمت
+          if (typeof effectivePrice !== "number" || isNaN(effectivePrice)) {
+            isPriceMatch = false;
           } else {
-            isPriceMatch = variantPrices.some((p: any) => {
-              const amount = p?.amount;
-              // اگر فیلد amount نامعتبر است، این قیمت رد می‌شود
-              if (amount === undefined || amount === null) return false;
-
-              const meetsMin =
-                minPrice !== undefined ? amount >= minPrice : true;
-              const meetsMax =
-                maxPrice !== undefined ? amount <= maxPrice : true;
-              return meetsMin && meetsMax;
-            });
+            const meetsMin =
+              minPrice !== undefined ? effectivePrice >= minPrice : true;
+            const meetsMax =
+              maxPrice !== undefined ? effectivePrice <= maxPrice : true;
+            isPriceMatch = meetsMin && meetsMax;
           }
         }
 
-        // --- بررسی دقیق و ایمن شرط موجودی ---
+        // --- بررسی شرط موجودی ---
         if (requireInStock) {
           if (
             variant?.manage_inventory === true ||
-            variant?.allow_backorder === false ||
             variant?.allow_backorder === true
           ) {
-            isStockMatch = true; // محصول نیازی به بررسی عددی موجودی ندارد
+            isStockMatch = true;
           } else {
             let totalAvailable = 0;
-            // بررسی ایمن بودن آرایه inventory_items
             const inventoryItems = Array.isArray(variant?.inventory_items)
               ? variant.inventory_items
               : [];
 
             for (const item of inventoryItems) {
-              // در ساختارهای مختلف مدوسا، دیتای انبار ممکن است در لایه‌های مختلفی باشد
               const actualInventory =
                 item?.inventory || item?.inventory_item || item;
               const locationLevels = actualInventory?.location_levels;
 
               if (Array.isArray(locationLevels)) {
                 for (const level of locationLevels) {
-                  // استفاده از Optional Chaining برای جلوگیری از خطای Cannot read properties of undefined
                   const qty = level?.available_quantity;
                   if (typeof qty === "number") {
                     totalAvailable += qty;
@@ -123,7 +156,6 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
               } else if (
                 typeof actualInventory?.available_quantity === "number"
               ) {
-                // حالت Fallback: اگر مدوسا دیتا را به صورت فلت (Flat) برگرداند
                 totalAvailable += actualInventory.available_quantity;
               }
             }
@@ -136,17 +168,20 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       });
     });
 
-    // ۵. اعمال صفحه‌بندی ایمن
+    // ۵. اعمال صفحه‌بندی
     const paginatedProducts = filteredProducts.slice(offset, offset + limit);
     const productIds = paginatedProducts.map((p: any) => p.id);
 
-    // ارسال پاسخ نهایی
     res.json({
       product_ids: productIds,
       count: filteredProducts.length,
     });
   } catch (error: any) {
-    console.error("🔥 Query Graph Fetch CRASH:", error.message || error);
+    console.error("🔥 Decoupled Fetch CRASH Details:", {
+      message: error.message,
+      stack: error.stack,
+    });
+
     res.status(500).json({
       message: "Error fetching and filtering products",
       details: error.message || "Unknown error",

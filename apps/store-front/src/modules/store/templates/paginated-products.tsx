@@ -11,7 +11,7 @@ const PRODUCT_LIMIT = 12
 type PaginatedProductsParams = {
   limit: number
   collection_id?: string[]
-  category_id?: string[]
+  category_id?: string
   id?: string[]
   order?: string
   in_stock?: string
@@ -45,10 +45,6 @@ export default async function PaginatedProducts({
   maxPrice?: number
 }) {
   const productCategory = await getCategoryByHandle(categoryHandle)
-  const categoryIds: string[] = [
-    productCategory.id,
-    ...(productCategory.category_children?.map((c) => c.id) ?? []),
-  ]
   const queryParams: PaginatedProductsParams = {
     limit: PRODUCT_LIMIT,
   }
@@ -57,8 +53,8 @@ export default async function PaginatedProducts({
     queryParams["collection_id"] = [collectionId]
   }
 
-  if (categoryIds && categoryIds.length > 0) {
-    queryParams.category_id = categoryIds
+  if (productCategory.id) {
+    queryParams.category_id = productCategory.id
   }
 
   if (productsIds) {
@@ -105,24 +101,7 @@ export default async function PaginatedProducts({
         className="w-full grid grid-cols-1 small:grid-cols-3 medium:grid-cols-3 gap-2"
         data-testid="products-list"
       >
-        {products
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          // .concat(products[0])
-          .map((p) => {
+        {products.map((p) => {
             return (
               <li key={p.id}>
                 {isMobile ? (

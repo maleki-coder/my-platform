@@ -4,7 +4,7 @@ import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   const categoryId = req.params.id;
-  
+
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
   try {
@@ -33,13 +33,24 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
       if (product.options) {
         product.options.forEach((option: any) => {
           const title = option.title;
+
+          if (!title || title.toLowerCase() === "default option") {
+            return;
+          }
+
           if (!availableOptions[title]) {
             availableOptions[title] = new Set();
           }
 
           if (option.values) {
             option.values.forEach((val: any) => {
-              availableOptions[title].add(val.value);
+              // یک لایه امنیتی اضافی برای جلوگیری از ورود مقادیر پیش‌فرض در صورت تغییر عنوان
+              if (
+                val.value &&
+                val.value.toLowerCase() !== "default option value"
+              ) {
+                availableOptions[title].add(val.value);
+              }
             });
           }
         });

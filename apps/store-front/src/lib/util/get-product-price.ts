@@ -1,8 +1,19 @@
+// @lib/util/get-product-price.ts
 import { HttpTypes } from "@medusajs/types"
 import { getPercentageDiff } from "./get-percentage-diff"
 import { convertToLocale } from "./money"
 
-export const getPricesForVariant = (variant: HttpTypes.StoreProductVariant) => {
+// ۱. ساخت تایپ‌های توسعه‌یافته برای پشتیبانی از فیلدهای تزریق‌شده سفارشی
+export type StitchedVariant = HttpTypes.StoreProductVariant & {
+  discount_starts_at?: string | null
+  discount_ends_at?: string | null
+}
+
+export type StitchedProduct = Omit<HttpTypes.StoreProduct, "variants"> & {
+  variants?: StitchedVariant[] | null
+}
+
+export const getPricesForVariant = (variant: StitchedVariant) => {
   const cp = variant?.calculated_price
 
   if (!cp || cp.calculated_amount == null || cp.original_amount == null) {
@@ -24,6 +35,9 @@ export const getPricesForVariant = (variant: HttpTypes.StoreProductVariant) => {
       cp.original_amount,
       cp.calculated_amount
     ),
+    // ۲. اضافه کردن تاریخ‌های تخفیف به آبجکت خروجی قیمت
+    starts_at: variant.discount_starts_at ?? null,
+    ends_at: variant.discount_ends_at ?? null,
   }
 }
 
@@ -31,7 +45,7 @@ export function getProductPrice({
   product,
   variantId,
 }: {
-  product: HttpTypes.StoreProduct
+  product: StitchedProduct // استفاده از تایپ توسعه‌یافته
   variantId?: string
 }) {
   if (!product || !product.id) {
@@ -45,8 +59,7 @@ export function getProductPrice({
 
     const cheapestVariant = product.variants
       .filter(
-        (v: HttpTypes.StoreProductVariant) =>
-          v.calculated_price?.calculated_amount != null
+        (v: StitchedVariant) => v.calculated_price?.calculated_amount != null
       )
       .sort(
         (a, b) =>
@@ -62,8 +75,9 @@ export function getProductPrice({
       return null
     }
 
-    const variant: HttpTypes.StoreProductVariant | undefined =
-      product.variants?.find((v) => v.id === variantId || v.sku === variantId)
+    const variant: StitchedVariant | undefined = product.variants?.find(
+      (v) => v.id === variantId || v.sku === variantId
+    )
 
     if (!variant) {
       return null

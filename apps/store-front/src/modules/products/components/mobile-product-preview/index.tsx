@@ -12,6 +12,10 @@ export default async function MobileProductPreview({
   const { cheapestPrice } = getProductPrice({
     product,
   })
+  const hasValidTimedDiscount =
+    cheapestPrice?.percentage_diff &&
+    parseInt(cheapestPrice.percentage_diff) > 0 &&
+    cheapestPrice?.ends_at
 
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group">
@@ -19,7 +23,12 @@ export default async function MobileProductPreview({
         key={product.id}
         className="w-full border-b mt-1 border-gray-200 last:border-none"
       >
-        <TimedDiscountBadge />
+        {hasValidTimedDiscount ? (
+          <TimedDiscountBadge
+            startsAt={cheapestPrice.starts_at}
+            endsAt={cheapestPrice.ends_at!}
+          />
+        ) : null}
         <div className="flex w-full items-stretch">
           <div className="flex w-2/3 flex-col gap-1">
             <div className="flex flex-col justify-between pl-4">

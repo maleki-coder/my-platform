@@ -1,5 +1,5 @@
-import { getProductPrice } from "@lib/util/get-product-price"
-import { HttpTypes } from "@medusajs/types"
+// @modules/products/components/product-preview/index.tsx
+import { getProductPrice, StitchedProduct } from "@lib/util/get-product-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import PreviewPrice from "@modules/products/components/product-preview/price"
 import Image from "next/image"
@@ -8,12 +8,18 @@ import TimedDiscountBadge from "@modules/products/components/timed-discount-badg
 export default async function ProductPreview({
   product,
 }: {
-  product: HttpTypes.StoreProduct
+  product: StitchedProduct // استفاده از تایپ توسعه‌یافته برای جلوگیری از خطای TS
 }) {
   const { cheapestPrice } = getProductPrice({
     product,
   })
-  
+
+  // شرط امن برای نمایش تایمر: آیا تخفیف درصدی دارد و آیا تاریخ پایان برای آن ثبت شده است؟
+  const hasValidTimedDiscount =
+    cheapestPrice?.percentage_diff &&
+    parseInt(cheapestPrice.percentage_diff) > 0 &&
+    cheapestPrice?.ends_at
+
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group">
       <section
@@ -33,16 +39,23 @@ export default async function ProductPreview({
             />
           </div>
         </div>
+
         <div className="px-4 pt-2.5">
           <h2 className="line-clamp-3 h-18.75 overflow-hidden text-sm font-medium leading-6.5 text-gray-800">
             {product.title}
           </h2>
         </div>
+
         <div className="flex items-center gap-x-2">
           {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
         </div>
-        <div className="absolute top-4 w-full px-5">
-          <TimedDiscountBadge />
+        <div className="absolute top-0 w-full">
+          {hasValidTimedDiscount ? (
+            <TimedDiscountBadge
+              startsAt={cheapestPrice.starts_at}
+              endsAt={cheapestPrice.ends_at!}
+            />
+          ) : null}
         </div>
       </section>
     </LocalizedClientLink>

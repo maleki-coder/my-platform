@@ -49,7 +49,7 @@ export const listProducts = async ({
 
   if (hasCustomFilters) {
     const categoryId = medusaParams.category_id
-      ? medusaParams.category_id[0]
+      ? (medusaParams.category_id as string)
       : undefined
 
     // ارسال تمامی فیلترهای سفارشی به متد بک‌اند شما
@@ -100,7 +100,7 @@ export const listProducts = async ({
           offset,
           region_id: region?.id,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,+metadata,+tags,",
+            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,+metadata,+tags",
           ...medusaParams,
         },
         headers,
@@ -108,7 +108,40 @@ export const listProducts = async ({
         cache: "no-cache",
       }
     )
-    .then(({ products, count }) => {
+    .then(async ({ products, count }) => {
+      // ۱. استخراج تمام Variant ID ها از محصولات فچ شده
+      const variantIds = products
+        .flatMap((p) => p.variants?.map((v) => v.id))
+        .filter(Boolean) as string[]
+
+      if (variantIds.length > 0) {
+        try {
+          // ۲. درخواست به API سفارشی بک‌اند برای دریافت تاریخ‌های تخفیف
+          const { discounts } = await sdk.client.fetch<{
+            discounts: Record<string, { starts_at: string; ends_at: string }>
+          }>(`/store/discounts`, {
+            method: "GET",
+            query: { variant_ids: variantIds.join(",") },
+            headers,
+          })
+
+          // ۳. تزریق (Inject) تاریخ‌ها به داخل داده‌های محصول
+          products.forEach((product) => {
+            product.variants?.forEach((variant) => {
+              if (discounts[variant.id]) {
+                // اضافه کردن پراپرتی‌های کاستوم به آبجکت واریانت
+                ;(variant as any).discount_starts_at =
+                  discounts[variant.id].starts_at
+                ;(variant as any).discount_ends_at =
+                  discounts[variant.id].ends_at
+              }
+            })
+          })
+        } catch (error) {
+          console.error("Failed to fetch custom discount dates:", error)
+          // در صورت خطا، فرآیند را متوقف نمی‌کنیم تا محصولات همچنان نمایش داده شوند
+        }
+      }
       const finalCount =
         totalFilteredCount !== undefined ? totalFilteredCount : count
       const nextPage = finalCount > offset + limit ? pageParam + 1 : null
@@ -120,7 +153,7 @@ export const listProducts = async ({
         },
         nextPage: nextPage,
         queryParams,
-      }
+    }
     })
     .catch((error) => {
       console.error("Error fetching standard products:", error)

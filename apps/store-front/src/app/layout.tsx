@@ -14,15 +14,16 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
 }
-const myFont = localFont({
+const iranYekan = localFont({
   src: "../../public/fonts/IRANYekanWebMedium.woff",
-  variable: "--font-inter",
+  variable: "--font-iranyekan", // یک متغیر اختصاصی و معنا‌دار
+  display: "swap", // Best practice برای جلوگیری از ناپدید شدن متن در زمان لود
 })
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
-    <html lang="fa" dir="rtl" data-mode="light">
-      <body className={myFont.className}>
+    <html lang="fa" dir="rtl" data-mode="light" className={iranYekan.variable}>
+      <body className="font-sans antialiased">
         <SidebarProvider defaultOpen={false}>
           <ReactQueryProvider>
             <CustomerProvider>{props.children}</CustomerProvider>

@@ -8,7 +8,7 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
 
   return (
     <div
-      className={`flex w-full px-4 ${
+      className={`flex w-full px-4 pb-4 ${
         Number(price?.percentage_diff) > 0 ? "justify-between" : "justify-end"
       }`}
     >
@@ -26,7 +26,7 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
           <span className="text-xs mr-1 font-medium leading-5">تومان</span>
         </p>
         <div
-          className={`mb-1 mt-2 text-sm flex gap-1 ${
+          className={`text-sm flex gap-1 ${
             Number(price?.percentage_diff) > 0 ? "visible" : "invisible"
           }`}
         >

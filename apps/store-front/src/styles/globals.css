@@ -9,6 +9,9 @@ body {
   touch-action: pan-x pan-y;
 }
 @theme {
+  --font-sans: var(--font-iranyekan), Tahoma, Arial, sans-serif;
+  /* --font-sans: var(--font-iranyekan), Inter, -apple-system, BlinkMacSystemFont, sans-serif; */
+
   --transition-property-width: width margin;
   --transition-property-height: height;
   --transition-property-bg: background-color;
@@ -47,9 +50,6 @@ body {
   --breakpoint-2xlarge: 1920px;
 
   --text-3xl: 2rem;
-
-  --font-sans: Inter, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto,
-    Helvetica Neue, Ubuntu, sans-serif;
 
   --animate-ring: ring 2.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
   --animate-fade-in-right: fade-in-right 0.3s cubic-bezier(0.5, 0, 0.5, 1)
