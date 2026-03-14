@@ -1,7 +1,6 @@
 "use client"
 
 import { clx } from "@lib/util/clx"
-// import { clx } from "@medusajs/ui"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 export function Pagination({

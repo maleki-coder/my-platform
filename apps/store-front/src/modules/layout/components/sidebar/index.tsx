@@ -82,7 +82,7 @@ export function AppSidebar({ categories }: AppSidebarProps) {
           <SidebarGroup>
             <SidebarGroupContent>
               <SidebarMenu>
-                {categories.filter(hasChildrenAndImage).map((item, index) => {
+                {categories.filter(hasChildrenAndImage).map((item) => {
                   const img = item.product_category_image[0]
                   return (
                     <SidebarMenuItem

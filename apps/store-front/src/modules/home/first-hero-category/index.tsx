@@ -2,8 +2,7 @@
 
 import Autoplay from "embla-carousel-autoplay"
 import Image from "next/image"
-import Link from "next/link"
-import { useRef, useEffect, useState } from "react"
+import { useRef } from "react"
 import {
   Carousel,
   CarouselContent,

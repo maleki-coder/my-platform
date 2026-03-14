@@ -38,7 +38,10 @@ export const listCategories = cache(async (query?: Record<string, any>) => {
           include_descendants_tree: true,
           parent_category_id: null, // top-level only
         },
-        next,
+        next: {
+          ...next,
+          revalidate: 1,
+        },
         cache: "force-cache",
       }
     )

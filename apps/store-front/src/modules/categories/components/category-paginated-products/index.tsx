@@ -4,7 +4,8 @@ import { getRegion } from "@lib/data/regions"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
 import MobileProductPreview from "@modules/products/components/mobile-product-preview"
 import ProductPreview from "@modules/products/components/product-preview"
-import { Pagination } from "@modules/store/components/pagination"
+import { Pagination } from "@modules/categories/components/category-product-pagination"
+import NoProductFound from "@modules/categories/components/no-product-found"
 
 const PRODUCT_LIMIT = 12
 
@@ -53,7 +54,7 @@ export default async function PaginatedProducts({
     queryParams["collection_id"] = [collectionId]
   }
 
-  if (productCategory.id) {
+  if (productCategory?.id) {
     queryParams.category_id = productCategory.id
   }
 
@@ -86,12 +87,16 @@ export default async function PaginatedProducts({
   let {
     response: { products, count },
   } = await listProductsWithSort({
-    page: 1,
+    page: page,
     queryParams,
     sortBy,
     countryCode,
     optionsFilters,
   })
+
+  if (!products || products.length === 0) {
+   return <NoProductFound/>
+  }
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 
@@ -102,24 +107,25 @@ export default async function PaginatedProducts({
         data-testid="products-list"
       >
         {products.map((p) => {
-            return (
-              <li key={p.id}>
-                {isMobile ? (
-                  <MobileProductPreview product={p} />
-                ) : (
-                  <ProductPreview product={p} />
-                )}
-              </li>
-            )
-          })}
+          return (
+            <li key={p.id}>
+              {isMobile ? (
+                <MobileProductPreview product={p} />
+              ) : (
+                <ProductPreview product={p} />
+              )}
+            </li>
+          )
+        })}
       </ul>
-      {/* {totalPages > 1 && ( */}
-      <Pagination
-        data-testid="product-pagination"
-        page={page}
-        totalPages={totalPages}
-      />
-      {/* )} */}
+
+      {totalPages > 1 && (
+        <Pagination
+          data-testid="product-pagination"
+          page={page}
+          totalPages={totalPages}
+        />
+      )}
     </>
   )
 }

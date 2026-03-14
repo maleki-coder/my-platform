@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
-import PaginatedProducts from "@modules/store/templates/paginated-products"
+import PaginatedProducts from "@modules/categories/components/category-paginated-products"
 import BreadCrumbs from "@modules/common/components/bread-crumbs"
 import Divider from "@modules/common/components/divider"
 import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
@@ -14,8 +14,8 @@ export default async function CategoryTemplate({
   page,
   countryCode,
   optionsFilters,
-  inStock, // دریافت پراپ جدید
-  minPrice, // دریافت پراپ جدید
+  inStock, 
+  minPrice,
   maxPrice,
 }: {
   categoryHandle: string[]
@@ -23,8 +23,8 @@ export default async function CategoryTemplate({
   page?: string
   countryCode: string
   optionsFilters: Record<string, string[]>
-  inStock: boolean // دریافت پراپ جدید
-  minPrice: number // دریافت پراپ جدید
+  inStock: boolean 
+  minPrice: number 
   maxPrice: number
 }) {
   const { isMobile } = await getDeviceFromCookie()
