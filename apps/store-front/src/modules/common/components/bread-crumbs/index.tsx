@@ -2,7 +2,6 @@ import { HttpTypes } from "@medusajs/types"
 import React from "react"
 import Link from "next/link"
 import { getCategoryByHandle, listCategories } from "@lib/data/categories"
-// import { listCategoriesForBreadCrumbs } from "@lib/data/categories"
 
 type BreadCrumbsProps = {
   categoryHandle: string[]

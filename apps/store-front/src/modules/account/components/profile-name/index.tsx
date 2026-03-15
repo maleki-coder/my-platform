@@ -52,7 +52,9 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
       <form id={formId} action={formAction} className="w-full overflow-visible">
         <div className="grid grid-cols-2 gap-x-4">
           <div className="space-y-2">
-            <Label htmlFor="first_name">نام</Label>
+            <Label className="text-large-regular!" htmlFor="first_name">
+              نام
+            </Label>
             <Input
               id="first_name"
               name="first_name"
@@ -63,7 +65,7 @@ const ProfileName: React.FC<MyInformationProps> = ({ customer }) => {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="last_name">نام خانوادگی</Label>
+            <Label className="text-large-regular!" htmlFor="last_name">نام خانوادگی</Label>
             <Input
               id="last_name"
               name="last_name"

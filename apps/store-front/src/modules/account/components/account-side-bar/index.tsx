@@ -1,15 +1,15 @@
 "use client"
 
+import { useState, useEffect } from "react"
 import { useParams, usePathname } from "next/navigation"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import {
   ListOrderedIcon,
-  UserRoundPlusIcon,
   Edit2Icon,
   FileIcon,
   ChevronLeftIcon,
   LogOutIcon,
-  BadgeCheckIcon,
+  Loader2Icon,
 } from "lucide-react"
 import {
   Item,
@@ -40,16 +40,25 @@ export default function AccountSidebar() {
   const pathname = usePathname()
   const { countryCode } = useParams() as { countryCode: string }
   const { refreshCustomer } = useCustomer()
-  const isAccountHome = pathname === "/account" || pathname === "/account/"
+  
+  const [loadingRoute, setLoadingRoute] = useState<string | null>(null)
+
+  useEffect(() => {
+    setLoadingRoute(null)
+  }, [pathname])
+
   const handleLogout = async () => {
     await signout(countryCode)
     await refreshCustomer()
   }
+
   return (
     <>
       {profileItems.map((item, i) => {
         const Icon = item.icon
         const isActive = pathname.startsWith("/ir" + item.redirectUrl)
+        const isLoading = loadingRoute === item.redirectUrl
+
         return (
           <Item
             key={i}
@@ -59,7 +68,15 @@ export default function AccountSidebar() {
             }`}
             asChild
           >
-            <LocalizedClientLink href={item.redirectUrl} className="group">
+            <LocalizedClientLink 
+              href={item.redirectUrl} 
+              className="group"
+              onClick={() => {
+                if (!isActive) {
+                  setLoadingRoute(item.redirectUrl)
+                }
+              }}
+            >
               <Icon
                 size={16}
                 className={
@@ -70,11 +87,19 @@ export default function AccountSidebar() {
                 <ItemTitle>{item.name}</ItemTitle>
               </ItemContent>
               <ItemActions>
-                <ChevronLeftIcon
-                  className={
-                    isActive ? "text-blue-600" : "group-hover:text-blue-500"
-                  }
-                />
+                {isLoading ? (
+                  <Loader2Icon 
+                    size={16} 
+                    className="animate-spin text-blue-500" 
+                  />
+                ) : (
+                  <ChevronLeftIcon
+                    size={16}
+                    className={
+                      isActive ? "text-blue-600" : "group-hover:text-blue-500"
+                    }
+                  />
+                )}
               </ItemActions>
             </LocalizedClientLink>
           </Item>

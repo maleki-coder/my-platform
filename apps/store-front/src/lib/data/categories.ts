@@ -40,7 +40,7 @@ export const listCategories = cache(async (query?: Record<string, any>) => {
         },
         next: {
           ...next,
-          revalidate: 1,
+          revalidate: 3600,
         },
         cache: "force-cache",
       }
@@ -68,7 +68,7 @@ export const getCategoryByHandle = cache(async (categoryHandle: string[]) => {
           fields: "*category_children, *products, *product_category_image",
           handle,
         },
-        next,
+        next: { ...next, revalidate: 3600 },
         cache: "force-cache",
       }
     )
@@ -117,7 +117,7 @@ export const getProductCategoryOptions = cache(
           cache: "force-cache",
           next: {
             ...cacheTagsConfig,
-            revalidate: 1,
+            revalidate: 3600,
           },
         }
       )

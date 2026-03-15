@@ -21,11 +21,7 @@ export default async function Orders() {
       <div className="mb-4 lg:mt-0 mt-4 flex flex-col gap-y-4">
         <h1 className="text-2xl-semi">سفارشات</h1>
       </div>
-      <div>
-        <OrderOverview orders={orders} />
-        {/* <Divider className="my-16" />
-        <TransferRequestForm /> */}
-      </div>
+      <OrderOverview orders={orders} />
     </div>
   )
 }

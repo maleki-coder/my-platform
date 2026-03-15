@@ -10,9 +10,9 @@ type Props = {
 
 const EmptyCart: React.FC<Props> = ({ close }) => {
   return (
-    <div className="flex pb-5 h-full flex-col gap-y-4 items-center justify-center">
-      <span className="font-bold">سبد خرید شما خالیه! </span>
-        <LocalizedClientLink href="/store">
+    <div className="flex pb-5 h-full flex-col gap-y-4 items-center justify-center py-4">
+      <span className="text-base font-semibold leading-4 text-gray-700">سبد خرید شما خالی است!</span>
+        <LocalizedClientLink href="/">
           <Button className="cursor-pointer" onClick={close}>
             مشاهده محصولات
           </Button>

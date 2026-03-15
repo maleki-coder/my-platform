@@ -95,7 +95,7 @@ export default async function PaginatedProducts({
   })
 
   if (!products || products.length === 0) {
-   return <NoProductFound/>
+    return <NoProductFound />
   }
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT)

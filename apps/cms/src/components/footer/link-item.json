@@ -1,0 +1,17 @@
+{
+  "collectionName": "components_footer_link_items",
+  "info": {
+    "displayName": "LinkItem",
+    "icon": "cursor"
+  },
+  "options": {},
+  "attributes": {
+    "label": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}

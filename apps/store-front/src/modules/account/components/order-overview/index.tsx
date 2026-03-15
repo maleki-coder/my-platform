@@ -29,7 +29,7 @@ const OrderOverview = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
       <h2 className="text-large-semi">هنوز سفارشی ثبت نکرده اید!</h2>
       <div className="mt-4">
       <p className="text-xl text-gray-600 font-medium">
-          <LocalizedClientLink href="/store">
+          <LocalizedClientLink href="/">
             <Button className="cursor-pointer">مشاهده محصولات</Button>
           </LocalizedClientLink>
         </p>

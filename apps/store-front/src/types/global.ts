@@ -50,3 +50,20 @@ export type CustomFilterParams = {
   limit?: number
   offset?: number
 }
+export interface StoreFooterResponse {
+  linkColumns: Array<{
+    title: string;
+    links: Array<{ label: string; url: string }>;
+  }>;
+  contactInfo: {
+    phone: string | null;
+    email: string | null;
+    address: string | null;
+    socialLinks: Array<{ platform: string; url: string }>;
+  };
+  certificates: Array<{
+    name: string;
+    imageUrl: string | null;
+    altText: string | null;
+  }>;
+}

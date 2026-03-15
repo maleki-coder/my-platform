@@ -1,5 +1,55 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface FooterCertificate extends Struct.ComponentSchema {
+  collectionName: 'components_footer_certificates';
+  info: {
+    displayName: 'Certificate';
+    icon: 'book';
+  };
+  attributes: {
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    name: Schema.Attribute.String;
+  };
+}
+
+export interface FooterLinkColumn extends Struct.ComponentSchema {
+  collectionName: 'components_footer_link_columns';
+  info: {
+    displayName: 'LinkColumn';
+    icon: 'cursor';
+  };
+  attributes: {
+    links: Schema.Attribute.Component<'footer.link-item', true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface FooterLinkItem extends Struct.ComponentSchema {
+  collectionName: 'components_footer_link_items';
+  info: {
+    displayName: 'LinkItem';
+    icon: 'cursor';
+  };
+  attributes: {
+    label: Schema.Attribute.String;
+    url: Schema.Attribute.String;
+  };
+}
+
+export interface FooterSocialLink extends Struct.ComponentSchema {
+  collectionName: 'components_footer_social_links';
+  info: {
+    displayName: 'SocialLink';
+    icon: 'cursor';
+  };
+  attributes: {
+    platform: Schema.Attribute.Enumeration<
+      ['linkedin', 'youtube', 'instagram', 'whatsapp', 'telegram']
+    >;
+    url: Schema.Attribute.String;
+  };
+}
+
 export interface HomepageSlide extends Struct.ComponentSchema {
   collectionName: 'components_homepage_slides';
   info: {
@@ -134,6 +184,10 @@ export interface SharedSlider extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'footer.certificate': FooterCertificate;
+      'footer.link-column': FooterLinkColumn;
+      'footer.link-item': FooterLinkItem;
+      'footer.social-link': FooterSocialLink;
       'homepage.slide': HomepageSlide;
       'shared.media': SharedMedia;
       'shared.quote': SharedQuote;

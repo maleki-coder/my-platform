@@ -596,6 +596,39 @@ export interface ApiCollectionCollection extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiGlobalFooterGlobalFooter extends Struct.SingleTypeSchema {
+  collectionName: 'global_footers';
+  info: {
+    displayName: 'GlobalFooter';
+    pluralName: 'global-footers';
+    singularName: 'global-footer';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    certificates: Schema.Attribute.Component<'footer.certificate', true>;
+    columns: Schema.Attribute.Component<'footer.link-column', true>;
+    contactAddress: Schema.Attribute.String;
+    contactEmail: Schema.Attribute.String;
+    contactPhone: Schema.Attribute.String;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::global-footer.global-footer'
+    > &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    socials: Schema.Attribute.Component<'footer.social-link', true>;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiGlobalGlobal extends Struct.SingleTypeSchema {
   collectionName: 'globals';
   info: {
@@ -1338,6 +1371,7 @@ declare module '@strapi/strapi' {
       'api::author.author': ApiAuthorAuthor;
       'api::category.category': ApiCategoryCategory;
       'api::collection.collection': ApiCollectionCollection;
+      'api::global-footer.global-footer': ApiGlobalFooterGlobalFooter;
       'api::global.global': ApiGlobalGlobal;
       'api::homepage.homepage': ApiHomepageHomepage;
       'api::product-option-value.product-option-value': ApiProductOptionValueProductOptionValue;

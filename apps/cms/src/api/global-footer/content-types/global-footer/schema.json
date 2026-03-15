@@ -1,0 +1,39 @@
+{
+  "kind": "singleType",
+  "collectionName": "global_footers",
+  "info": {
+    "singularName": "global-footer",
+    "pluralName": "global-footers",
+    "displayName": "GlobalFooter"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "columns": {
+      "type": "component",
+      "component": "footer.link-column",
+      "repeatable": true
+    },
+    "contactPhone": {
+      "type": "string"
+    },
+    "contactEmail": {
+      "type": "string"
+    },
+    "contactAddress": {
+      "type": "string"
+    },
+    "socials": {
+      "type": "component",
+      "component": "footer.social-link",
+      "repeatable": true
+    },
+    "certificates": {
+      "type": "component",
+      "component": "footer.certificate",
+      "repeatable": true
+    }
+  }
+}

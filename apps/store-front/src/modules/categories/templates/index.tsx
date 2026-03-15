@@ -7,6 +7,7 @@ import Divider from "@modules/common/components/divider"
 import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
 import CategorySidebarWrapper from "@modules/categories/components/category-filter-sidebar-wrapper"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
+import ChildCategpryChips from "@modules/common/components/child-category-chips"
 
 export default async function CategoryTemplate({
   categoryHandle,
@@ -39,7 +40,7 @@ export default async function CategoryTemplate({
       data-testid="category-container"
     >
       <BreadCrumbs data-testid="bread-crumb" categoryHandle={categoryHandle} />
-      <Divider />
+      <ChildCategpryChips categoryHandle={categoryHandle}/>
       <div className="mt-4 md:mt-8 flex gap-4">
         <CategorySidebarWrapper
           categoryHandle={categoryHandle}
