@@ -18,6 +18,9 @@
         "videos",
         "audios"
       ]
+    },
+    "url": {
+      "type": "string"
     }
   },
   "config": {}

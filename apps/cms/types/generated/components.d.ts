@@ -9,6 +9,20 @@ export interface FooterCertificate extends Struct.ComponentSchema {
   attributes: {
     image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     name: Schema.Attribute.String;
+    url: Schema.Attribute.String;
+  };
+}
+
+export interface FooterContact extends Struct.ComponentSchema {
+  collectionName: 'components_footer_contacts';
+  info: {
+    displayName: 'Contact';
+    icon: 'book';
+  };
+  attributes: {
+    address: Schema.Attribute.String;
+    email: Schema.Attribute.String;
+    phone: Schema.Attribute.String;
   };
 }
 
@@ -43,6 +57,7 @@ export interface FooterSocialLink extends Struct.ComponentSchema {
     icon: 'cursor';
   };
   attributes: {
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     platform: Schema.Attribute.Enumeration<
       ['linkedin', 'youtube', 'instagram', 'whatsapp', 'telegram']
     >;
@@ -185,6 +200,7 @@ declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'footer.certificate': FooterCertificate;
+      'footer.contact': FooterContact;
       'footer.link-column': FooterLinkColumn;
       'footer.link-item': FooterLinkItem;
       'footer.social-link': FooterSocialLink;

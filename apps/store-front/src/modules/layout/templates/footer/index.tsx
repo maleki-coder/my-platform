@@ -1,260 +1,157 @@
-"use client"
-import QuickAccessNav from "@modules/layout/components/quick-access-nav"
-import { ChevronUp } from "lucide-react"
+import { getFooterData } from "@lib/data/footer"
+import { ChevronDown } from "lucide-react"
+import Link from "next/link"
+import Image from "next/image"
+import ScrollToTopButton from "@modules/common/components/scroll-to-top-button"
 
-interface Category {
-  id: string
-  name: string
-  handle: string
-  parent_category?: any
-  category_children?: Category[]
-}
+// پراپ‌ها حذف شدند، این کامپوننت فقط مسئول دریافت داده و رندر UI پایه است
+export default async function Footer() {
+  // دریافت داده‌ها از سرور اکشن
+  const footerData = await getFooterData()
+  // مدیریت حالت قطعی بک‌اند (Fallback)
+  if (!footerData) {
+    return (
+      <footer className="m-4 lg:mt-12 mt-6 overflow-hidden rounded-2xl bg-[#1b3570] p-8 text-white text-center">
+        <p>در حال بروزرسانی اطلاعات سایت...</p>
+      </footer>
+    )
+  }
 
-interface Collection {
-  id: string
-  title: string
-  handle: string
-}
+  const { data } = footerData
 
-interface FooterProps {
-  categories: Category[]
-  collections: Collection[]
-  bottomMargin: string;
-}
-
-export default function Footer({ categories, collections, bottomMargin }: FooterProps) {
   return (
-    <footer style={{ marginBottom: bottomMargin }} className="m-4 lg:mt-12 mt-6 left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
+    <footer className="m-4 lg:mt-12 mt-6 left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
       <div className="px-4 mx-auto w-full lg:px-8 xl:px-6 max-w-screen-2xl">
-        <div className="px-8">
-          <div className="flex w-full justify-between pt-16 lg:pt-20">
-            {/* <div>image</div> */}
-            <div className="h-12.5 md:w-45 w-32.5">
-              <button className="transition-all relative rounded-xl p-4 bg-primary-shade text-white cursor-pointer flex h-9! w-full! items-center gap-2 justify-center bg-white! 2md:!h-12 px-5.5! 2md:!px-8 ">
-                <ChevronUp className="fill-primary w-4 h-4 md:w-7 md:h-7" />
-                <span className="select-none pt-1 lg:font-medium text-primary text-sm leading-4.5">
-                  بازگشت به بالا
-                </span>
-              </button>
+        <div className="px-4">
+          {/* بخش هدر فوتر و دکمه بازگشت به بالا */}
+          <div className="flex w-full pt-16 lg:pt-20 pb-8">
+            <div className="flex justify-between h-12.5 md:w-45 w-32.5">
+              <ScrollToTopButton />
+              <Image
+                src="https://www.technolife.com/image/static_logo_techno_new.svg"
+                alt={""}
+                width={16}
+                height={16}
+                className="w-8 h-8 lg:w-4 lg:h-4"
+              />
             </div>
           </div>
-          <div className="flex flex-row border-t border-white-50! pb-10.5 mt-10.5 text-white">
-            <div className=" w-full pt-8 2xl:pt-12.5">
-              <div className="grid grid-cols-3 2xl:grid-cols-6 gap-4">
-                <QuickAccessNav title="دسترسی سریع" />
-                <QuickAccessNav title="دسترسی سریع" />
-                <QuickAccessNav title="دسترسی سریع" />
-                <QuickAccessNav title="دسترسی سریع" />
-                <QuickAccessNav title="دسترسی سریع" />
-                <QuickAccessNav title="دسترسی سریع" />
-              </div>
+
+          {/* بخش ۱: ستون‌های لینک */}
+          <div className="border-t border-white/20 pt-8 pb-10 text-white">
+            <div className="hidden md:grid grid-cols-3 gap-8">
+              {data.columns?.map((col, index) => (
+                <div key={index} className="flex flex-col">
+                  <h3 className="text-lg font-bold mb-6">{col.title}</h3>
+                  <ul className="flex flex-col gap-3">
+                    {col.links?.map((link, idx) => (
+                      <li key={idx}>
+                        <Link
+                          href={link.url}
+                          className="text-sm hover:text-white/80 transition-colors"
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+
+            <div className="flex flex-col md:hidden gap-4">
+              {data.columns?.map((col, index) => (
+                <details
+                  key={index}
+                  className="group border-b border-white/10 pb-4"
+                >
+                  <summary className="flex items-center justify-between cursor-pointer list-none text-base font-medium">
+                    {col.title}
+                    <ChevronDown className="w-5 h-5 transition-transform duration-300 group-open:rotate-180" />
+                  </summary>
+                  <ul className="flex flex-col gap-3 pt-4 pr-2">
+                    {col.links?.map((link, idx) => (
+                      <li key={idx}>
+                        <Link href={link.url} className="text-sm text-white/90">
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              ))}
             </div>
           </div>
-          <div className="flex border-t border-white-50! pb-10.5 text-white">
-            <nav className="grid w-full grid-cols-1 gap-4  md:grid-cols-3  pt-14">
-              <div className="flex flex-col">
-                <p className="mb-6 lg:mb-5.5 text-base leading-6 lg:leading-7 lg:text-lg font-medium text-white">
-                  ارتباط با ما
-                </p>
-                <div className="mb-4 flex flex-wrap gap-3">
-                  <p className="whitespace-nowrap text-sm font-medium leading-5.5">
-                    تلفن :
-                  </p>
-                  <div className="flex">
-                    <span className="flex items-center">
-                      <a
-                        href="tel:02162816000"
-                        target="_blank"
-                        className="dir-ltr whitespace-nowrap"
-                      >
-                        021 - 62816000
-                      </a>
-                      <span className="mx-0.5"> - </span>
-                    </span>
-                    <span className="flex items-center">
-                      <a
-                        href="tel:02191077500"
-                        target="_blank"
-                        className="dir-ltr whitespace-nowrap"
-                      >
-                        021 - 91077500
-                      </a>
-                    </span>
-                  </div>
-                </div>
-                <div className="mb-4 flex flex-wrap gap-3">
-                  <p className="whitespace-nowrap text-sm font-medium leading-5.5">
-                    ایمیل :
-                  </p>
-                  <div className="flex">
-                    <span className="flex items-center">
-                      <a
-                        href="mailto:info@technolife.com"
-                        target="_blank"
-                        className="dir-ltr whitespace-nowrap"
-                      >
-                        info@technolife.com
-                      </a>
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="hidden md:flex md:justify-start">
-                <div className="flex w-fit flex-row flex-wrap items-center justify-start gap-3 md:flex-col md:items-start lg:mx-0">
-                  <p className="text-right text-sm font-medium leading-7 text-white lg:text-lg">
-                    شبکه های اجتماعی
-                  </p>
-                  <div className="flex gap-4 lg:gap-8">
-                    {/* Instagram */}
-                    <a
-                      rel="nofollow noopener"
-                      href="https://www.instagram.com/technolife.eshop"
-                      target="_blank"
-                      className="inline-block"
-                    >
-                      <img
-                        src="/image/footerImgsnd3HZ.webp"
-                        alt="اینستاگرام تکنولایف"
-                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
-                        loading="lazy"
-                        fetchPriority="auto"
-                      />
-                    </a>
 
-                    {/* Aparat */}
+          {/* بخش ۲: اطلاعات تماس با ما */}
+          <div className="border-t border-white/20 pt-10 pb-8 text-white">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+              <div className="flex flex-col gap-4">
+                <p className="text-lg font-medium">ارتباط با ما</p>
+                {data.contactList.map((contact, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-wrap gap-2 items-center"
+                  >
+                    <span className="text-sm font-medium">ایمیل:</span>
                     <a
-                      rel="nofollow noopener"
-                      href="https://www.aparat.com/technolife.com"
-                      target="_blank"
-                      className="inline-block"
+                      href={`mailto:${contact.email}`}
+                      dir="ltr"
+                      className="text-sm hover:underline"
                     >
-                      <img
-                        src="/image/footerImgLueLo3.webp"
-                        alt="آپارات تکنو لایف"
-                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
-                        loading="lazy"
-                        fetchPriority="auto"
-                      />
-                    </a>
-
-                    {/* Telegram */}
-                    <a
-                      rel="nofollow noopener"
-                      href="https://t.me/technolife"
-                      target="_blank"
-                      className="inline-block"
-                    >
-                      <img
-                        src="/image/footerImgcHi6f1.webp"
-                        alt="تلگرام تکنولایف"
-                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
-                        loading="lazy"
-                        fetchPriority="auto"
-                      />
-                    </a>
-
-                    {/* YouTube */}
-                    <a
-                      rel="nofollow noopener"
-                      href="https://www.youtube.com/c/Technolife_eshop"
-                      target="_blank"
-                      className="inline-block"
-                    >
-                      <img
-                        src="/image/footerImg7ujbp2.webp"
-                        alt="یوتیوب تکنولایف"
-                        className="socialImage w-8 h-8 lg:w-7.5 lg:h-7.5"
-                        loading="lazy"
-                        fetchPriority="auto"
-                      />
+                      {contact.email}
                     </a>
                   </div>
-                </div>
+                ))}
               </div>
-              <div className="hidden md:flex md:justify-start ">
-                <div className="flex  w-fit flex-col items-start justify-start gap-4.5 lg:gap-3   py-4 md:flex-col md:items-start lg:mx-0 ">
-                  <p className="text-right text-base leading-6 font-medium lg:leading-7 text-white lg:text-lg ">
-                    دانلود اپلیکیشن ما از:
-                  </p>
-                  <div className="flex flex-wrap gap-2 lg:gap-4">
-                    <a
-                      rel="nofollow noopener noreferrer"
-                      href="https://cafebazaar.ir/app/com.technolife"
-                      target="_blank"
-                      className="flex h-12 min-w-37 max-w-1/2 lg:w-22 bg-white rounded p-2 items-center justify-center "
-                    ></a>
-                    <a
-                      rel="nofollow noopener noreferrer"
-                      href="https://sibapp.com/applications/Technolife"
-                      target="_blank"
-                      className="flex h-12 min-w-37 max-w-1/2 lg:w-22 bg-white rounded p-2 items-center justify-center "
-                    ></a>
-                    <a
-                      rel="nofollow noopener noreferrer"
-                      href="https://myket.ir/app/com.technolife"
-                      target="_blank"
-                      className="flex h-12 min-w-37 max-w-1/2 lg:w-22 bg-white rounded p-2 items-center justify-center "
-                    ></a>
+
+              {data.socials?.length > 0 && (
+                <div className="flex flex-col gap-4 items-start">
+                  <p className="text-lg font-medium">شبکه‌های اجتماعی</p>
+                  <div className="flex gap-4">
+                    {data.socials.map((social, index) => (
+                      <a
+                        key={index}
+                        href={social.url}
+                        target="_blank"
+                        rel="nofollow noopener noreferrer"
+                        className="hover:opacity-80 transition-opacity"
+                        aria-label={social.platform}
+                      >
+                        <Image
+                          src={social.image.url}
+                          alt={social.image.alternativeText}
+                          width={16}
+                          height={16}
+                          className="w-8 h-8 lg:w-4 lg:h-4"
+                        />
+                      </a>
+                    ))}
                   </div>
                 </div>
-              </div>
-            </nav>
+              )}
+            </div>
           </div>
+
+          {/* بخش ۳: گواهینامه‌ها */}
+          {data.certificates && data.certificates.length > 0 && (
+            <div className="border-t border-white/20 pt-8 pb-12 flex flex-col items-center md:items-end gap-4">
+              <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+                {data.certificates.map((cert, index) => (
+                  <Image
+                    key={index}
+                    src={cert.image.url!}
+                    alt={cert.image.alternativeText}
+                    width={80}
+                    height={80}
+                    className="object-contain w-full h-full"
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </footer>
-    // <footer className="border-ui-border-base w-full">
-    //   <div className="content-container flex flex-col w-full">
-    //     <div className="flex flex-col gap-y-6 xsmall:flex-row items-start justify-between py-40">
-    //       <div>
-    //         <LocalizedClientLink
-    //           href="/"
-    //           className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
-    //         >
-    //           Medusa Store
-    //         </LocalizedClientLink>
-    //       </div>
-    //       <div className="text-small-regular gap-10 md:gap-x-16 grid grid-cols-2 sm:grid-cols-3">
-    //         {categories.slice(0, 6).map((c) => (
-    //           <div key={c.id} className="flex flex-col gap-y-2">
-    //             <span className="txt-small-plus txt-ui-fg-base">Categories</span>
-    //             <ul className="grid grid-cols-1 gap-2">
-    //               <li>
-    //                 <LocalizedClientLink
-    //                   href={`/categories/${c.handle}`}
-    //                   data-testid="category-link"
-    //                   className="hover:text-ui-fg-base"
-    //                 >
-    //                   {c.name}
-    //                 </LocalizedClientLink>
-    //               </li>
-    //             </ul>
-    //           </div>
-    //         ))}
-    //         {collections.slice(0, 6).map((c) => (
-    //           <div key={c.id} className="flex flex-col gap-y-2">
-    //             <span className="txt-small-plus txt-ui-fg-base">Collections</span>
-    //             <ul className="grid grid-cols-1 gap-2 text-ui-fg-subtle txt-small">
-    //               <li>
-    //                 <LocalizedClientLink
-    //                   href={`/collections/${c.handle}`}
-    //                   className="hover:text-ui-fg-base"
-    //                 >
-    //                   {c.title}
-    //                 </LocalizedClientLink>
-    //               </li>
-    //             </ul>
-    //           </div>
-    //         ))}
-    //       </div>
-    //     </div>
-    //     <div className="flex w-full mb-16 justify-between text-ui-fg-muted">
-    //       <p className="txt-compact-small">
-    //         © {new Date().getFullYear()} Medusa Store. All rights reserved.
-    //       </p>
-    //       <MedusaCTA />
-    //     </div>
-    //   </div>
-    // </footer>
   )
 }

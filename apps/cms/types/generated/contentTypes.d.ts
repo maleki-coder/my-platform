@@ -609,9 +609,7 @@ export interface ApiGlobalFooterGlobalFooter extends Struct.SingleTypeSchema {
   attributes: {
     certificates: Schema.Attribute.Component<'footer.certificate', true>;
     columns: Schema.Attribute.Component<'footer.link-column', true>;
-    contactAddress: Schema.Attribute.String;
-    contactEmail: Schema.Attribute.String;
-    contactPhone: Schema.Attribute.String;
+    contactList: Schema.Attribute.Component<'footer.contact', true>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

@@ -16,15 +16,6 @@
       "component": "footer.link-column",
       "repeatable": true
     },
-    "contactPhone": {
-      "type": "string"
-    },
-    "contactEmail": {
-      "type": "string"
-    },
-    "contactAddress": {
-      "type": "string"
-    },
     "socials": {
       "type": "component",
       "component": "footer.social-link",
@@ -33,6 +24,11 @@
     "certificates": {
       "type": "component",
       "component": "footer.certificate",
+      "repeatable": true
+    },
+    "contactList": {
+      "type": "component",
+      "component": "footer.contact",
       "repeatable": true
     }
   }
