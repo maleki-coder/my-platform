@@ -24,16 +24,16 @@ export default async function Footer() {
       <div className="px-4 mx-auto w-full lg:px-8 xl:px-6 max-w-screen-2xl">
         <div className="px-4">
           {/* بخش هدر فوتر و دکمه بازگشت به بالا */}
-          <div className="flex w-full pt-16 lg:pt-20 pb-8">
-            <div className="flex justify-between h-12.5 md:w-45 w-32.5">
+          <div className="flex w-full justify-between items-center pt-16 lg:pt-20 pb-8">
+            <Image
+              src="https://www.technolife.com/image/static_logo_techno_new.svg"
+              alt={""}
+              width={120}
+              height={120}
+              className="bg-white h-fit"
+            />
+            <div className="flex items-center h-12.5 md:w-45 w-32.5">
               <ScrollToTopButton />
-              <Image
-                src="https://www.technolife.com/image/static_logo_techno_new.svg"
-                alt={""}
-                width={16}
-                height={16}
-                className="w-8 h-8 lg:w-4 lg:h-4"
-              />
             </div>
           </div>
 
@@ -85,7 +85,7 @@ export default async function Footer() {
 
           {/* بخش ۲: اطلاعات تماس با ما */}
           <div className="border-t border-white/20 pt-10 pb-8 text-white">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            <div className="flex flex-col md:flex-row justify-between items-start gap-8">
               <div className="flex flex-col gap-4">
                 <p className="text-lg font-medium">ارتباط با ما</p>
                 {data.contactList.map((contact, index) => (
@@ -101,6 +101,17 @@ export default async function Footer() {
                     >
                       {contact.email}
                     </a>
+                  </div>
+                ))}
+                {data.contactList.map((contact, index) => (
+                  <div
+                    key={index}
+                    className="flex flex-wrap gap-2 items-center"
+                  >
+                    <span className="text-sm font-medium">شماره تماس:</span>
+                    <span className="text-sm hover:underline">
+                      {contact.phone}
+                    </span>
                   </div>
                 ))}
               </div>

@@ -46,7 +46,7 @@ const CartFallback = () => (
 
 // Logo link component
 const LogoLink = () => (
-  <LocalizedClientLink href="/store">
+  <LocalizedClientLink href="/">
     <Thumbnail
       className="min-w-32 min-h-10"
       thumbnail={LOGO_URL}
