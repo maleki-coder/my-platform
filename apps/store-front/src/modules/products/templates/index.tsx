@@ -10,7 +10,8 @@ import SkeletonRelatedProducts from "@modules/skeletons/templates/skeleton-relat
 import { notFound } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
 
-import ProductActionsWrapper from "./product-actions-wrapper"
+import ProductActionsWrapper from "@modules/products/templates/product-actions-wrapper"
+import ProductReviews from "@modules/products/components/product-reviews"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
@@ -35,14 +36,14 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         className="content-container  flex flex-col small:flex-row small:items-start py-6 relative"
         data-testid="product-container"
       >
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-6">
+        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-75 w-full py-8 gap-y-6">
           <ProductInfo product={product} />
           <ProductTabs product={product} />
         </div>
         <div className="block w-full relative">
           <ImageGallery images={images} />
         </div>
-        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-[300px] w-full py-8 gap-y-12">
+        <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-75 w-full py-8 gap-y-12">
           <ProductOnboardingCta />
           <Suspense
             fallback={
@@ -57,6 +58,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           </Suspense>
         </div>
       </div>
+      <ProductReviews productId={product.id}/>
       <div
         className="content-container my-16 small:my-32"
         data-testid="related-products-container"

@@ -5,7 +5,8 @@ import {
 import {
     deleteCategoryImagesWorkflow,
 } from "../../../../../../workflows/delete-category-images"
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
+
 
 export const UpdateCategoryImagesSchema = z.object({
     updates: z.array(z.object({

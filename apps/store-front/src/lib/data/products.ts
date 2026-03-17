@@ -314,3 +314,34 @@ export async function getCustomFilteredProductsIds({
     return { product_ids: [], count: 0 }
   }
 }
+
+export async function submitProductReviewAction(
+  productId: string, 
+  rating: number, 
+  comment: string,
+  customer_id: string
+) {
+  try {
+    // ارسال درخواست از طریق Medusa SDK
+    await sdk.client.fetch(`/store/products/${productId}/reviews`, {
+      method: "POST",
+      body: {
+        rating,
+        comment,
+        customer_id
+      },
+    })
+
+    return { 
+      success: true, 
+      message: "نظر شما با موفقیت ثبت شد و پس از تایید مدیریت نمایش داده می‌شود." 
+    }
+  } catch (error: any) {
+    console.error("Server Action Error:", error)
+    return { 
+      success: false, 
+      error: error.message || "خطا در برقراری ارتباط با سرور. لطفا مجددا تلاش کنید." 
+    }
+  }
+}
+

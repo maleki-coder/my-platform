@@ -34,6 +34,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/product-media",
     },
     {
+      resolve: "./src/modules/product-reviews",
+    },
+    {
       resolve: "@medusajs/medusa/auth",
       dependencies: [
         Modules.CACHE,

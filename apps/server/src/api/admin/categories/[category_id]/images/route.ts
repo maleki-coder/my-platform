@@ -1,6 +1,6 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { createCategoryImagesWorkflow } from "../../../../../workflows/create-category-images"
-import { z } from "zod"
+import { z } from "@medusajs/framework/zod"
 
 export const CreateCategoryImagesSchema = z.object({
   images: z.array(
