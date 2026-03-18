@@ -81,3 +81,17 @@ export interface StrapiFooterResponse {
     }>
   }
 }
+
+export interface StrapiBlock {
+  id: number
+  __component: string
+  [key: string]: any // سایر فیلدهای داینامیک بسته به نوع کامپوننت
+}
+
+export interface HomepageActionResponse {
+  success: boolean
+  data?: {
+    blocks?: StrapiBlock[]
+  }
+  error?: string
+}

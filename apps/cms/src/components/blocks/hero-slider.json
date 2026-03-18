@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_blocks_hero_sliders",
+  "info": {
+    "displayName": "HeroSlider",
+    "icon": "bulletList"
+  },
+  "options": {},
+  "attributes": {
+    "hero_slider": {
+      "type": "component",
+      "component": "homepage.hero-slide",
+      "repeatable": true
+    }
+  },
+  "config": {}
+}

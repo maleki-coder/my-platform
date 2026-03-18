@@ -1,0 +1,36 @@
+{
+  "collectionName": "components_homepage_product_category_showcases",
+  "info": {
+    "displayName": "ProductCategoryShowcase",
+    "icon": "dashboard"
+  },
+  "options": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "category_handle": {
+      "type": "string",
+      "required": true
+    },
+    "limit": {
+      "type": "integer",
+      "default": 10
+    },
+    "layout": {
+      "type": "enumeration",
+      "required": false,
+      "default": "carousel",
+      "enum": [
+        "grid",
+        "carousel"
+      ]
+    },
+    "show_view_all": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "config": {}
+}

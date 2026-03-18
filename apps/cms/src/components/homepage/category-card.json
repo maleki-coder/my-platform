@@ -1,0 +1,30 @@
+{
+  "collectionName": "components_homepage_category_cards",
+  "info": {
+    "displayName": "CategoryCard",
+    "icon": "apps"
+  },
+  "options": {},
+  "attributes": {
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "handle": {
+      "type": "string",
+      "required": true
+    }
+  },
+  "config": {}
+}

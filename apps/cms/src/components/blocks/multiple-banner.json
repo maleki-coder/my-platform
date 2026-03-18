@@ -1,0 +1,18 @@
+{
+  "collectionName": "components_blocks_multiple_banners",
+  "info": {
+    "displayName": "MultipleBanner",
+    "icon": "dashboard"
+  },
+  "options": {},
+  "attributes": {
+    "banners": {
+      "type": "component",
+      "component": "homepage.hero-slide",
+      "repeatable": true,
+      "min": 1,
+      "max": 3
+    }
+  },
+  "config": {}
+}

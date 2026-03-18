@@ -1,5 +1,62 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
+export interface BlocksCategoryGrid extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_category_grids';
+  info: {
+    displayName: 'CategoryGrid';
+    icon: 'apps';
+  };
+  attributes: {
+    cards: Schema.Attribute.Component<'homepage.category-card', true>;
+    title: Schema.Attribute.String;
+  };
+}
+
+export interface BlocksHeroSlider extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_hero_sliders';
+  info: {
+    displayName: 'HeroSlider';
+    icon: 'bulletList';
+  };
+  attributes: {
+    hero_slider: Schema.Attribute.Component<'homepage.hero-slide', true>;
+  };
+}
+
+export interface BlocksMultipleBanner extends Struct.ComponentSchema {
+  collectionName: 'components_blocks_multiple_banners';
+  info: {
+    displayName: 'MultipleBanner';
+    icon: 'dashboard';
+  };
+  attributes: {
+    banners: Schema.Attribute.Component<'homepage.hero-slide', true> &
+      Schema.Attribute.SetMinMax<
+        {
+          max: 3;
+          min: 1;
+        },
+        number
+      >;
+  };
+}
+
+export interface BlocksProductCategoryShowcase extends Struct.ComponentSchema {
+  collectionName: 'components_homepage_product_category_showcases';
+  info: {
+    displayName: 'ProductCategoryShowcase';
+    icon: 'dashboard';
+  };
+  attributes: {
+    category_handle: Schema.Attribute.String & Schema.Attribute.Required;
+    layout: Schema.Attribute.Enumeration<['grid', 'carousel']> &
+      Schema.Attribute.DefaultTo<'carousel'>;
+    limit: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<10>;
+    show_view_all: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+  };
+}
+
 export interface FooterCertificate extends Struct.ComponentSchema {
   collectionName: 'components_footer_certificates';
   info: {
@@ -65,56 +122,35 @@ export interface FooterSocialLink extends Struct.ComponentSchema {
   };
 }
 
-export interface HomepageSlide extends Struct.ComponentSchema {
-  collectionName: 'components_homepage_slides';
+export interface HomepageCategoryCard extends Struct.ComponentSchema {
+  collectionName: 'components_homepage_category_cards';
   info: {
-    displayName: 'slide';
+    displayName: 'CategoryCard';
+    icon: 'apps';
   };
   attributes: {
-    image: Schema.Attribute.Media<'images' | 'files' | 'videos'> &
+    handle: Schema.Attribute.String & Schema.Attribute.Required;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'> &
       Schema.Attribute.Required;
-    isActive: Schema.Attribute.Boolean &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<true>;
-    linkUrl: Schema.Attribute.String & Schema.Attribute.Required;
-    order: Schema.Attribute.Integer;
-    subtitle: Schema.Attribute.String;
     title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
-export interface SharedMedia extends Struct.ComponentSchema {
-  collectionName: 'components_shared_media';
+export interface HomepageHeroSlide extends Struct.ComponentSchema {
+  collectionName: 'components_homepage_hero_slides';
   info: {
-    displayName: 'Media';
-    icon: 'file-video';
+    displayName: 'HeroSlide';
+    icon: 'apps';
   };
   attributes: {
-    file: Schema.Attribute.Media<'images' | 'files' | 'videos'>;
-  };
-}
-
-export interface SharedQuote extends Struct.ComponentSchema {
-  collectionName: 'components_shared_quotes';
-  info: {
-    displayName: 'Quote';
-    icon: 'indent';
-  };
-  attributes: {
-    body: Schema.Attribute.Text;
-    title: Schema.Attribute.String;
-  };
-}
-
-export interface SharedRichText extends Struct.ComponentSchema {
-  collectionName: 'components_shared_rich_texts';
-  info: {
-    description: '';
-    displayName: 'Rich text';
-    icon: 'align-justify';
-  };
-  attributes: {
-    body: Schema.Attribute.RichText;
+    image: Schema.Attribute.Media<'images' | 'files' | 'videos'> &
+      Schema.Attribute.Required;
+    is_active: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<true>;
+    link_url: Schema.Attribute.String & Schema.Attribute.Required;
+    order: Schema.Attribute.Integer;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
   };
 }
 
@@ -184,32 +220,21 @@ export interface SharedSeo extends Struct.ComponentSchema {
   };
 }
 
-export interface SharedSlider extends Struct.ComponentSchema {
-  collectionName: 'components_shared_sliders';
-  info: {
-    description: '';
-    displayName: 'Slider';
-    icon: 'address-book';
-  };
-  attributes: {
-    files: Schema.Attribute.Media<'images', true>;
-  };
-}
-
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
+      'blocks.category-grid': BlocksCategoryGrid;
+      'blocks.hero-slider': BlocksHeroSlider;
+      'blocks.multiple-banner': BlocksMultipleBanner;
+      'blocks.product-category-showcase': BlocksProductCategoryShowcase;
       'footer.certificate': FooterCertificate;
       'footer.contact': FooterContact;
       'footer.link-column': FooterLinkColumn;
       'footer.link-item': FooterLinkItem;
       'footer.social-link': FooterSocialLink;
-      'homepage.slide': HomepageSlide;
-      'shared.media': SharedMedia;
-      'shared.quote': SharedQuote;
-      'shared.rich-text': SharedRichText;
+      'homepage.category-card': HomepageCategoryCard;
+      'homepage.hero-slide': HomepageHeroSlide;
       'shared.seo': SharedSeo;
-      'shared.slider': SharedSlider;
     }
   }
 }

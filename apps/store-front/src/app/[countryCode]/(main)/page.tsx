@@ -1,11 +1,9 @@
 import { Metadata } from "next"
-
-// import FeaturedProducts from "@modules/home/components/featured-products"
-// import Hero from "@modules/home/components/hero"
 import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 import { HomepageSlider } from "@modules/home/slider"
-import { FirstHeroCategory } from "@modules/home/first-hero-category"
+import { fetchHomePageContent } from "@lib/data/homepage"
+// import { FirstHeroCategory } from "@modules/home/first-hero-category"
 
 export const metadata: Metadata = {
   title: "Medusa Next.js Starter Template",
@@ -25,7 +23,7 @@ export default async function Home(props: {
   const { collections } = await listCollections({
     fields: "id, handle, title",
   })
-
+  const response = await fetchHomePageContent();
   if (!collections || !region) {
     return null
   }
@@ -33,7 +31,7 @@ export default async function Home(props: {
   return (
     <div className="flex flex-col gap-10">
       <HomepageSlider />
-      <FirstHeroCategory />
+      {/* <FirstHeroCategory /> */}
       {/* <Hero />
       <div className="py-12">
         <ul className="flex flex-col gap-x-6">

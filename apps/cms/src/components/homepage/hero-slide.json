@@ -1,7 +1,8 @@
 {
-  "collectionName": "components_homepage_slides",
+  "collectionName": "components_homepage_hero_slides",
   "info": {
-    "displayName": "slide"
+    "displayName": "HeroSlide",
+    "icon": "apps"
   },
   "options": {},
   "attributes": {
@@ -19,14 +20,11 @@
       "type": "string",
       "required": true
     },
-    "subtitle": {
-      "type": "string"
-    },
-    "linkUrl": {
+    "link_url": {
       "type": "string",
       "required": true
     },
-    "isActive": {
+    "is_active": {
       "type": "boolean",
       "required": true,
       "default": true

@@ -11,10 +11,14 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "slides": {
-      "type": "component",
-      "component": "homepage.slide",
-      "repeatable": true
+    "blocks": {
+      "type": "dynamiczone",
+      "components": [
+        "blocks.product-category-showcase",
+        "blocks.hero-slider",
+        "blocks.category-grid",
+        "blocks.multiple-banner"
+      ]
     }
   }
 }

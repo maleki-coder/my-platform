@@ -1,0 +1,19 @@
+{
+  "collectionName": "components_blocks_category_grids",
+  "info": {
+    "displayName": "CategoryGrid",
+    "icon": "apps"
+  },
+  "options": {},
+  "attributes": {
+    "cards": {
+      "type": "component",
+      "component": "homepage.category-card",
+      "repeatable": true
+    },
+    "title": {
+      "type": "string"
+    }
+  },
+  "config": {}
+}
