@@ -12,7 +12,7 @@ type Props = {
   params: Promise<{ handle: string; countryCode: string }>
   searchParams: Promise<{
     page?: string
-    sortBy?: SortOptions
+    order?: SortOptions
   }>
 }
 
@@ -70,7 +70,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function CollectionPage(props: Props) {
   const searchParams = await props.searchParams
   const params = await props.params
-  const { sortBy, page } = searchParams
+  const { order, page } = searchParams
   const { isMobile } = await getDeviceFromCookie()
   const collection = await getCollectionByHandle(params.handle).then(
     (collection: StoreCollection) => collection
@@ -85,7 +85,7 @@ export default async function CollectionPage(props: Props) {
     <CollectionTemplate
       collection={collection}
       page={page}
-      sortBy={sortBy}
+      order={order}
       countryCode={params.countryCode}
       isMobile={isMobile}
     />

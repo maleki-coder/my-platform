@@ -1,35 +1,24 @@
 import { notFound } from "next/navigation"
 import { Suspense } from "react"
 import SkeletonProductGrid from "@modules/skeletons/templates/skeleton-product-grid"
-import PaginatedProducts from "@modules/categories/components/category-paginated-products"
+import CategoryPaginatedProducts from "@modules/categories/components/category-paginated-products"
 import BreadCrumbs from "@modules/common/components/bread-crumbs"
 import { getDeviceFromCookie } from "@lib/util/get-deivce-from-cookie"
 import CategorySidebarWrapper from "@modules/categories/components/category-filter-sidebar-wrapper"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
 import ChildCategpryChips from "@modules/common/components/child-category-chips"
+import { ProductSearchParams } from "@lib/types"
 
 export default async function CategoryTemplate({
   categoryHandle,
-  sortBy,
-  page,
   countryCode,
-  optionsFilters,
-  inStock, 
-  minPrice,
-  maxPrice,
+  queryParams
 }: {
   categoryHandle: string[]
-  sortBy?: SortOptions
-  page?: string
   countryCode: string
-  optionsFilters: Record<string, string[]>
-  inStock: boolean 
-  minPrice: number 
-  maxPrice: number
+  queryParams: ProductSearchParams
 }) {
   const { isMobile } = await getDeviceFromCookie()
-  const pageNumber = page ? parseInt(page) : 1
-  const sort = sortBy || "created_at"
 
   if (!categoryHandle || !countryCode) notFound()
 
@@ -44,7 +33,7 @@ export default async function CategoryTemplate({
         <CategorySidebarWrapper
           categoryHandle={categoryHandle}
           isMobile={isMobile}
-          sortBy={sort}
+          order={queryParams.order as SortOptions}
         >
           <Suspense
             fallback={
@@ -54,17 +43,12 @@ export default async function CategoryTemplate({
               />
             }
           >
-            <PaginatedProducts
-              sortBy={sort}
-              inStock={inStock}
-              minPrice={minPrice}
-              maxPrice={maxPrice}
-              optionsFilters={optionsFilters}
-              page={pageNumber}
+            <CategoryPaginatedProducts
               categoryHandle={categoryHandle}
               countryCode={countryCode}
-              isMobile={isMobile}
-            />
+              queryParams={queryParams}
+              isMobile={isMobile} 
+              />
           </Suspense>
         </CategorySidebarWrapper>
       </div>

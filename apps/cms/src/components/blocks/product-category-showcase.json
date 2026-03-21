@@ -30,6 +30,17 @@
     "show_view_all": {
       "type": "boolean",
       "default": true
+    },
+    "type": {
+      "type": "enumeration",
+      "required": true,
+      "enum": [
+        "category",
+        "collection"
+      ]
+    },
+    "search_param": {
+      "type": "string"
     }
   },
   "config": {}

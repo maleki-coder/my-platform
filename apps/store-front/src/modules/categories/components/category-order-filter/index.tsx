@@ -18,7 +18,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 interface CategoryOrderFilterProps {
   className?: string
   isMobile: boolean
-  sortBy: SortOptions
+  order: SortOptions
 }
 
 export type SortOptions = "price_asc" | "price_desc" | "created_at"
@@ -44,9 +44,9 @@ export const sortOptions: Record<string, any> = {
 const CategoryOrderFilter: React.FC<CategoryOrderFilterProps> = ({
   className,
   isMobile,
-  sortBy,
+  order,
 }) => {
-  const [selectedOrder, setSelectedOrder] = useState<string>(sortBy)
+  const [selectedOrder, setSelectedOrder] = useState<string>(order)
   const [sheetOpen, setSheetOpen] = useState(false)
   const { openMobile, setOpenMobile } = useSidebar()
   const router = useRouter()
@@ -55,7 +55,7 @@ const CategoryOrderFilter: React.FC<CategoryOrderFilterProps> = ({
   const handleOrderSelect = (key: string) => {
     setSelectedOrder(key)
     setSheetOpen(false)
-    setQueryParams("sortBy", key)
+    setQueryParams("order", key)
     // You can add additional logic here for order change
   }
 

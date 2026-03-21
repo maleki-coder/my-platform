@@ -52,8 +52,11 @@ export interface BlocksProductCategoryShowcase extends Struct.ComponentSchema {
     layout: Schema.Attribute.Enumeration<['grid', 'carousel']> &
       Schema.Attribute.DefaultTo<'carousel'>;
     limit: Schema.Attribute.Integer & Schema.Attribute.DefaultTo<10>;
+    search_param: Schema.Attribute.String;
     show_view_all: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<true>;
     title: Schema.Attribute.String & Schema.Attribute.Required;
+    type: Schema.Attribute.Enumeration<['category', 'collection']> &
+      Schema.Attribute.Required;
   };
 }
 

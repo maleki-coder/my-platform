@@ -105,13 +105,13 @@ export default async function ProductPage(props: Props) {
 
   const selectedVariantId = searchParams.v_id
 
-  if (!region) {
+  if (!region || !params.handle) {
     notFound()
   }
 
   const pricedProduct = await listProducts({
     countryCode: params.countryCode,
-    queryParams: { handle: params.handle },
+    queryParams: { handle: params.handle as string },
   }).then(({ response }) => response.products[0])
 
   const images = getImagesForVariant(pricedProduct, selectedVariantId)

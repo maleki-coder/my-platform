@@ -1,104 +1,36 @@
 import { getCategoryByHandle } from "@lib/data/categories"
 import { listProductsWithSort } from "@lib/data/products"
-import { getRegion } from "@lib/data/regions"
-import { SortOptions } from "@modules/categories/components/category-order-filter"
 import MobileProductPreview from "@modules/products/components/mobile-product-preview"
 import ProductPreview from "@modules/products/components/product-preview"
 import { Pagination } from "@modules/categories/components/category-product-pagination"
 import NoProductFound from "@modules/categories/components/no-product-found"
+import { CategoryPaginatedProductsProps } from "@lib/types"
 
-const PRODUCT_LIMIT = 12
-
-type PaginatedProductsParams = {
-  limit: number
-  collection_id?: string[]
-  category_id?: string
-  id?: string[]
-  order?: string
-  in_stock?: string
-  min_price?: number
-  max_price?: number
-}
-
-export default async function PaginatedProducts({
-  sortBy,
-  page,
-  collectionId,
-  productsIds,
-  countryCode,
-  isMobile,
-  optionsFilters,
+export default async function CategoryPaginatedProducts({
   categoryHandle,
-  inStock,
-  minPrice,
-  maxPrice,
-}: {
-  sortBy?: SortOptions
-  page: number
-  collectionId?: string
-  productsIds?: string[]
-  countryCode: string
-  isMobile: boolean
-  optionsFilters: Record<string, string[]>
-  categoryHandle: string[]
-  inStock?: boolean
-  minPrice?: number
-  maxPrice?: number
-}) {
-  const productCategory = await getCategoryByHandle(categoryHandle)
-  const queryParams: PaginatedProductsParams = {
-    limit: PRODUCT_LIMIT,
-  }
+  countryCode,
+  queryParams,
+  isMobile
+}: CategoryPaginatedProductsProps) {
 
-  if (collectionId) {
-    queryParams["collection_id"] = [collectionId]
-  }
+  const productCategory = await getCategoryByHandle(categoryHandle)
 
   if (productCategory?.id) {
     queryParams.category_id = productCategory.id
   }
 
-  if (productsIds) {
-    queryParams["id"] = productsIds
-  }
-
-  if (sortBy === "created_at") {
-    queryParams["order"] = "created_at"
-  }
-
-  if (inStock === true) {
-    queryParams["in_stock"] = String(inStock)
-  }
-
-  if (minPrice) {
-    queryParams["min_price"] = minPrice
-  }
-
-  if (maxPrice) {
-    queryParams["max_price"] = maxPrice
-  }
-
-  const region = await getRegion(countryCode)
-
-  if (!region) {
-    return null
-  }
-
-  let {
-    response: { products, count },
+  const {
+    response: { products },
+    page,
+    totalPages,
   } = await listProductsWithSort({
-    page: page,
     queryParams,
-    sortBy,
-    countryCode,
-    optionsFilters,
+    countryCode
   })
 
   if (!products || products.length === 0) {
     return <NoProductFound />
   }
-
-  const totalPages = Math.ceil(count / PRODUCT_LIMIT)
 
   return (
     <>

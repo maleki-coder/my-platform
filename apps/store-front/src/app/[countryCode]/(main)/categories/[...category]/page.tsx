@@ -3,13 +3,15 @@ import { notFound } from "next/navigation"
 
 import { getCategoryByHandle, listCategories } from "@lib/data/categories"
 import { listRegions } from "@lib/data/regions"
-import { StoreRegion } from "@medusajs/types"
+import { HttpTypes, StoreRegion } from "@medusajs/types"
 import CategoryTemplate from "@modules/categories/templates"
-import { SortOptions } from "@modules/categories/components/category-order-filter"
+import { BaseProductOrderParams, BaseProductSearchParams, OptionsProductSearchParams, ProductSearchParams, StandardProductQueryParams } from "@lib/types"
 
 type Props = {
   params: Promise<{ category: string[]; countryCode: string }>
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+  searchParams: Promise<
+    ProductSearchParams
+  >
 }
 
 export async function generateStaticParams() {
@@ -61,69 +63,71 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function CategoryPage(props: Props) {
-  const searchParams = await props.searchParams
-  const params = await props.params
+  const queryParams = await props.searchParams
+  const urlParams = await props.params
 
-  // بررسی وجود دسته‌بندی پیش از هر پردازشی
-  if (!params.category) {
+  if (!urlParams.category || !urlParams.countryCode) {
     notFound()
   }
 
-  const sortBy = searchParams.sortBy as SortOptions // فرض بر این است که SortOptions تایپ شده است
-  const page = searchParams.page ? parseInt(searchParams.page as string) : 1
+  // const standardParams = [
+  //   "order",
+  //   "page",
+  //   "limit",
+  //   "in_stock",
+  //   "min_price",
+  //   "max_price",
+  // ]
 
-  // ۱. اضافه کردن فیلترهای جدید به لیست پارامترهای سیستمی (رزرو شده)
-  // این کار مانع از این می‌شود که کلیدهای قیمت و موجودی وارد optionsFilters (مثل رنگ و سایز) شوند
-  const standardParams = [
-    "sortBy",
-    "page",
-    "countryCode",
-    "in_stock",
-    "min_price",
-    "max_price",
-  ]
-  
-  const optionsFilters: Record<string, string[]> = {}
+  // const optionsFilters: OptionsProductSearchParams = {}
 
-  // ۲. استخراج فیلترهای گزینه‌ای (رنگ، سایز و ...)
-  Object.keys(searchParams).forEach((key) => {
-    if (!standardParams.includes(key) && searchParams[key]) {
-      const paramValue = searchParams[key]
+  // // extract option filters from query params
+  // Object.keys(queryParams).forEach((key) => {
+  //   if (!standardParams.includes(key) && queryParams[key]) {
+  //     const paramValue = queryParams[key] as any;
 
-      if (typeof paramValue === "string") {
-        optionsFilters[key] = paramValue.split(",")
-      } else if (Array.isArray(paramValue)) {
-        optionsFilters[key] = paramValue.flatMap((v) => v.split(","))
-      }
-    }
-  })
+  //     if (typeof paramValue === "string") {
+  //       optionsFilters[key] = paramValue.split(",")
+  //     } else if (Array.isArray(paramValue)) {
+  //       optionsFilters[key] = paramValue.flatMap((v) => v.split(","))
+  //     }
+  //   }
+  // })
+  // // for saftey reason
+  // const inStock = queryParams.in_stock === "true"
+  // const minPriceStr = queryParams.min_price as string | undefined
+  // const minPrice =
+  //   minPriceStr && !isNaN(parseInt(minPriceStr, 10))
+  //     ? parseInt(minPriceStr, 10)
+  //     : undefined
 
-  // ۳. استخراج فیلتر موجودی (تبدیل مستقیم به Boolean)
-  const inStock = searchParams.in_stock === "true"
-
-  // ۴. استخراج و تبدیل فیلترهای قیمت به Number (همراه با اعتبارسنجی)
-  const minPriceStr = searchParams.min_price as string | undefined
-  const minPrice = minPriceStr && !isNaN(parseInt(minPriceStr, 10))
-    ? parseInt(minPriceStr, 10)
-    : undefined
-
-  const maxPriceStr = searchParams.max_price as string | undefined
-  const maxPrice = maxPriceStr && !isNaN(parseInt(maxPriceStr, 10))
-    ? parseInt(maxPriceStr, 10)
-    : undefined
-
-  // ۵. ارسال تمام داده‌های پردازش‌شده به CategoryTemplate
+  // const maxPriceStr = queryParams.max_price as string | undefined
+  // const maxPrice =
+  //   maxPriceStr && !isNaN(parseInt(maxPriceStr, 10))
+  //     ? parseInt(maxPriceStr, 10)
+  //     : undefined
+  // // setting standard filters
+  // let standardFilters: ProductSearchParams = {}
+  // standardFilters = {
+  //   order: queryParams.order,
+  //   page: queryParams.page! || 1,
+  //   limit: queryParams.limit! || 100,
+  //   min_price: minPrice!,
+  //   max_price: maxPrice!,
+  // }
+  // if (inStock) {
+  //   standardFilters = {
+  //     in_stock: String(inStock),
+  //     ...standardFilters,
+  //   }
+  // }
   return (
     <CategoryTemplate
-      categoryHandle={params.category}
-      sortBy={sortBy}
-      page={String(page)}
-      optionsFilters={optionsFilters}
-      countryCode={params.countryCode}
-      // پاس دادن فیلترهای جدید به عنوان Props
-      inStock={inStock}
-      minPrice={minPrice!}
-      maxPrice={maxPrice!}
+      categoryHandle={urlParams.category}
+      countryCode={urlParams.countryCode}
+      queryParams={queryParams}
+      // standardFilters={standardFilters}
+      // optionsFilters={optionsFilters}
     />
   )
 }

@@ -13,7 +13,7 @@ import { CategoryFilterSidebarSkeleton } from "@modules/skeletons/components/ske
 
 interface CategorySidebarWrapperProps {
   isMobile: boolean
-  sortBy: SortOptions
+  order: SortOptions
   categoryHandle: string[]
   children: React.ReactNode
 }
@@ -32,7 +32,7 @@ async function SidebarDataFetcher({
 export default function CategorySidebarWrapper({
   isMobile,
   children,
-  sortBy,
+  order,
   categoryHandle,
 }: CategorySidebarWrapperProps) {
   return (
@@ -45,7 +45,7 @@ export default function CategorySidebarWrapper({
         <CategoryOrderFilter
           className="h-12"
           isMobile={isMobile}
-          sortBy={sortBy}
+          order={order}
         />
         {children}
       </div>

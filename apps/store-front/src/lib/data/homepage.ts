@@ -15,7 +15,7 @@ export const fetchHomePageContent = cache(
           next: {
             ...cacheTagsConfig,
             revalidate: 1,
-          },
+          },  
         }
       )
 

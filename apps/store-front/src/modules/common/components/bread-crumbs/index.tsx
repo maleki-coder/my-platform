@@ -2,6 +2,7 @@ import { HttpTypes } from "@medusajs/types"
 import React from "react"
 import Link from "next/link"
 import { getCategoryByHandle, listCategories } from "@lib/data/categories"
+import { notFound } from "next/navigation"
 
 type BreadCrumbsProps = {
   categoryHandle: string[]
@@ -12,8 +13,9 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
   categoryHandle,
   "data-testid": dataTestId,
 }) => {
-  const productCategory = await getCategoryByHandle(categoryHandle);
-  const categories = await listCategories();
+  const productCategory = await getCategoryByHandle(categoryHandle)
+  if (!productCategory) notFound()
+  const categories = await listCategories()
   // Create a lookup map for quick category access by ID
   const createCategoryMap = (cats: any[]): Map<string, any> => {
     const map = new Map()
@@ -72,9 +74,7 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
         </li>
 
         {/* Only add separator if there are categories */}
-        {breadcrumbTrail.length > 0 && (
-          <li className="text-blue-300">/</li>
-        )}
+        {breadcrumbTrail.length > 0 && <li className="text-blue-300">/</li>}
 
         {/* Dynamic category breadcrumbs */}
         {breadcrumbTrail.map((cat, index) => {

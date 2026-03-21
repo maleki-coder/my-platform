@@ -1,9 +1,9 @@
 import { Metadata } from "next"
-import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
-import { HomepageSlider } from "@modules/home/slider"
 import { fetchHomePageContent } from "@lib/data/homepage"
-// import { FirstHeroCategory } from "@modules/home/first-hero-category"
+import { CategoryGridBlock } from "@modules/home/components/category-grid-block"
+import { AllStrapiBlocks } from "types/global"
+import ProductCategoryShowcaseBlock from "@modules/home/components/product-category-showcase-block"
 
 export const metadata: Metadata = {
   title: "Medusa Next.js Starter Template",
@@ -20,25 +20,23 @@ export default async function Home(props: {
 
   const region = await getRegion(countryCode)
 
-  const { collections } = await listCollections({
-    fields: "id, handle, title",
-  })
-  const response = await fetchHomePageContent();
-  if (!collections || !region) {
-    return null
+  const renderBlock = (block: AllStrapiBlocks) => {
+  switch (block.__component) {
+    case "blocks.category-grid":
+      return <CategoryGridBlock key={block.__component} data={block} />;
+    case "blocks.product-category-showcase":
+      return <ProductCategoryShowcaseBlock key={block.__component} data={block} countryCode={countryCode} />;
+    default:
+      return null;
   }
+}
+
+  const response = await fetchHomePageContent()
+  const blocks = response?.homepage?.blocks as AllStrapiBlocks[]
 
   return (
-    <div className="flex flex-col gap-10">
-      <HomepageSlider />
-      {/* <FirstHeroCategory /> */}
-      {/* <Hero />
-      <div className="py-12">
-        <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections} region={region} />
-        </ul>
-      </div> */}
-      {/* <div>this is just a test that every thing is working fine</div> */}
+    <div className="flex flex-col px-4 mx-auto w-full lg:px-4 2xl:px-8 max-w-screen-2xl">
+      {blocks?.map((block) => renderBlock(block))}
     </div>
   )
 }

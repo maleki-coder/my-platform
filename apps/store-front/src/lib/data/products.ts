@@ -4,87 +4,62 @@ import { sdk } from "@lib/config"
 import { sortProducts } from "@lib/util/sort-products"
 import { HttpTypes } from "@medusajs/types"
 import { getAuthHeaders, getCacheOptions } from "./cookies"
-import { getRegion, retrieveRegion } from "./regions"
+import { getRegion } from "./regions"
 import { SortOptions } from "@modules/categories/components/category-order-filter"
-import { CustomFilterParams } from "types/global"
-
-export type SelectedFilters = Record<string, string[]>
+import {
+  ListProductsProps,
+  OptionsProductSearchParams,
+  PaginatedProductResponse,
+  ProductSearchParams,
+} from "@lib/types"
+import { extractOptionParams } from "@lib/util/extractOptionsParams"
 
 export const listProducts = async ({
-  pageParam = 1,
-  queryParams,
   countryCode,
-  regionId,
-  optionsFilters,
-}: {
-  pageParam?: number
-  queryParams?: HttpTypes.FindParams &
-    HttpTypes.StoreProductListParams &
-    Record<string, any>
-  countryCode?: string
-  regionId?: string
-  optionsFilters?: SelectedFilters
-}): Promise<{
-  response: { products: HttpTypes.StoreProduct[]; count: number }
-  nextPage: number | null
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductListParams
-}> => {
-  if (!countryCode && !regionId) {
-    throw new Error("Country code or region ID is required")
-  }
-
-  const { min_price, max_price, in_stock, ...medusaParams } = queryParams || {}
-
-  // const params = queryParams || {}
-  const limit = medusaParams.limit || 12
-  const _pageParam = Math.max(pageParam, 1)
-  const offset = _pageParam === 1 ? 0 : (_pageParam - 1) * limit
-
-  let totalFilteredCount: number | undefined = undefined
-  const hasCustomFilters =
-    (optionsFilters && Object.keys(optionsFilters).length > 0) ||
-    min_price !== undefined ||
-    max_price !== undefined ||
-    in_stock !== undefined
-
-  if (hasCustomFilters) {
-    const categoryId = medusaParams.category_id
-      ? (medusaParams.category_id as string)
-      : undefined
-
-    // ارسال تمامی فیلترهای سفارشی به متد بک‌اند شما
-    const filteredData = await getCustomFilteredProductsIds({
-      categoryId,
-      optionsFilters: (optionsFilters || {}) as Record<string, string[]>,
-      limit, // استفاده از متغیر محاسبه شده‌ی بالا
-      offset, // استفاده از متغیر محاسبه شده‌ی بالا
-      minPrice: min_price ? parseInt(min_price as string) : undefined,
-      maxPrice: max_price ? parseInt(max_price as string) : undefined,
-      inStock: in_stock,
-    })
-
-    // اگر فیلتر اعمال شد اما هیچ محصولی پیدا نشد، سریعاً آرایه خالی برمی‌گردانیم
-    if (filteredData.product_ids.length === 0) {
-      return {
-        response: { products: [], count: 0 },
-        nextPage: null,
-      }
-    }
-
-    // قرار دادن آیدی‌های فیلتر شده در آبجکت استاندارد مدوسا
-    medusaParams.id = filteredData.product_ids
-    totalFilteredCount = filteredData.count
-  }
-
+  queryParams,
+}: ListProductsProps): Promise<PaginatedProductResponse> => {
   let region: HttpTypes.StoreRegion | undefined | null
+
   if (countryCode) {
     region = await getRegion(countryCode)
-  } else {
-    region = await retrieveRegion(regionId!)
+  }
+  const emptyResponse: PaginatedProductResponse = {
+    response: { products: [], count: 0 },
+    page: 1,
+    limit: 20,
+    totalPages: 0,
+    nextPage: null,
+    queryParams,
+  }
+  if (!region || !countryCode) {
+    return emptyResponse
   }
 
-  if (!region) {
-    return { response: { products: [], count: 0 }, nextPage: null }
+  const optionsFilters = extractOptionParams(queryParams)
+  const page = Number(queryParams.page) || 1
+  const limit = Number(queryParams.limit) || 20
+  const offset = (page - 1) * limit
+  let totalFilteredCount: number | undefined = undefined
+  let product_ids: Array<string> = []
+  const hasCustomFilters =
+    (optionsFilters && Object.keys(optionsFilters).length > 0) ||
+    queryParams.min_price !== undefined ||
+    queryParams.max_price !== undefined ||
+    queryParams.in_stock !== undefined
+  if (hasCustomFilters) {
+    const filteredData = await getCustomFilteredProductsIds({
+      category_id: queryParams.category_id!,
+      optionsFilters: optionsFilters!,
+      queryParams,
+      offset,
+    })
+
+    if (filteredData.product_ids.length === 0) {
+      return emptyResponse
+    }
+
+    product_ids = filteredData.product_ids
+    totalFilteredCount = filteredData.count
   }
 
   const headers = { ...(await getAuthHeaders()) }
@@ -99,9 +74,11 @@ export const listProducts = async ({
           limit,
           offset,
           region_id: region?.id,
+          handle: queryParams.handle,
           fields:
             "*variants.calculated_price,+variants.inventory_quantity,*variants.images,+metadata,+tags",
-          ...medusaParams,
+          category_id: queryParams.category_id,
+          id: product_ids,
         },
         headers,
         next,
@@ -109,14 +86,12 @@ export const listProducts = async ({
       }
     )
     .then(async ({ products, count }) => {
-      // ۱. استخراج تمام Variant ID ها از محصولات فچ شده
       const variantIds = products
         .flatMap((p) => p.variants?.map((v) => v.id))
         .filter(Boolean) as string[]
 
       if (variantIds.length > 0) {
         try {
-          // ۲. درخواست به API سفارشی بک‌اند برای دریافت تاریخ‌های تخفیف
           const { discounts } = await sdk.client.fetch<{
             discounts: Record<string, { starts_at: string; ends_at: string }>
           }>(`/store/discounts`, {
@@ -125,11 +100,9 @@ export const listProducts = async ({
             headers,
           })
 
-          // ۳. تزریق (Inject) تاریخ‌ها به داخل داده‌های محصول
           products.forEach((product) => {
             product.variants?.forEach((variant) => {
               if (discounts[variant.id]) {
-                // اضافه کردن پراپرتی‌های کاستوم به آبجکت واریانت
                 ;(variant as any).discount_starts_at =
                   discounts[variant.id].starts_at
                 ;(variant as any).discount_ends_at =
@@ -139,81 +112,57 @@ export const listProducts = async ({
           })
         } catch (error) {
           console.error("Failed to fetch custom discount dates:", error)
-          // در صورت خطا، فرآیند را متوقف نمی‌کنیم تا محصولات همچنان نمایش داده شوند
         }
       }
       const finalCount =
         totalFilteredCount !== undefined ? totalFilteredCount : count
-      const nextPage = finalCount > offset + limit ? pageParam + 1 : null
+      const totalPages = Math.ceil(finalCount / limit)
+      const nextPage = page < totalPages ? page + 1 : null
 
       return {
         response: {
           products,
           count: finalCount,
         },
-        nextPage: nextPage,
+        page,
+        limit,
+        totalPages,
+        nextPage,
         queryParams,
-    }
+      }
     })
     .catch((error) => {
       console.error("Error fetching standard products:", error)
-      return {
-        response: { products: [], count: 0 },
-        nextPage: null,
-      }
+      return emptyResponse
     })
 }
 
 /**
- * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
+ * This will fetch 100 products to the Next.js cache and sort them based on the order by parameter.
  * It will then return the paginated products based on the page and limit parameters.
  */
 export const listProductsWithSort = async ({
-  page = 0,
   queryParams,
-  sortBy = "created_at",
   countryCode,
-  optionsFilters,
 }: {
-  page?: number
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-  sortBy?: SortOptions
-  optionsFilters?: Record<string, string[]>
+  queryParams: ProductSearchParams
   countryCode: string
-}): Promise<{
-  response: { products: HttpTypes.StoreProduct[]; count: number }
-  nextPage: number | null
-  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
-}> => {
-  const limit = queryParams?.limit || 12
-
-  const {
-    response: { products, count },
-  } = await listProducts({
-    pageParam: 0,
-    queryParams: {
-      ...queryParams,
-      limit: limit,
-    },
+}): Promise<PaginatedProductResponse> => {
+  const result = await listProducts({
+    queryParams,
     countryCode,
-    optionsFilters,
   })
 
-  const sortedProducts = sortProducts(products, sortBy)
-
-  const pageParam = (page - 1) * limit
-
-  const nextPage = count > pageParam + limit ? pageParam + limit : null
-
-  const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit)
-
+  const sortedProducts = sortProducts(
+    result.response.products,
+    queryParams.order as SortOptions
+  )
   return {
+    ...result,
     response: {
-      products: paginatedProducts,
-      count,
+      ...result.response,
+      products: sortedProducts,
     },
-    nextPage,
-    queryParams,
   }
 }
 
@@ -250,57 +199,58 @@ export const fetchVariantInventory = async ({
 }
 
 export async function getCustomFilteredProductsIds({
-  categoryId,
+  category_id,
+  queryParams,
   optionsFilters,
-  inStock,
-  minPrice,
-  maxPrice,
-  limit = 100,
-  offset = 0,
-}: CustomFilterParams): Promise<{ product_ids: string[]; count: number }> {
+  offset,
+}: {
+  category_id: string | string[]
+  queryParams: ProductSearchParams
+  optionsFilters: OptionsProductSearchParams
+  offset: number
+}): Promise<{ product_ids: string[]; count: number }> {
   try {
-    const queryParams = new URLSearchParams({
-      limit: limit.toString(),
-      offset: offset.toString(),
-    })
+    const searchParams = new URLSearchParams()
 
-    // ۲. اضافه کردن شناسه دسته‌بندی (در صورت وجود)
-    if (categoryId) {
-      queryParams.append("category_id", categoryId)
-    }
-
-    // ۳. پردازش و اضافه کردن فیلترهای گزینه‌ای (همان لاجیک قبلی شما)
     if (optionsFilters && Object.keys(optionsFilters).length > 0) {
       const filterValues = Object.values(optionsFilters)
         .flat()
         .filter(Boolean)
         .join(",")
       if (filterValues) {
-        queryParams.append("options", filterValues)
+        searchParams.append("options", filterValues)
       }
     }
-
-    // ۴. اضافه کردن فیلترهای جدید (قیمت و موجودی)
-    if (inStock) {
-      queryParams.append("in_stock", "true")
+    if (category_id) {
+      const catIdString = Array.isArray(category_id)
+        ? category_id.join(",")
+        : category_id
+      searchParams.append("category_id", catIdString)
+    }
+    if (queryParams.in_stock) {
+      searchParams.append("in_stock", "true")
     }
 
-    if (minPrice !== undefined && !isNaN(minPrice)) {
-      queryParams.append("min_price", minPrice.toString())
+    if (queryParams.min_price !== undefined && !isNaN(queryParams.min_price)) {
+      searchParams.append("min_price", queryParams.min_price.toString())
     }
 
-    if (maxPrice !== undefined && !isNaN(maxPrice)) {
-      queryParams.append("max_price", maxPrice.toString())
+    if (queryParams.max_price !== undefined && !isNaN(queryParams.max_price)) {
+      searchParams.append("max_price", queryParams.max_price.toString())
     }
 
-    // ۵. ارسال درخواست به بک‌اند مدوسا از طریق SDK
+    if (offset) {
+      searchParams.append("offset", offset.toString())
+    }
+    if (queryParams.limit) {
+      searchParams.append("limit", queryParams.limit.toString())
+    }
+
     const response = await sdk.client.fetch<{
       product_ids: string[]
       count: number
-    }>(`/store/filtered-products?${queryParams.toString()}`, {
+    }>(`/store/filtered-products?${searchParams.toString()}`, {
       method: "GET",
-      // نکته مهم: برای فیلترهای پویا، کش شدن می‌تواند باعث نمایش داده‌های اشتباه شود
-      // ترکیب cache: 'no-store' برای اطمینان از دریافت داده‌های لحظه‌ای توصیه می‌شود
       cache: "no-store",
       next: { tags: ["products"] },
     })
@@ -316,32 +266,32 @@ export async function getCustomFilteredProductsIds({
 }
 
 export async function submitProductReviewAction(
-  productId: string, 
-  rating: number, 
+  productId: string,
+  rating: number,
   comment: string,
   customer_id: string
 ) {
   try {
-    // ارسال درخواست از طریق Medusa SDK
     await sdk.client.fetch(`/store/products/${productId}/reviews`, {
       method: "POST",
       body: {
         rating,
         comment,
-        customer_id
+        customer_id,
       },
     })
 
-    return { 
-      success: true, 
-      message: "نظر شما با موفقیت ثبت شد و پس از تایید مدیریت نمایش داده می‌شود." 
+    return {
+      success: true,
+      message:
+        "نظر شما با موفقیت ثبت شد و پس از تایید مدیریت نمایش داده می‌شود.",
     }
   } catch (error: any) {
     console.error("Server Action Error:", error)
-    return { 
-      success: false, 
-      error: error.message || "خطا در برقراری ارتباط با سرور. لطفا مجددا تلاش کنید." 
+    return {
+      success: false,
+      error:
+        error.message || "خطا در برقراری ارتباط با سرور. لطفا مجددا تلاش کنید.",
     }
   }
 }
-

@@ -41,15 +41,7 @@ export type CategoryOptionsResponse = {
   options: CategoryOption[]
 }
 
-export type CustomFilterParams = {
-  categoryId?: string
-  optionsFilters: Record<string, string[]>
-  inStock?: boolean
-  minPrice?: number
-  maxPrice?: number
-  limit?: number
-  offset?: number
-}
+
 export interface StrapiImage {
   alternativeText: string
   caption: string
@@ -82,16 +74,68 @@ export interface StrapiFooterResponse {
   }
 }
 
-export interface StrapiBlock {
-  id: number
+// blocks
+
+export interface BaseBlock {
+  id: string
   __component: string
-  [key: string]: any // سایر فیلدهای داینامیک بسته به نوع کامپوننت
 }
 
 export interface HomepageActionResponse {
   success: boolean
-  data?: {
-    blocks?: StrapiBlock[]
+  homepage?: {
+    blocks?: AllStrapiBlocks[]
   }
   error?: string
+}
+export interface CategoryGridBlockData extends BaseBlock {
+  __component: "blocks.category-grid"
+  id: string
+  title: string
+  handle: string
+  cards: Array<{
+    id: string
+    handle: string
+    title: string
+    image: BaseStrapiImage
+  }>
+}
+export enum ProductCategoryType {
+  CATEGORY = "category",
+  COLLECTION = "collection"
+}
+export interface ProductCategoryShowcaseData extends BaseBlock {
+  __component: "blocks.product-category-showcase"
+  category_handle: string[] | string
+  layout: LayoutType
+  limit: number
+  show_view_all: boolean
+  title: string
+  type: ProductCategoryType
+  search_param: string
+  countryCode?: string
+}
+interface BaseStrapiImage {
+  id: string
+  url: string
+  alternativeText: string
+}
+enum LayoutType {
+  CAROUSEL = "carousel",
+  GRID = "grid",
+}
+
+export type AllStrapiBlocks = CategoryGridBlockData | ProductCategoryShowcaseData
+
+export type BlockComponentProps<T> = {
+  data: T;
+};
+export type BlockComponent<T extends AllStrapiBlocks> = React.ComponentType<{
+  data: T
+}>
+
+export type BlockMap = {
+  [K in AllStrapiBlocks["__component"]]: BlockComponent<
+    Extract<AllStrapiBlocks, { __component: K }>
+  >
 }
