@@ -35,7 +35,7 @@ export default async function CategoryPaginatedProducts({
   return (
     <>
       <ul
-        className="w-full grid grid-cols-1 small:grid-cols-3 medium:grid-cols-3 gap-2"
+        className="w-full grid grid-cols-1 small:grid-cols-3 medium:grid-cols-3 gap-0 md:gap-2"
         data-testid="products-list"
       >
         {products.map((p) => {

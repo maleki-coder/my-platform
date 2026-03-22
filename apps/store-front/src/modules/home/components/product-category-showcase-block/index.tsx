@@ -17,6 +17,7 @@ import {
 // ایمپورت کامپوننت نمایش محصول (مسیر را در صورت نیاز اصلاح کنید)
 import ProductPreview from "@modules/products/components/product-preview"
 import { StoreProductCategory } from "@medusajs/types"
+import ProductCarouselPreview from "@modules/products/components/product-carousel-preview"
 
 type ProductCategoryShowcaseBlockProps = {
   data: ProductCategoryShowcaseData
@@ -98,18 +99,18 @@ export default async function ProductCategoryShowcaseBlock({
                 // موبایل: تقریباً 2 محصول (کمی از محصول بعدی پیداست)
                 // تبلت: 3 محصول
                 // دسکتاپ: 4 یا 5 محصول
-                className="pl-2 md:pl-4 basis-[60%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4"
+                className="border-l-2 px-8 h-fit basis-[70%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 last:border-l-0"
               >
                 {/* <div className="p-1 h-full"> */}
-                <ProductPreview product={p} />
+                <ProductCarouselPreview product={p} />
                 {/* </div> */}
               </CarouselItem>
             ))}
           </CarouselContent>
 
           {/* دکمه‌های کنترل کاروسل - معمولاً در موبایل مخفی و فقط در دسکتاپ با قابلیت Hover نمایش داده می‌شوند */}
-          <CarouselPrevious className="hidden lg:flex -left-4 bg-white/90 hover:bg-white" />
-          <CarouselNext className="hidden lg:flex -right-4 bg-white/90 hover:bg-white" />
+          <CarouselPrevious className="hidden lg:flex cursor-pointer -left-4 bg-white/90 hover:bg-white" />
+          <CarouselNext className="hidden lg:flex cursor-pointer -right-4 bg-white/90 hover:bg-white" />
         </Carousel>
       </div>
     </section>

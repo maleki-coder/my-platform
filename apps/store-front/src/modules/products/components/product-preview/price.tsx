@@ -8,7 +8,7 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
 
   return (
     <div
-      className={`flex w-full px-4 pb-4 ${
+      className={`flex w-full px-0 md:px-4 pb-4 ${
         Number(price?.percentage_diff) > 0 ? "justify-between" : "justify-end"
       }`}
     >

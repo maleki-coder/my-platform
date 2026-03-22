@@ -98,7 +98,7 @@ export default function TimedDiscountBadge({
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex items-center justify-between gap-2 text-large-regular font-semibold text-rose-600 bg-rose-50 px-3 py-1.5 rounded-t-md border border-rose-100">
+      <div className="flex items-center justify-between gap-2 text-large-regular font-semibold text-rose-600 px-3 py-1.5 rounded-t-md">
         <span>تخفیف</span>
 
         {/* 

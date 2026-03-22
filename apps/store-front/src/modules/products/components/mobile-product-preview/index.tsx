@@ -18,10 +18,10 @@ export default async function MobileProductPreview({
     cheapestPrice?.ends_at
 
   return (
-    <LocalizedClientLink href={`/products/${product.handle}`} className="group">
+    <LocalizedClientLink href={`/products/${product.handle}`}>
       <section
         key={product.id}
-        className="w-full border-b mt-1 border-gray-200 last:border-none"
+        className="w-full border-y-2 mt-1 border-gray-200"
       >
         {hasValidTimedDiscount ? (
           <TimedDiscountBadge
@@ -29,7 +29,7 @@ export default async function MobileProductPreview({
             endsAt={cheapestPrice.ends_at!}
           />
         ) : null}
-        <div className="flex w-full items-stretch">
+        <div className="flex w-full items-stretch mt-4">
           <div className="flex w-2/3 flex-col gap-1">
             <div className="flex flex-col justify-between pl-4">
               <h2 className="text-xs font-semibold leading-6.5 wrap-break-word">

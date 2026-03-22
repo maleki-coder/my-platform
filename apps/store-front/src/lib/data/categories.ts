@@ -117,7 +117,7 @@ export const getProductCategoryOptions = cache(
           cache: "force-cache",
           next: {
             ...cacheTagsConfig,
-            revalidate: 3600,
+            revalidate: 1,
           },
         }
       )

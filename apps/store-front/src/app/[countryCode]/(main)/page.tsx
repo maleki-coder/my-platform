@@ -35,7 +35,7 @@ export default async function Home(props: {
   const blocks = response?.homepage?.blocks as AllStrapiBlocks[]
 
   return (
-    <div className="flex flex-col px-4 mx-auto w-full lg:px-4 2xl:px-8 max-w-screen-2xl">
+    <div className="flex flex-col mx-auto w-full lg:px-4 2xl:px-8 max-w-screen-2xl">
       {blocks?.map((block) => renderBlock(block))}
     </div>
   )
