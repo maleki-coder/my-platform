@@ -36,7 +36,11 @@ export default function CategorySidebarWrapper({
   categoryHandle,
 }: CategorySidebarWrapperProps) {
   return (
-    <SidebarProvider className="gap-6" defaultOpen={true}>
+    <SidebarProvider
+      className="gap-6"
+      defaultOpen={!isMobile}
+      isMobile={isMobile}
+    >
       <Suspense fallback={<CategoryFilterSidebarSkeleton />}>
         <SidebarDataFetcher categoryHandle={categoryHandle} />
       </Suspense>

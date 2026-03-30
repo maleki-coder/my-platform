@@ -15,14 +15,12 @@ import ProductReviews from "@modules/products/components/product-reviews"
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
-  region: HttpTypes.StoreRegion
   countryCode: string
   images: HttpTypes.StoreProductImage[]
 }
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
   product,
-  region,
   countryCode,
   images,
 }) => {
@@ -50,11 +48,10 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
               <ProductActions
                 disabled={true}
                 product={product}
-                region={region}
               />
             }
           >
-            <ProductActionsWrapper id={product.id} region={region} />
+            <ProductActionsWrapper product={product} />
           </Suspense>
         </div>
       </div>

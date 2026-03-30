@@ -1,6 +1,5 @@
 // @modules/products/components/product-carousel-preview/index.tsx
 import { getProductPrice, StitchedProduct } from "@lib/util/get-product-price"
-import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import PreviewPrice from "@modules/products/components/product-preview/price"
 import Image from "next/image"
 import TimedDiscountBadge from "@modules/products/components/timed-discount-badge"

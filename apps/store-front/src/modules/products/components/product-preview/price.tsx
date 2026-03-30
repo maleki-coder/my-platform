@@ -13,20 +13,20 @@ export default async function PreviewPrice({ price }: { price: VariantPrice }) {
       }`}
     >
       {Number(price?.percentage_diff) > 0 ? (
-        <div className="min-w-6 lg:min-w-7 flex h-4.25 items-center! justify-center gap-1 rounded-sm px-1 lg:h-4.75 bg-red-700">
-          <span className="text-white">%</span>
-          <span className="flex items-center justify-center pt-px text-center text-sm font-semibold leading-4 text-white lg:pt-0.75">
+        <div className="min-w-6 text-white lg:min-w-7 text-small-semi md:text-large-semi flex h-4.25 items-center! justify-center gap-1 rounded-sm px-1 lg:h-4.75 bg-red-700">
+          <span>%</span>
+          <span className="flex items-center justify-center pt-px text-center leading-4 lg:pt-0.75">
             {convertToLocale({ amount: Number(price?.percentage_diff) })}
           </span>
         </div>
       ) : null}
       <div className="flex flex-col items-end gap-1.5">
-        <p className="text-xl font-semibold leading-5">
+        <p className="text-large-semi md:text-lg md:font-semibold leading-5">
           {price?.calculated_price}
           <span className="text-xs mr-1 font-medium leading-5">تومان</span>
         </p>
         <div
-          className={`text-sm flex gap-1 ${
+          className={`text-large-regular flex items-end gap-1 ${
             Number(price?.percentage_diff) > 0 ? "visible" : "invisible"
           }`}
         >

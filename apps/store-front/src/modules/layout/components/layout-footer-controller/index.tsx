@@ -44,7 +44,7 @@ export default function LayoutFooterController({
     <>
       {/* رندر شرطی فوتر کلاینت، اما خود فوتر در سرور تولید شده است */}
       {showFooter && (
-        <div style={{ marginBottom: footerBottomMargin }}>
+        <div className="max-w-screen-2xl w-full"  style={{ marginBottom: footerBottomMargin }}>
           {footerNode}
         </div>
       )}

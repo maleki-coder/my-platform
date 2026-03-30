@@ -57,6 +57,7 @@ function SidebarProvider({
   defaultOpen = true,
   open: openProp,
   onOpenChange: setOpenProp,
+  isMobile: serverIsMobile, // <-- دریافت پراپ ارسالی از سمت سرور
   className,
   style,
   children,
@@ -65,8 +66,23 @@ function SidebarProvider({
   defaultOpen?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  isMobile?: boolean // <-- تعریف تایپ پراپ جدید
 }) {
-  const isMobile = useIsMobile()
+  // هوک تشخیص کلاینت‌ساید
+  const clientIsMobile = useIsMobile()
+
+  // استیت برای مدیریت Hydration
+  const [mounted, setMounted] = React.useState(false)
+
+  React.useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // منطق اصلی رفع خطا:
+  // اگر کامپوننت هنوز mount نشده (یعنی در حالت SSR یا رندر اولیه است)، از مقدار سرور استفاده کن.
+  // در غیر این صورت، از هوک کلاینت‌ساید استفاده کن تا به تغییر سایز صفحه توسط کاربر واکنش نشان دهد.
+  const isMobile = mounted ? clientIsMobile : serverIsMobile ?? false
+
   const [openMobile, setOpenMobile] = React.useState(false)
 
   // This is the internal state of the sidebar.
@@ -83,6 +99,7 @@ function SidebarProvider({
       }
 
       // This sets the cookie to keep the sidebar state.
+      // اطمینان حاصل کنید که متغیرهای SIDEBAR_COOKIE_NAME و غیره در فایل شما import/تعریف شده باشند
       document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
     },
     [setOpenProp, open]

@@ -34,7 +34,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
   // const collections = await listCollections({ fields: "*products" })
   const categories = await listCategories()
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full items-center">
       <Header isMobile={isMobile}/>
       <SidebarWrapper />
       <main style={mainStyle} className="w-full relative">

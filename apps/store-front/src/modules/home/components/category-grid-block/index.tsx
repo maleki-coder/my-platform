@@ -6,14 +6,14 @@ export function CategoryGridBlock({ data }: { data: CategoryGridBlockData }) {
   const strapiUrl =
     process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
   return (
-    <div className="flex flex-col gap-8 border-t border-primary-tint-8 px-4 pb-8 pt-6">
+    <div className="flex flex-col gap-8 px-4">
       <section className="flex w-full flex-col">
-        <h2 className=" text-center text-sm font-semibold leading-6 lg:text-2xl">
+        <h2 className="text-center text-base font-semibold leading-6 lg:text-xl lg:leading-8">
           {data.title}
         </h2>
         <ul
           id={data.id}
-          className="flex flex-wrap justify-center gap-7 pt-4 lg:gap-x-8 lg:gap-y-11.5 xl:pt-6"
+          className="flex flex-wrap justify-between gap-7 pt-4 lg:gap-x-8 lg:gap-y-11.5 xl:pt-6"
         >
           {data.cards.map((card) => (
             <Link key={card.id} href={card.handle}>

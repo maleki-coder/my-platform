@@ -32,7 +32,7 @@ export default async function MobileProductPreview({
         <div className="flex w-full items-stretch mt-4">
           <div className="flex w-2/3 flex-col gap-1">
             <div className="flex flex-col justify-between pl-4">
-              <h2 className="text-xs font-semibold leading-6.5 wrap-break-word">
+              <h2 className="text-large-regular leading-6.5 wrap-break-word">
                 {product.title}
               </h2>
               <div className="mt-2.5 flex flex-col">

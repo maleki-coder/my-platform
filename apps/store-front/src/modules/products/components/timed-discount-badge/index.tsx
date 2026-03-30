@@ -98,7 +98,7 @@ export default function TimedDiscountBadge({
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex items-center justify-between gap-2 text-large-regular font-semibold text-rose-600 px-3 py-1.5 rounded-t-md">
+      <div className="flex items-center justify-between gap-2 text-small-semi md:text-large-semi text-rose-600 px-2 py-1.5 rounded-t-md">
         <span>تخفیف</span>
 
         {/* 
@@ -123,9 +123,9 @@ export default function TimedDiscountBadge({
 
       {/* نوار پیشرفت (فقط اگر تاریخ شروع مشخص باشد رندر می‌شود) */}
       {startsAt && (
-        <div className="w-full bg-gray-200 h-1.5 overflow-hidden">
+        <div className="w-full bg-gray-200 h-1 overflow-hidden">
           <div
-            className="bg-rose-500 h-1.5 transition-all duration-1000 ease-linear"
+            className="bg-rose-500 h-1 transition-all duration-1000 ease-linear"
             style={{ width: `${progress}%` }}
           ></div>
         </div>

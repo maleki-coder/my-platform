@@ -1,9 +1,9 @@
 import { Metadata } from "next"
-import { getRegion } from "@lib/data/regions"
 import { fetchHomePageContent } from "@lib/data/homepage"
 import { CategoryGridBlock } from "@modules/home/components/category-grid-block"
 import { AllStrapiBlocks } from "types/global"
 import ProductCategoryShowcaseBlock from "@modules/home/components/product-category-showcase-block"
+import MultipleBannerBlock from "@modules/home/components/multiple-banner-block"
 
 export const metadata: Metadata = {
   title: "Medusa Next.js Starter Template",
@@ -18,14 +18,14 @@ export default async function Home(props: {
 
   const { countryCode } = params
 
-  const region = await getRegion(countryCode)
-
   const renderBlock = (block: AllStrapiBlocks) => {
   switch (block.__component) {
     case "blocks.category-grid":
       return <CategoryGridBlock key={block.__component} data={block} />;
     case "blocks.product-category-showcase":
       return <ProductCategoryShowcaseBlock key={block.__component} data={block} countryCode={countryCode} />;
+    case "blocks.multiple-banner":
+      return <MultipleBannerBlock key={block.__component} data={block} />;
     default:
       return null;
   }
@@ -35,7 +35,7 @@ export default async function Home(props: {
   const blocks = response?.homepage?.blocks as AllStrapiBlocks[]
 
   return (
-    <div className="flex flex-col mx-auto w-full lg:px-4 2xl:px-8 max-w-screen-2xl">
+    <div className="flex flex-col mx-auto w-full lg:px-4 2xl:px-8 max-w-screen-2xl gap-8 md:gap-16 mt-8">
       {blocks?.map((block) => renderBlock(block))}
     </div>
   )

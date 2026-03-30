@@ -88,6 +88,14 @@ export interface HomepageActionResponse {
   }
   error?: string
 }
+export interface BannerComponent {
+  id: number;
+  title: string;
+  link_url: string;
+  is_active: boolean;
+  order: number;
+  image: StrapiImage;
+}
 export interface CategoryGridBlockData extends BaseBlock {
   __component: "blocks.category-grid"
   id: string
@@ -115,6 +123,11 @@ export interface ProductCategoryShowcaseData extends BaseBlock {
   search_param: string
   countryCode?: string
 }
+export interface MultipleBannerBlockData {
+  __component: "blocks.multiple-banner";
+  banners: BannerComponent[];
+}
+
 interface BaseStrapiImage {
   id: string
   url: string
@@ -125,7 +138,7 @@ enum LayoutType {
   GRID = "grid",
 }
 
-export type AllStrapiBlocks = CategoryGridBlockData | ProductCategoryShowcaseData
+export type AllStrapiBlocks = CategoryGridBlockData | ProductCategoryShowcaseData | MultipleBannerBlockData
 
 export type BlockComponentProps<T> = {
   data: T;

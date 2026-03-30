@@ -15,7 +15,6 @@ import { useRouter } from "next/navigation"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
-  region: HttpTypes.StoreRegion
   disabled?: boolean
 }
 

@@ -14,8 +14,6 @@ import {
   CarouselPrevious,
 } from "@lib/components/ui/carousel"
 
-// ایمپورت کامپوننت نمایش محصول (مسیر را در صورت نیاز اصلاح کنید)
-import ProductPreview from "@modules/products/components/product-preview"
 import { StoreProductCategory } from "@medusajs/types"
 import ProductCarouselPreview from "@modules/products/components/product-carousel-preview"
 
@@ -68,9 +66,9 @@ export default async function ProductCategoryShowcaseBlock({
   }
 
   return (
-    <section className="rounded-xl md:border border-gray-600 pb-6 pt-8 overflow-hidden">
+    <section className="rounded-xl md:border border-gray-600 pb-6 overflow-hidden">
       <div className="flex flex-col">
-        <div className="flex items-center justify-between pl-2.5 pr-4 lg:px-10.5 pb-4 lg:pb-6">
+        <div className="flex items-center justify-between pl-2.5 pr-4 lg:px-10.5 pb-4 lg:py-6">
           <h2 className="flex items-center gap-1 text-base font-semibold leading-6 lg:gap-2 lg:text-xl lg:leading-8">
             {title}
           </h2>
@@ -99,7 +97,7 @@ export default async function ProductCategoryShowcaseBlock({
                 // موبایل: تقریباً 2 محصول (کمی از محصول بعدی پیداست)
                 // تبلت: 3 محصول
                 // دسکتاپ: 4 یا 5 محصول
-                className="border-l-2 px-8 h-fit basis-[70%] sm:basis-1/2 md:basis-1/3 lg:basis-1/4 last:border-l-0"
+                className="border-l-2 px-2 md:px-4 h-fit basis-[45%] sm:basis-1/3 md:basis-1/4 lg:basis-1/5 last:border-l-0"
               >
                 {/* <div className="p-1 h-full"> */}
                 <ProductCarouselPreview product={p} />
