@@ -16,7 +16,7 @@ import {
   setInquiryCartId,
 } from "./cookies"
 import { getRegion } from "./regions"
-import { InquiryCartResponse } from "types/global"
+import { InquiryCartItem, InquiryCartResponse } from "types/global"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -493,7 +493,7 @@ export async function retrieveInquiryCart(cartId?: string, fields?: string) {
       next,
       cache: "force-cache",
     })
-    .then(({ cart }) => cart)
+    .then((cart) => cart)
     .catch((error) => {
       console.error("Failed to retrieve inquiry cart:", error)
       return null
@@ -501,18 +501,19 @@ export async function retrieveInquiryCart(cartId?: string, fields?: string) {
 }
 
 export async function addToInquiryCart({
-  productId,
-  variantId,
+  product_id: productId,
+  variant_id: variantId,
   title,
   thumbnail,
   quantity = 1,
-}: {
-  productId: string
-  variantId?: string
-  title: string
-  thumbnail?: string
-  quantity?: number
-}) {
+  description,
+  brand,
+  currency,
+  link,
+  package: packageName,
+  product_handle,
+  target_price,
+}: Partial<InquiryCartItem>) {
   try {
     let cartId = await getInquiryCartId()
     const headers = {
@@ -536,7 +537,7 @@ export async function addToInquiryCart({
 
     // Step 2: Add the item to the resolved cart ID
     const addItemResponse = await sdk.client.fetch<{
-      cart: Record<string, any>
+      cart: Array<InquiryCartItem>
     }>(`/store/inquiry-carts/${cartId}/items`, {
       method: "POST",
       headers,
@@ -546,6 +547,13 @@ export async function addToInquiryCart({
         title,
         thumbnail,
         quantity,
+        description,
+        brand,
+        currency,
+        link,
+        product_handle,
+        target_price,
+        package: packageName
       },
     })
 

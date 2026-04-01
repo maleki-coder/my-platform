@@ -1,33 +1,47 @@
 // src/api/store/inquiry-carts/[id]/items/[item_id]/route.ts
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework";
-import InuquiryService from "../../../../../../modules/inquiry/service";
+import InquiryService from "../../../../../../modules/inquiry/service";
+import { MedusaError } from "@medusajs/utils"; // Import Medusa's error handler
 
-// ویرایش تعداد
+interface UpdateInquiryItemRequest {
+  quantity: number;
+}
+
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
-  const inquiryModuleService = req.scope.resolve("inquiry") as InuquiryService;
+  const inquiryService = req.scope.resolve("inquiry") as InquiryService;
   const { id, item_id } = req.params;
-  const { quantity } = req.body as any;
 
-  await inquiryModuleService.updateInquiryCartItems(
-    { id: item_id },
-    { quantity },
-  );
+  const { quantity } = req.body as UpdateInquiryItemRequest;
 
-  const updatedCart = await inquiryModuleService.retrieveInquiryCart(id, {
+  if (!Number.isInteger(quantity) || quantity <= 0) {
+    throw new MedusaError(
+      MedusaError.Types.INVALID_DATA,
+      `Quantity must be a positive integer. Received: ${quantity}`,
+    );
+  }
+
+  await inquiryService.updateInquiryCartItems({
+    id: item_id,
+    quantity: quantity,
+  });
+
+  const updatedCart = await inquiryService.retrieveInquiryCart(id, {
     relations: ["items"],
   });
+
   res.status(200).json({ cart: updatedCart });
 }
 
-// حذف آیتم
 export async function DELETE(req: MedusaRequest, res: MedusaResponse) {
-  const inquiryModuleService = req.scope.resolve("inquiry") as InuquiryService;
+  const inquiryService = req.scope.resolve("inquiry") as InquiryService;
   const { id, item_id } = req.params;
 
-  await inquiryModuleService.deleteInquiryCartItems({ id: item_id });
+  await inquiryService.deleteInquiryCartItems({ id: item_id });
 
-  const updatedCart = await inquiryModuleService.retrieveInquiryCart(id, {
+  // re-fetching ensures synchronization.
+  const updatedCart = await inquiryService.retrieveInquiryCart(id, {
     relations: ["items"],
   });
+
   res.status(200).json({ cart: updatedCart });
 }

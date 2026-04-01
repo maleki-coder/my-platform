@@ -1,8 +1,47 @@
 import { HttpTypes, StorePrice } from "@medusajs/types"
 
-export type InquiryCartResponse = {
-  cart: Record<string, any>
+export interface InquiryCartResponse {
+  customer_id: string;
+  customer_name: string;
+  email: string;
+  id: string;
+  items: Array<InquiryCartItem>;
+  notes: string;
+  phone: string;
+  status: InquiryCartStatus;
+  deleted_at: string;
+  created_at: string;
+  updated_at: string;
+};
+export enum InquiryCartStatus {
+  ACTIVE = "active",
+  SUBMITTED = "submitted",
+  CONTACTED = "contacted",
 }
+export type InquiryCartCurrency = "USD" | "CYN" | "IRR";
+export interface InquiryCartItemBase {
+  id: string;
+  cart_id: string;
+  title: string;
+  quantity: number;
+  deleted_at: string;
+  created_at: string;
+  updated_at: string;
+};
+export interface InquiryCartItem extends InquiryCartItemBase {
+  product_id?: string;
+  product_handle?: string;
+  variant_id?: string;
+  thumbnail?: string;
+  target_price?: string;
+  currency?: InquiryCartCurrency;
+  package?: string;
+  brand?: string;
+  link?: string;
+  description?: string;
+  datasheet_url?: string;
+};
+
 export type FeaturedProduct = {
   id: string
   title: string
@@ -43,7 +82,6 @@ export type CategoryOption = {
 export type CategoryOptionsResponse = {
   options: CategoryOption[]
 }
-
 
 export interface StrapiImage {
   alternativeText: string
@@ -92,12 +130,12 @@ export interface HomepageActionResponse {
   error?: string
 }
 export interface BannerComponent {
-  id: number;
-  title: string;
-  link_url: string;
-  is_active: boolean;
-  order: number;
-  image: StrapiImage;
+  id: number
+  title: string
+  link_url: string
+  is_active: boolean
+  order: number
+  image: StrapiImage
 }
 export interface CategoryGridBlockData extends BaseBlock {
   __component: "blocks.category-grid"
@@ -113,7 +151,7 @@ export interface CategoryGridBlockData extends BaseBlock {
 }
 export enum ProductCategoryType {
   CATEGORY = "category",
-  COLLECTION = "collection"
+  COLLECTION = "collection",
 }
 export interface ProductCategoryShowcaseData extends BaseBlock {
   __component: "blocks.product-category-showcase"
@@ -127,8 +165,8 @@ export interface ProductCategoryShowcaseData extends BaseBlock {
   countryCode?: string
 }
 export interface MultipleBannerBlockData {
-  __component: "blocks.multiple-banner";
-  banners: BannerComponent[];
+  __component: "blocks.multiple-banner"
+  banners: BannerComponent[]
 }
 
 interface BaseStrapiImage {
@@ -141,11 +179,14 @@ enum LayoutType {
   GRID = "grid",
 }
 
-export type AllStrapiBlocks = CategoryGridBlockData | ProductCategoryShowcaseData | MultipleBannerBlockData
+export type AllStrapiBlocks =
+  | CategoryGridBlockData
+  | ProductCategoryShowcaseData
+  | MultipleBannerBlockData
 
 export type BlockComponentProps<T> = {
-  data: T;
-};
+  data: T
+}
 export type BlockComponent<T extends AllStrapiBlocks> = React.ComponentType<{
   data: T
 }>

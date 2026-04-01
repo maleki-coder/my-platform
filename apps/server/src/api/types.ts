@@ -24,9 +24,51 @@ export interface StrapiFooterResponse {
       image: StrapiImage;
     }>;
     certificates: Array<{
-      image: StrapiImage
+      image: StrapiImage;
       name: string;
       url: string;
     }>;
   };
 }
+
+export interface InquiryCart {
+  created_at: string;
+  customer_id: string;
+  customer_name: string;
+  deleted_at: string;
+  email: string;
+  id: string;
+  items: Array<InquiryCartItem>;
+  notes: string;
+  phone: string;
+  status: InquiryCartStatus;
+  updated_at: string;
+};
+export enum InquiryCartStatus {
+  ACTIVE = "active",
+  SUBMITTED = "submitted",
+  CONTACTED = "contacted",
+}
+export type InquiryCartCurrency = "USD" | "CYN" | "IRR";
+export interface InquiryCartItemBase {
+  id: string;
+  cart_id: string;
+  title: string;
+  quantity: number;
+  deleted_at: string;
+  created_at: string;
+  updated_at: string;
+};
+export interface InquiryCartItem extends InquiryCartItemBase {
+  product_id?: string;
+  product_handle?: string;
+  variant_id?: string;
+  thumbnail?: string;
+  target_price?: string;
+  currency?: InquiryCartCurrency;
+  package?: string;
+  brand?: string;
+  link?: string;
+  description?: string;
+  datasheet_url?: string;
+};

@@ -2,7 +2,7 @@
 import { Suspense } from "react"
 import { ClipboardList, ShoppingCart } from "lucide-react"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import CartButton from "@modules/layout/components/cart-button"
+import CartButton from "@modules/cart/components/cart-button"
 import HeaderSearchInput from "@modules/layout/components/search-input"
 import HeaderIconBox from "@modules/layout/components/icon-box"
 import HeaderNavBarBottom from "@modules/layout/components/navbar-bottom"
@@ -10,7 +10,7 @@ import HeaderNavBarBottomContent from "@modules/layout/components/navbar-bottom-
 import { UserStatusButton } from "@modules/layout/components/user-status-button"
 import Thumbnail from "@modules/products/components/thumbnail"
 import { DESKTOP_HEADER_HEIGHT } from "@lib/util/constants"
-import InquiryCartButton from "@modules/layout/components/inquiry-cart-button"
+import InquiryCartButton from "@modules/inquiry-cart/components/inquiry-cart-button"
 
 const LOGO_URL = "https://www.technolife.com/image/static_logo_techno_new.svg"
 

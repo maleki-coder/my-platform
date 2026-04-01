@@ -1,17 +1,13 @@
-import ItemsTemplate from "@modules/cart/templates/items"
-import Summary from "@modules/cart/templates/summary"
-import EmptyCartMessage from "@modules/cart/components/empty-cart-message"
-import { HttpTypes } from "@medusajs/types"
-import CartDropdownItem from "@modules/cart/components/cart-dropdown-item"
+import ItemsTemplate from "@modules/inquiry-cart/templates/items"
+import Summary from "@modules/inquiry-cart/templates/summary"
+import EmptyCartMessage from "@modules/inquiry-cart/components/empty-cart-message"
+import InquiryCartDropdownItem from "@modules/inquiry-cart/components/inquiry-cart-dropdown-item"
+import { InquiryCartResponse } from "types/global"
 
-const CartTemplate = ({
+const InquiryCartTemplate = ({
   cart,
 }: {
-  cart:
-    | (HttpTypes.StoreCart & {
-        promotions: HttpTypes.StorePromotion[]
-      })
-    | null
+  cart: InquiryCartResponse | null
 }) => {
   return (
     <div
@@ -31,7 +27,7 @@ const CartTemplate = ({
                     (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
                   )
                   .map((item) => (
-                    <CartDropdownItem key={item.id} cartItem={item} />
+                    <InquiryCartDropdownItem key={item.id} cartItem={item} />
                   ))}
               </div>
             </div>
@@ -55,4 +51,4 @@ const CartTemplate = ({
   )
 }
 
-export default CartTemplate
+export default InquiryCartTemplate
