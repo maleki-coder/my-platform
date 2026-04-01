@@ -10,10 +10,13 @@ import {
   getCacheOptions,
   getCacheTag,
   getCartId,
+  getInquiryCartId,
   removeCartId,
   setCartId,
+  setInquiryCartId,
 } from "./cookies"
 import { getRegion } from "./regions"
+import { InquiryCartResponse } from "types/global"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -460,4 +463,98 @@ export async function listCartOptions() {
     headers,
     cache: "force-cache",
   })
+}
+
+export async function retrieveInquiryCart(cartId?: string, fields?: string) {
+  const id = cartId || (await getInquiryCartId())
+
+  // Custom fields for your inquiry cart items
+  fields ??= "*items, *items.product, *items.variant"
+
+  if (!id) {
+    return null
+  }
+
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
+
+  const next = {
+    ...(await getCacheOptions("inquiry-carts")),
+  }
+
+  return await sdk.client
+    .fetch<InquiryCartResponse>(`/store/inquiry-carts/${id}`, {
+      method: "GET",
+      query: {
+        fields,
+      },
+      headers,
+      next,
+      cache: "force-cache",
+    })
+    .then(({ cart }) => cart)
+    .catch((error) => {
+      console.error("Failed to retrieve inquiry cart:", error)
+      return null
+    })
+}
+
+export async function addToInquiryCart({
+  productId,
+  variantId,
+  title,
+  thumbnail,
+  quantity = 1,
+}: {
+  productId: string
+  variantId?: string
+  title: string
+  thumbnail?: string
+  quantity?: number
+}) {
+  try {
+    let cartId = await getInquiryCartId()
+    const headers = {
+      ...(await getAuthHeaders()),
+    }
+
+    // Step 1: Create the Inquiry Cart if mathematically $cartId = \emptyset$
+    if (!cartId) {
+      const createResponse = await sdk.client.fetch<{ cart: { id: string } }>(
+        `/store/inquiry-carts`,
+        {
+          method: "POST",
+          headers,
+          // No cache for mutations!
+        }
+      )
+
+      cartId = createResponse.cart.id
+      await setInquiryCartId(cartId)
+    }
+
+    // Step 2: Add the item to the resolved cart ID
+    const addItemResponse = await sdk.client.fetch<{
+      cart: Record<string, any>
+    }>(`/store/inquiry-carts/${cartId}/items`, {
+      method: "POST",
+      headers,
+      body: {
+        product_id: productId,
+        variant_id: variantId,
+        title,
+        thumbnail,
+        quantity,
+      },
+    })
+
+    // Step 3: Invalidate the cache so the UI updates instantly!
+    revalidateTag("inquiry-carts")
+
+    return { success: true, cart: addItemResponse.cart }
+  } catch (error) {
+    console.error("Error adding item to inquiry cart:", error)
+    return { success: false, error: "Failed to add item to inquiry cart" }
+  }
 }

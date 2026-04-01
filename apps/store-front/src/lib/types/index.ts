@@ -37,22 +37,13 @@ export type StandardProductQueryParams = {
 export interface CategoryPaginatedProductsProps {
   categoryHandle: string[]
   countryCode: string
-  isMobile: boolean
   queryParams: ProductSearchParams
-  // standardFilters?: StandardProductQueryParams
-  //   collectionId?: string
-  //   productsIds?: string[]
-  // optionsFilters?: OptionsProductSearchParams
-  // test? : HttpTypes.FindParams & HttpTypes.StoreProductListParams
 }
 
 export type OptionsProductSearchParams = Record<string, string | string[] | number | boolean | undefined | null>
 export interface ListProductsProps {
   countryCode?: string
-  // regionId?: string
   queryParams: ProductSearchParams
-  // optionsFilters?: OptionsProductSearchParams
-  // standardFilters?: StandardProductQueryParams
 }
 export type CustomFilterParams = {
   category_id?: string

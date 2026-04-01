@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from "react"
 import { Item, ItemContent, ItemTitle } from "@lib/components/ui/item"
-import { CheckIcon, Layers, X } from "lucide-react"
+import { CheckIcon, Layers, ListFilter } from "lucide-react"
 import { Button } from "@lib/components/ui/button"
 import {
   Sheet,
@@ -17,7 +17,6 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation"
 
 interface CategoryOrderFilterProps {
   className?: string
-  isMobile: boolean
   order: SortOptions
 }
 
@@ -43,7 +42,6 @@ export const sortOptions: Record<string, any> = {
 
 const CategoryOrderFilter: React.FC<CategoryOrderFilterProps> = ({
   className,
-  isMobile,
   order,
 }) => {
   const [selectedOrder, setSelectedOrder] = useState<string>(order)
@@ -75,10 +73,10 @@ const CategoryOrderFilter: React.FC<CategoryOrderFilterProps> = ({
   }
 
   // Desktop view
-  if (!isMobile) {
-    return (
+  return (
+    <>
       <div
-        className={`relative flex h-6 items-center justify-start bg-blue-100 rounded-lg gap-4 pl-6 pr-3.5 ${className}`}
+        className={`relative hidden md:flex h-6 items-center justify-start bg-blue-100 rounded-lg gap-4 pl-6 pr-3.5 ${className}`}
       >
         <div className="flex items-center gap-2.5">
           <Layers className="h-4 w-4" />
@@ -109,76 +107,75 @@ const CategoryOrderFilter: React.FC<CategoryOrderFilterProps> = ({
           </ul>
         </nav>
       </div>
-    )
-  }
-
-  // Mobile view
-  return (
-    <div className={`flex items-center gap-2 ${className}`}>
-      {/* ترتیب Button that opens bottom sheet */}
-      <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
-        <SheetTrigger asChild>
-          <Button
-            variant="outline"
-            className="flex items-center gap-2 h-9 px-3"
-          >
-            <Layers className="h-4 w-4" />
-            <span>ترتیب</span>
-            {selectedOrder && (
-              <Badge variant="secondary" className="mr-1 h-5 px-1.5">
-                {sortOptions[selectedOrder]?.translation}
-              </Badge>
-            )}
-          </Button>
-        </SheetTrigger>
-
-        {/* Bottom Sheet Content */}
-        <SheetContent
-          side="bottom"
-          className={`h-auto max-h-[80vh] p-0 rounded-t-xl bottom-20`}
-        >
-          <SheetHeader className="p-4 border-b sticky top-0 bg-white">
-            <SheetTitle className="text-center text-gray-900">
-              مرتب‌ سازی
-            </SheetTitle>
-          </SheetHeader>
-
-          <div className="overflow-y-auto p-2">
-            {Object.entries(sortOptions).map(([key, value]) => (
-              <button
-                key={key}
-                onClick={() => handleOrderSelect(key)}
-                className={`w-full text-right p-4 border-b last:border-b-0 hover:bg-gray-50 text-xs leading-4 transition-colors ${
-                  selectedOrder === key ? "bg-blue-50" : ""
-                }`}
-              >
-                <span
-                  className={
-                    selectedOrder === key
-                      ? "text-blue-600 font-semibold"
-                      : "text-gray-700"
-                  }
-                >
-                  {value.translation}
-                </span>
-                {selectedOrder === key && (
-                  <CheckIcon className="float-left text-blue-600" />
-                )}
-              </button>
-            ))}
-          </div>
-        </SheetContent>
-      </Sheet>
-      {/* Additional button that triggers parent event */}
-      <Button
-        variant="secondary"
-        size="icon"
-        className="h-9 w-9"
-        onClick={() => setOpenMobile(!openMobile)}
+      <div
+        className={`md:hidden flex items-center justify-between gap-2 ${className}`}
       >
-        <X className="h-4 w-4 rotate-45" />
-      </Button>
-    </div>
+        {/* ترتیب Button that opens bottom sheet */}
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="outline"
+              className="flex w-1/2 items-center gap-2 h-9 px-3"
+            >
+              <Layers className="h-4 w-4" />
+              <span>ترتیب</span>
+              {selectedOrder && (
+                <Badge variant="secondary" className="mr-1 h-5 px-1.5">
+                  {sortOptions[selectedOrder]?.translation}
+                </Badge>
+              )}
+            </Button>
+          </SheetTrigger>
+
+          {/* Bottom Sheet Content */}
+          <SheetContent
+            side="bottom"
+            className={`h-auto max-h-[80vh] p-0 rounded-t-xl bottom-20`}
+          >
+            <SheetHeader className="p-4 border-b sticky top-0 bg-white">
+              <SheetTitle className="text-center text-gray-900">
+                مرتب‌ سازی
+              </SheetTitle>
+            </SheetHeader>
+
+            <div className="overflow-y-auto p-2">
+              {Object.entries(sortOptions).map(([key, value]) => (
+                <button
+                  key={key}
+                  onClick={() => handleOrderSelect(key)}
+                  className={`w-full text-right p-4 border-b last:border-b-0 hover:bg-gray-50 text-xs leading-4 transition-colors ${
+                    selectedOrder === key ? "bg-blue-50" : ""
+                  }`}
+                >
+                  <span
+                    className={
+                      selectedOrder === key
+                        ? "text-blue-600 font-semibold"
+                        : "text-gray-700"
+                    }
+                  >
+                    {value.translation}
+                  </span>
+                  {selectedOrder === key && (
+                    <CheckIcon className="float-left text-blue-600" />
+                  )}
+                </button>
+              ))}
+            </div>
+          </SheetContent>
+        </Sheet>
+        {/* Additional button that triggers parent event */}
+        <Button
+          variant="secondary"
+          size="icon"
+          className="h-9 w-1/2 border"
+          onClick={() => setOpenMobile(!openMobile)}
+        >
+          <ListFilter className="h-4 w-4" />
+          <span>فیلتر ها</span>
+        </Button>
+      </div>
+    </>
   )
 }
 

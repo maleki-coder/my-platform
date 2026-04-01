@@ -162,13 +162,13 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
           : { top: "5.5rem", height: "calc(100vh - 5.5rem)" }
       }
       className={`md:sticky p-0 md:z-1 z-5000 ${
-        isVisible ? "lg:top-34" : "lg:top-22"
+        isVisible ? "md:top-34" : "md:top-22"
       }`}
       variant="floating"
       collapsible="offcanvas"
     >
       <SidebarContent className="bg-white rounded-md shadow-sm overflow-y-auto h-full pb-24 overscroll-contain">
-        <SidebarHeader className="sticky rounded-t-md h-fit top-0 z-1 bg-white border-b-2 w-full flex-row! flex-nowrap! flex justify-between px-4 py-3.5">
+        <SidebarHeader className="sticky rounded-t-md h-fit top-12 md:top-0 z-1 bg-white border-b-2 w-full flex-row! flex-nowrap! flex justify-between px-4 py-3.5">
           <div className="flex gap-1.5 items-center">
             <FilterIcon className="fill-gray-700 w-4 h-4" />
             <p className="text-xs font-semibold leading-4 text-gray-800">
@@ -185,7 +185,7 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
 
         <SidebarGroup>
           <SidebarGroupContent>
-            <div className="mb-4 flex items-center justify-between border-b border-gray-100 pb-4 px-2">
+            <div className="mb-4 mt-12 md:mt-0 flex items-center justify-between border-b border-gray-100 pb-4 px-2">
               <Label
                 htmlFor="in-stock-toggle"
                 className="text-sm font-semibold text-gray-700 cursor-pointer select-none"

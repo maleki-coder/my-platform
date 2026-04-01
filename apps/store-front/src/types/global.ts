@@ -1,5 +1,8 @@
 import { HttpTypes, StorePrice } from "@medusajs/types"
 
+export type InquiryCartResponse = {
+  cart: Record<string, any>
+}
 export type FeaturedProduct = {
   id: string
   title: string

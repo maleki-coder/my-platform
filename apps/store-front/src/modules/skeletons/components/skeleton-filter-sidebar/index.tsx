@@ -11,8 +11,8 @@ export function CategoryFilterSidebarSkeleton() {
   return (
     <Sidebar
       side="right"
-      style={{ top: "5.5rem", height: "calc(100vh - 5.5rem)" }}
-      className={`md:sticky p-0 md:z-1 z-5000 lg:top-22`}
+      style={{ top: "8.5rem", height: "calc(100vh - 8.5rem)" }} 
+      className={`md:sticky p-0 md:z-1 z-5000 lg:top-34`}
       variant="floating"
       collapsible="offcanvas"
     >

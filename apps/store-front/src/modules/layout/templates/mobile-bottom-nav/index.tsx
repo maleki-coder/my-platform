@@ -15,7 +15,7 @@ export default function MobileBottomNav({
       return acc + item.quantity
     }, 0) || 0
   return (
-    <div className={`min-h-${MOBILE_FOOTER_HEIGHT} fixed bottom-0 left-0 w-full border-t-2 border-gray-300 bg-white z-2000`}>
+    <div className={`min-h-${MOBILE_FOOTER_HEIGHT} fixed bottom-0 left-0 right-0 w-full border-t-2 border-gray-300 bg-white z-2000`}>
       <div className="w-full mx-auto max-w-480">
         <div className="flex w-full justify-between items-center">
           <NavItem href="/" icon={<HomeIcon />} className="flex-1" label="خانه" />

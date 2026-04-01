@@ -34,7 +34,7 @@ export default function ChildCategoryChipsClient({
       aria-label="child-category-chips"
     >
       <div ref={scrollRef} className="overflow-x-auto no-scrollbar cursor-auto">
-        <ul className="flex h-7.5 gap-2.5 scroll-smooth">
+        <ul className="flex h-7.5 gap-2.5 scroll-smooth md:px-10">
           {categories.map((child) => (
             <li
               key={child.id}
@@ -52,15 +52,15 @@ export default function ChildCategoryChipsClient({
       </div>
 
       <button
-        onClick={() => scroll("left")}
-        className="cursor-pointer absolute -left-8 top-0.75 hidden md:flex h-5.5 w-5.5 items-center justify-center rounded-full shadow-custom"
+        onClick={() => scroll("right")}
+        className="cursor-pointer bg-white absolute left-0 top-0.75 hidden md:flex h-5.5 w-5.5 items-center justify-center rounded-full shadow-custom"
       >
         <ChevronLeft size={16} />
       </button>
 
       <button
-        onClick={() => scroll("right")}
-        className="cursor-pointer absolute -right-8 top-0.75 hidden md:flex h-5.5 w-5.5 items-center justify-center rounded-full shadow-custom"
+        onClick={() => scroll("left")}
+        className="cursor-pointer bg-white absolute right-0 top-0.75 hidden md:flex h-5.5 w-5.5 items-center justify-center rounded-full shadow-custom"
       >
         <ChevronRight size={16} />
       </button>

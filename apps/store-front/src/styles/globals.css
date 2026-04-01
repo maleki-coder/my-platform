@@ -222,6 +222,15 @@ body {
 @utility content-container {
   @apply max-w-[1440px] w-full mx-auto px-6;
 }
+@utility desktop-header-top-margin {
+  @apply mt-[7.7rem];
+}
+@utility mobile-header-top-margin {
+  @apply mt-[2.7rem];
+}
+@utility mobile-footer-nav-route-bottom-margin {
+  @apply mb-[5rem];
+}
 
 @utility shadow-box-deep {
   @apply inset-shadow-red-800 pt-0.5 pb-3 px-0;

@@ -87,3 +87,25 @@ export const removeCartId = async () => {
     maxAge: -1,
   })
 }
+
+export const getInquiryCartId = async (): Promise<string | undefined> => {
+  const cookies = await nextCookies()
+  return cookies.get("_medusa_inquiry_cart_id")?.value
+}
+
+export const setInquiryCartId = async (cartId: string) => {
+  const cookies = await nextCookies()
+  cookies.set("_medusa_inquiry_cart_id", cartId, {
+    maxAge: 60 * 60 * 24 * 7, // 7 days expiration
+    httpOnly: true,
+    sameSite: "strict",
+    secure: process.env.NODE_ENV === "production",
+  })
+}
+
+export const removeInquiryCartId = async () => {
+  const cookies = await nextCookies()
+  cookies.set("_medusa_inquiry_cart_id", "", {
+    maxAge: -1,
+  })
+}

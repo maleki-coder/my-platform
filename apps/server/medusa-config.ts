@@ -111,6 +111,9 @@ module.exports = defineConfig({
       },
     },
     {
+      resolve: "./src/modules/inquiry",
+    },
+    {
       resolve: "@medusajs/medusa/cache-inmemory",
       options: {
         // optional options

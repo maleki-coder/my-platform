@@ -20,7 +20,7 @@ export default async function Footer() {
   const { data } = footerData
 
   return (
-    <footer className="m-4 lg:mt-12 mt-6 left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
+    <footer className="mt-4 left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
       <div className="px-4 mx-auto w-full lg:px-8 xl:px-6 max-w-screen-2xl">
         <div className="px-4">
           {/* بخش هدر فوتر و دکمه بازگشت به بالا */}

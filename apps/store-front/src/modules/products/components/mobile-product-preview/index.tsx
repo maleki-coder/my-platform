@@ -29,7 +29,7 @@ export default async function MobileProductPreview({
             endsAt={cheapestPrice.ends_at!}
           />
         ) : null}
-        <div className="flex w-full items-stretch mt-4">
+        <div className="flex w-full items-stretch justify-between mt-4">
           <div className="flex w-2/3 flex-col gap-1">
             <div className="flex flex-col justify-between pl-4">
               <h2 className="text-large-regular leading-6.5 wrap-break-word">

@@ -12,7 +12,6 @@ import {
 import { CategoryFilterSidebarSkeleton } from "@modules/skeletons/components/skeleton-filter-sidebar"
 
 interface CategorySidebarWrapperProps {
-  isMobile: boolean
   order: SortOptions
   categoryHandle: string[]
   children: React.ReactNode
@@ -30,7 +29,6 @@ async function SidebarDataFetcher({
 }
 
 export default function CategorySidebarWrapper({
-  isMobile,
   children,
   order,
   categoryHandle,
@@ -38,8 +36,7 @@ export default function CategorySidebarWrapper({
   return (
     <SidebarProvider
       className="gap-6"
-      defaultOpen={!isMobile}
-      isMobile={isMobile}
+      defaultOpen={false}
     >
       <Suspense fallback={<CategoryFilterSidebarSkeleton />}>
         <SidebarDataFetcher categoryHandle={categoryHandle} />
@@ -48,7 +45,6 @@ export default function CategorySidebarWrapper({
       <div className="flex flex-col w-full gap-6">
         <CategoryOrderFilter
           className="h-12"
-          isMobile={isMobile}
           order={order}
         />
         {children}
