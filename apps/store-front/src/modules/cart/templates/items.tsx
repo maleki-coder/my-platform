@@ -58,8 +58,8 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                   <></>
                 )}
               </div>
-              <div className="absolute p-2 left-3 top-2 border rounded-4xl">
-                <DeleteButton id={item.id} />
+              <div className="absolute left-3 top-2">
+                <DeleteButton id={item.id} className="p-2 border rounded-4xl" />
               </div>
               <div className="flex w-full justify-between">
                 <div className="flex w-0 grow flex-col pt-5">

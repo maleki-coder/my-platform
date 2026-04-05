@@ -58,7 +58,7 @@ export function MobileMenuSheet({ categories }: SheetSidebarProps) {
                 <button
                   type="button"
                   aria-label="Close search"
-                  className="shrink-0 rounded-md p-2 hover:bg-muted transition"
+                  className="cursor-pointer shrink-0 rounded-md p-2 hover:bg-muted transition"
                 >
                   <X className="h-5 w-5" />
                 </button>

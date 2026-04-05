@@ -1,6 +1,5 @@
 import { clx } from "@lib/util/clx"
-// import { ChevronUpDown } from "@medusajs/icons"
-// import { clx } from "@medusajs/ui"
+import { ChevronDown } from "lucide-react"
 import {
   SelectHTMLAttributes,
   forwardRef,
@@ -54,7 +53,7 @@ const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
             ref={innerRef}
             defaultValue={defaultValue}
             {...props}
-            className="appearance-none flex-1 bg-transparent border-none px-4 py-2.5 transition-colors duration-150 outline-hidden "
+            className="appearance-none flex-1 bg-transparent border-none px-4 py-2.5 transition-colors duration-150 outline-hidden"
           >
             <option disabled value="">
               {placeholder}
@@ -62,8 +61,7 @@ const NativeSelect = forwardRef<HTMLSelectElement, NativeSelectProps>(
             {children}
           </select>
           <span className="absolute right-4 inset-y-0 flex items-center pointer-events-none ">
-            {/* <ChevronUpDown /> */}
-            <p>down </p>
+            <ChevronDown />
           </span>
         </div>
       </div>

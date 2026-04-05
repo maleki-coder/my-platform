@@ -18,6 +18,7 @@ import CartDropdownItem from "@modules/cart/components/cart-dropdown-item"
 import CartDropdownFooter from "@modules/cart/components/cart-dropdown-footer"
 import EmptyCart from "@modules/common/components/empty-cart"
 import { getTotalQuantity } from "@lib/util/get-total-quantity"
+import InquiryCartDropdownItem from "../inquiry-cart-dropdown-item"
 
 const InquiryCartDropdown = ({
   cart: cartState,
@@ -103,7 +104,7 @@ const InquiryCartDropdown = ({
               {totalItems > 0 && (
                 <Badge
                   variant="destructive"
-                  className="absolute left-4 top-4 w-5 h-5 bg-orange-500"
+                  className="absolute left-4 top-4 w-fit min-w-5 h-5 bg-orange-500"
                 >
                   {totalItems}
                 </Badge>
@@ -137,7 +138,7 @@ const InquiryCartDropdown = ({
                     (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
                   )
                   .map((item: any) => (
-                    <CartDropdownItem key={item.id} cartItem={item} />
+                    <InquiryCartDropdownItem key={item.id} cartItem={item} />
                   ))}
               </div>
               <CartDropdownFooter

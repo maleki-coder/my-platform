@@ -19,7 +19,7 @@ export default async function Cart() {
   return (
     <InquiryCartTemplate
       cart={
-        cart as InquiryCartResponse
+        cart
       }
     />
   )

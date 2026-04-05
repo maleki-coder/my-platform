@@ -1,28 +1,29 @@
+import { updateInquiryItem } from "@lib/data/cart"
+import DeleteButton from "@modules/inquiry-cart/components/delete-button"
 import { LoaderCircle } from "lucide-react"
 import { useState } from "react"
-import DeleteButton from "../delete-button"
+import { InquiryCartItem } from "types/global"
 
 interface DecrementCartItemProps {
-  id: string
+  item: InquiryCartItem
   canDecrement: boolean
-  manageInventory: boolean | undefined | null
-  onIncrement: (id: string) => Promise<void>
   className?: string
 }
 
 const DecrementCartItem = ({
-  id,
+  item,
   canDecrement,
-  onIncrement,
   className,
 }: DecrementCartItemProps) => {
   const [isDecrementing, setIsDecrementing] = useState(false)
 
   const handleClick = async () => {
-    if (!canDecrement) return
-
     setIsDecrementing(true)
-    await onIncrement(id).finally(() => {
+    let body: InquiryCartItem = {
+      title: item.title,
+      quantity: item.quantity - 1,
+    }
+    await updateInquiryItem(item.id!, body).finally(() => {
       setIsDecrementing(false)
     })
   }
@@ -49,7 +50,7 @@ const DecrementCartItem = ({
       ) : (
         // 3) delete button
         <DeleteButton
-          id={id}
+          id={item.id!}
         />
       )}
     </div>

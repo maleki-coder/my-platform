@@ -1,47 +1,50 @@
 // src/api/store/inquiry-carts/upload/route.ts
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
-import { Modules } from "@medusajs/framework/utils";
-import { IFileModuleService } from "@medusajs/types";
-
+import { uploadFilesWorkflow } from "@medusajs/core-flows"; // Built-in workflow for uploads
+import multer from "multer"; // For parsing multipart form data (install: npm install multer)
+const MAX_FILE_SIZE = 1048576;
+export const config = {
+  bodyParser: false,
+};
+// Multer middleware for file parsing (single file named 'receipt')
+const upload = multer({ storage: multer.memoryStorage() }).single("datasheet");
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
+  // Parse file with multer
+  await new Promise((resolve, reject) => {
+    upload(req as any, res as any, (err) => {
+      if (err) return reject(err);
+      resolve(true);
+    });
+  });
+  const file = (req as any).file; // Access the uploaded file
+  if (!file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return res.status(400).json({ error: "File exceeds the 1MB limit." });
+  }
+
   try {
-    // 1. Resolve the File Module Service
-    const fileModuleService: IFileModuleService = req.scope.resolve(Modules.FILE);
-
-    // 2. Medusa automatically parses multipart/form-data into req.files
-    const files = req.files as Express.Multer.File[];
-
-    if (!files || files.length === 0) {
-      return res.status(400).json({ error: "No file provided. $Files = 0$" });
-    }
-
-    const file = files[0];
-
-    // 3. Mathematical Validation: strictly allow ONLY PDFs!
-    if (file.mimetype !== "application/pdf") {
-      return res.status(400).json({ error: "Invalid format. Only PDF files are allowed!" });
-    }
-
-    // Limit size to 5MB: $Size_{max} = 5 \times 1024 \times 1024 \text{ bytes}$
-    if (file.size > 5242880) {
-      return res.status(400).json({ error: "File exceeds the 5MB limit." });
-    }
-
-    // 4. Upload the file using Medusa's File Module
-    const uploadedFile = await fileModuleService.createFiles([
-      {
-        filename: file.originalname,
-        mimeType: file.mimetype,
-        content: file.buffer.toString("base64"), // Depending on your provider, you might pass the buffer or base64
-        access: "public",
+    // Upload file using workflow (or directly via fileModule.upload)
+    const { result: uploadedFiles } = await uploadFilesWorkflow(req.scope).run({
+      input: {
+        files: [
+          {
+            filename: file.originalname,
+            content: file.buffer,
+            mimeType: file.mimetype,
+            access: "public",
+          },
+        ],
       },
-    ]);
+    });
 
-    // 5. Return the newly generated URL to the storefront
-    return res.status(200).json({ url: uploadedFile[0].url });
-
+    const fileUrl = uploadedFiles[0].url; // URL from File provider
+    return res.status(200).json({ url: fileUrl });
   } catch (error) {
     console.error("File upload error:", error);
-    return res.status(500).json({ error: "Internal Server Error during upload." });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error during upload." });
   }
 }

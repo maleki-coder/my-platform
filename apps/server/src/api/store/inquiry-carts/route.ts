@@ -8,5 +8,5 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     status: "active",
   })
 
-  res.status(201).json({ cart })
+  res.status(201).json( cart )
 }

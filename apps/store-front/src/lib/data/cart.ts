@@ -12,6 +12,7 @@ import {
   getCartId,
   getInquiryCartId,
   removeCartId,
+  removeInquiryCartId,
   setCartId,
   setInquiryCartId,
 } from "./cookies"
@@ -465,41 +466,66 @@ export async function listCartOptions() {
   })
 }
 
-export async function retrieveInquiryCart(cartId?: string, fields?: string) {
+async function createNewInquiryCart() {
+  const headers = { ...(await getAuthHeaders()) }
+
+  // 💡 CROSS-DEVICE MAGIC: If you have a logged-in user,
+  // getAuthHeaders() should ideally pass their token,
+  // or you can pass customer_id in the payload!
+  const response = await sdk.client.fetch<{ cart: { id: string } }>(
+    `/store/inquiry-carts`,
+    {
+      method: "POST",
+      headers,
+      body: {
+        status: "active",
+        // customer_id: await getCustomerId(), <-- Add this later for cross-device!
+      },
+    }
+  )
+
+  // Save the new $ID$ to the browser cookie
+  await setInquiryCartId(response.cart.id)
+  return response.cart.id
+}
+
+export async function retrieveInquiryCart(cartId?: string) {
   const id = cartId || (await getInquiryCartId())
 
-  // Custom fields for your inquiry cart items
-  fields ??= "*items, *items.product, *items.variant"
-
   if (!id) {
-    return null
+    return null // Expected behavior: No cart yet.
   }
 
-  const headers = {
-    ...(await getAuthHeaders()),
-  }
-
-  const next = {
-    ...(await getCacheOptions("inquiry-carts")),
-  }
+  const headers = { ...(await getAuthHeaders()) }
+  const next = { ...(await getCacheOptions("inquiry-carts")) }
 
   return await sdk.client
-    .fetch<InquiryCartResponse>(`/store/inquiry-carts/${id}`, {
+    .fetch<{ cart: InquiryCartResponse }>(`/store/inquiry-carts/${id}`, {
       method: "GET",
-      query: {
-        fields,
-      },
       headers,
       next,
-      cache: "force-cache",
+      cache: "no-cache",
     })
-    .then((cart) => cart)
-    .catch((error) => {
-      console.error("Failed to retrieve inquiry cart:", error)
+    .then(({ cart }) => cart)
+    .catch(async (error) => {
+      console.error(
+        "Failed to retrieve inquiry cart. The ID might be invalid/deleted:",
+        error
+      )
+
+      // 🚀 THE MAGIC FIX: If cart is not found, DESTROY the ghost cookie!
+      // This forces the system to create a brand new cart next time.
+      if (!cartId) {
+        await removeInquiryCartId()
+      }
+
       return null
     })
 }
-
+// ==========================================
+// 1. CREATE CART & ADD ITEM
+// This is used on the Product Page or adding new one by user!
+// ==========================================
 export async function addToInquiryCart({
   product_id: productId,
   variant_id: variantId,
@@ -510,32 +536,19 @@ export async function addToInquiryCart({
   brand,
   currency,
   link,
+  datasheet_url,
   package: packageName,
   product_handle,
   target_price,
 }: Partial<InquiryCartItem>) {
+  let cartId = await getInquiryCartId()
+  if (!cartId) {
+    cartId = await createNewInquiryCart()
+  }
+  const headers = {
+    ...(await getAuthHeaders()),
+  }
   try {
-    let cartId = await getInquiryCartId()
-    const headers = {
-      ...(await getAuthHeaders()),
-    }
-
-    // Step 1: Create the Inquiry Cart if mathematically $cartId = \emptyset$
-    if (!cartId) {
-      const createResponse = await sdk.client.fetch<{ cart: { id: string } }>(
-        `/store/inquiry-carts`,
-        {
-          method: "POST",
-          headers,
-          // No cache for mutations!
-        }
-      )
-
-      cartId = createResponse.cart.id
-      await setInquiryCartId(cartId)
-    }
-
-    // Step 2: Add the item to the resolved cart ID
     const addItemResponse = await sdk.client.fetch<{
       cart: Array<InquiryCartItem>
     }>(`/store/inquiry-carts/${cartId}/items`, {
@@ -553,16 +566,158 @@ export async function addToInquiryCart({
         link,
         product_handle,
         target_price,
-        package: packageName
+        package: packageName,
+        datasheet_url,
       },
     })
-
     // Step 3: Invalidate the cache so the UI updates instantly!
     revalidateTag("inquiry-carts")
 
     return { success: true, cart: addItemResponse.cart }
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.status === 404) {
+      await removeInquiryCartId()
+      cartId = await createNewInquiryCart() // Generate a fresh $ID$
+      const addItemResponse = await sdk.client.fetch<{
+        cart: Array<InquiryCartItem>
+      }>(`/store/inquiry-carts/${cartId}/items`, {
+        method: "POST",
+        headers,
+        body: {
+          product_id: productId,
+          variant_id: variantId,
+          title,
+          thumbnail,
+          quantity,
+          description,
+          brand,
+          currency,
+          link,
+          product_handle,
+          target_price,
+          package: packageName,
+          datasheet_url,
+        },
+      })
+      // Step 3: Invalidate the cache so the UI updates instantly!
+      revalidateTag("inquiry-carts")
+
+      return { success: true, cart: addItemResponse.cart }
+    }
     console.error("Error adding item to inquiry cart:", error)
     return { success: false, error: "Failed to add item to inquiry cart" }
+  }
+}
+// ==========================================
+// 3. DELETE ITEM
+// This is used in the Cart View when clicking "Trash"!
+// ==========================================
+export async function deleteFromInquiryCart(itemId: string) {
+  try {
+    const cartId = await getInquiryCartId()
+    if (!cartId) throw new Error("No cart found")
+
+    const headers = { ...(await getAuthHeaders()) }
+
+    // 🚀 DELETE ITEM
+    const deleteResponse = await sdk.client.fetch<{
+      cart: InquiryCartResponse
+    }>(`/store/inquiry-carts/${cartId}/items/${itemId}`, {
+      method: "DELETE",
+      headers,
+    })
+
+    revalidateTag("inquiry-carts")
+    return { success: true, cart: deleteResponse.cart }
+  } catch (error) {
+    console.error("Error deleting item:", error)
+    return { success: false, error: "Failed to delete item" }
+  }
+}
+
+// ==========================================
+// 2. UPDATE ITEM QUANTITY
+// This is used in the Cart View when changing input!
+// ==========================================
+export async function updateInquiryItem(
+  itemId: string,
+  body: Partial<InquiryCartItem>
+) {
+  try {
+    const cartId = await getInquiryCartId()
+    if (!cartId) throw new Error("No cart found")
+
+    if (body.quantity! <= 0) {
+      return { success: false, error: "Quantity must be positive" }
+    }
+
+    const headers = { ...(await getAuthHeaders()) }
+
+    // 🚀 FORCE UPDATE QUANTITY
+    const updateResponse = await sdk.client.fetch<{
+      cart: InquiryCartResponse
+    }>(`/store/inquiry-carts/${cartId}/items/${itemId}`, {
+      method: "POST",
+      headers,
+      body: {
+        title: body.title,
+        quantity: body.quantity,
+        product_handle: body.product_handle,
+        thumbnail: body.thumbnail,
+        target_price: body.target_price,
+        currency: body.currency,
+        package: body.package,
+        brand: body.brand,
+        link: body.link,
+        description: body.description,
+        datasheet_url: body.datasheet_url,
+      },
+    })
+
+    revalidateTag("inquiry-carts")
+    return { success: true, cart: updateResponse.cart }
+  } catch (error) {
+    console.error("Error updating item quantity:", error)
+    return { success: false, error: "Failed to update quantity" }
+  }
+}
+
+export async function uploadDatasheetAction(formData: FormData) {
+  const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+  const BACKEND_URL = process.env.MEDUSA_BACKEND_URL
+  const uploadedFile = formData.get("datasheet") as File | null
+  if (!uploadedFile || uploadedFile.size === 0) {
+    return {
+      success: false,
+      error: "No receipt file provided",
+      receiptUrl: null,
+    }
+  }
+  try {
+    // 1. We grab our standard headers (like x-publishable-api-key)
+    const headers = await getAuthHeaders()
+
+    const response: any = await fetch(
+      `${BACKEND_URL}/store/inquiry-carts/upload`,
+      {
+        method: "POST",
+        headers: { ...headers, "x-publishable-api-key": PUBLISHABLE_API_KEY! },
+        body: formData,
+      }
+    )
+
+    if (!response.ok) {
+      const errorData = await response.json()
+      console.error("Backend upload error:", errorData)
+      return { success: false, error: errorData.error || "Upload failed." }
+    }
+
+    const data = await response.json()
+
+    // Returning the newly created URL: $URL_{datasheet}$
+    return { success: true, url: data.url }
+  } catch (error: any) {
+    console.error("Server Action Error (upload):", error.message)
+    return { success: false, error: "Internal server error during upload." }
   }
 }

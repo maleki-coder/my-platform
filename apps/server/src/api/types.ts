@@ -32,16 +32,16 @@ export interface StrapiFooterResponse {
 }
 
 export interface InquiryCart {
-  created_at: string;
+  id: string;
   customer_id: string;
   customer_name: string;
-  deleted_at: string;
   email: string;
-  id: string;
   items: Array<InquiryCartItem>;
   notes: string;
   phone: string;
   status: InquiryCartStatus;
+  deleted_at: string;
+  created_at: string;
   updated_at: string;
 };
 export enum InquiryCartStatus {

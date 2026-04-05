@@ -6,7 +6,7 @@ import { InquiryCartItem, InquiryCart } from "../../../../types";
 export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const inquiryModuleService = req.scope.resolve("inquiry") as InuquiryService;
   const { id } = req.params;
-  
+
   // Cast the body to our strict interface
   const body = req.body as Partial<InquiryCartItem>;
 
@@ -22,25 +22,32 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
   const existingItem = cart.items?.find(
     (i: InquiryCartItem) =>
       (body.variant_id && i.variant_id === body.variant_id) ||
-      (body.product_id && i.product_id === body.product_id)
+      (body.product_id && i.product_id === body.product_id) ||
+      (body.title && i.title === body.title) 
   );
 
   if (existingItem) {
-    // 🚀 Update: Medusa v2 expects a single object with the ID and the fields to update
-    const currentQuantity = Number(existingItem.quantity) || 0;
-    
     await inquiryModuleService.updateInquiryCartItems({
       id: existingItem.id,
-      // Pure mathematical addition: $Q_{total} = Q_{current} + Q_{incoming}$
-      quantity: currentQuantity + incomingQuantity, 
+      title: body.title ?? existingItem.title,
+      quantity: incomingQuantity ?? Number(existingItem.quantity),
+      target_price: body.target_price ?? existingItem.target_price,
+      datasheet_url: body.datasheet_url ?? existingItem.datasheet_url,
+      brand: body.brand ?? existingItem.brand,
+      currency: body.currency ?? existingItem.currency,
+      description: body.description ?? existingItem.description,
+      link: body.link ?? existingItem.link,
+      package: body.package ?? existingItem.package,
+      thumbnail: body.thumbnail ?? existingItem.thumbnail,
+      product_handle: body.product_handle ?? existingItem.product_handle,
     });
   } else {
     // 🚀 Create: Use cart_id as the generated service expects
     await inquiryModuleService.createInquiryCartItems({
-      cart_id: id, 
+      cart_id: id,
       product_id: body.product_id,
       variant_id: body.variant_id,
-      title: body.title, 
+      title: body.title,
       thumbnail: body.thumbnail,
       quantity: incomingQuantity,
       brand: body.brand,
@@ -48,7 +55,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
       datasheet_url: body.datasheet_url,
       description: body.description,
       link: body.link,
-      package: body.package, 
+      package: body.package,
       product_handle: body.product_handle,
       target_price: body.target_price,
     });

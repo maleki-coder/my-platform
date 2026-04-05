@@ -114,7 +114,7 @@ const CartDropdown = ({
               {totalItems > 0 && (
                 <Badge
                   variant="default"
-                  className="absolute left-4 top-4 w-5 h-5"
+                  className="absolute left-4 top-4 min-w-5 w-fit h-5"
                 >
                   {totalItems}
                 </Badge>

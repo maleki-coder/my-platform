@@ -3,7 +3,7 @@
 import Thumbnail from "@modules/products/components/thumbnail"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { BadgePercent, BoxIcon } from "lucide-react"
-import { QuantitySelector } from "@modules/cart/components/quantity-selector"
+import { QuantitySelector } from "@modules/inquiry-cart/components/quantity-selector"
 import { VariantTagScroll } from "@modules/cart/components/variant-tag-scroll"
 import { getDiscountPercent } from "@lib/util/get-discount-percent"
 import { isVariantDiscounted } from "@lib/util/is-variant-discounted"
@@ -35,14 +35,14 @@ const InquiryCartDropdownItem = ({ cartItem }: Props) => {
               <h2 className="text-xs font-semibold leading-6.5 wrap-break-word">
                 {cartItem.title}
               </h2>
-              <div className="mt-2.5 flex flex-col">
+              {/* <div className="mt-2.5 flex flex-col">
                 <div className="flex items-center text-indigo-500">
                   <div className="me-2 flex h-5 w-5 items-center justify-center">
                     <BoxIcon size={18} />
                   </div>
                   <p className="text-xs font-semibold">موجود در انبار</p>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -52,7 +52,7 @@ const InquiryCartDropdownItem = ({ cartItem }: Props) => {
           >
             <Thumbnail
               thumbnail={cartItem.thumbnail}
-              images={cartItem.variant?.product?.images}
+              // images={cartItem.variant?.product?.images}
               size="square"
             />
           </LocalizedClientLink>
@@ -61,9 +61,9 @@ const InquiryCartDropdownItem = ({ cartItem }: Props) => {
         <div className="w-full flex flex-col">
           <div className="flex items-stretch">
             <div className="flex flex-1 flex-col justify-between">
-              <VariantTagScroll variantTitle={cartItem.variant?.title} />
+              {/* <VariantTagScroll variantTitle={cartItem.variant?.title} /> */}
 
-              <div className="h-8"></div>
+              {/* <div className="h-8"></div> */}
 
               <div className="relative flex justify-between">
                 <QuantitySelector item={cartItem} countryCode={countryCode} />
@@ -73,7 +73,7 @@ const InquiryCartDropdownItem = ({ cartItem }: Props) => {
             {/* PRICE SECTION */}
             <div className="flex flex-1 flex-col justify-end pr-4 pb-2">
               <div className="flex flex-col items-end justify-end">
-                {isVariantDiscounted(cartItem) && (
+                {/* {isVariantDiscounted(cartItem) && (
                   <>
                     <div className="flex flex-row-reverse gap-1 bg-red-700 text-white p-0.5 rounded-sm text-xs">
                       <span>{getDiscountPercent(cartItem)?.toFixed(0)}</span>
@@ -88,15 +88,15 @@ const InquiryCartDropdownItem = ({ cartItem }: Props) => {
                       <span>تومان</span>
                     </div>
                   </>
-                )}
+                )} */}
 
-                <div className="flex gap-1">
+                {/* <div className="flex gap-1">
                   <p className="font-semibold">
                     {convertToLocale({ amount: cartItem.total! })}
                     {cartItem.variant?.calculated_price?.calculated_amount}
                   </p>
                   <span className="text-xs self-center">تومان</span>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

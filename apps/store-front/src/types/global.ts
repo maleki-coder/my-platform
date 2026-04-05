@@ -20,13 +20,13 @@ export enum InquiryCartStatus {
 }
 export type InquiryCartCurrency = "USD" | "CYN" | "IRR";
 export interface InquiryCartItemBase {
-  id: string;
-  cart_id: string;
+  id?: string;
+  cart_id?: string;
   title: string;
   quantity: number;
-  deleted_at: string;
-  created_at: string;
-  updated_at: string;
+  deleted_at?: string;
+  created_at?: string;
+  updated_at?: string;
 };
 export interface InquiryCartItem extends InquiryCartItemBase {
   product_id?: string;
