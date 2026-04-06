@@ -3,17 +3,19 @@
 import { usePathname } from "next/navigation"
 import MobileBottomNav from "@modules/layout/templates/mobile-bottom-nav"
 import { HttpTypes } from "@medusajs/types"
-import { CategoryWithImages } from "types/global"
+import { CategoryWithImages, InquiryCartResponse } from "types/global"
 import { MobileMenuSheet } from "../mobile-menu-sheet"
 
 interface Props {
   cart: HttpTypes.StoreCart
+  cartInquiry: InquiryCartResponse 
   categories: CategoryWithImages[]
   footerNode: React.ReactNode 
 }
 
 export default function LayoutFooterController({
   cart,
+  cartInquiry,
   categories, 
   footerNode,
 }: Props) {
@@ -47,7 +49,7 @@ export default function LayoutFooterController({
         - Visibility: Native CSS ensures this is strictly hidden on Desktop! 
       */}
       <div className="block md:hidden">
-        <MobileBottomNav cart={cart} />
+        <MobileBottomNav cart={cart} cartInquiry={cartInquiry} />
       </div>
 
       {/* Assuming MobileMenuSheet handles its own responsive visibility internally */}

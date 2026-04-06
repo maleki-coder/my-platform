@@ -15,9 +15,10 @@ import { Button } from "@lib/components/ui/button"
 import { Label } from "@lib/components/ui/label"
 import { Input } from "@lib/components/ui/input"
 import { Spinner } from "@lib/components/ui/spinner"
-// 🚀 1. Import your Server Action! Adjust the path based on your architecture.
+// 1. Import your Server Action! Adjust the path based on your architecture.
 import { addToInquiryCart } from "@lib/data/cart"
-import { InquiryCartItem } from "types/global"
+import { InquiryCartCurrency, InquiryCartItem } from "types/global"
+import CurrencySelect from "@modules/common/components/currency-select"
 
 const AddItemModal = () => {
   const {
@@ -29,11 +30,12 @@ const AddItemModal = () => {
   // We use useTransition for smooth non-blocking UI updates during Server Actions!
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const [selectedCurrency, setSelectedCurrency] =
+    useState<InquiryCartCurrency>("USD")
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
-
     const formData = new FormData(e.currentTarget)
     const uniqueManualId = `manual_${
       crypto.randomUUID ? crypto.randomUUID() : Date.now()
@@ -51,7 +53,7 @@ const AddItemModal = () => {
       description: formData.get("description") as string,
       product_id: uniqueManualId,
       // You can inject defaults or other necessary fields here!
-      currency: "USD", // Defaulting to IRR, or you could add a currency selector in the modal
+      currency: selectedCurrency, // Defaulting to IRR, or you could add a currency selector in the modal
     }
 
     startTransition(async () => {
@@ -147,13 +149,12 @@ const AddItemModal = () => {
 
             <div className="grid grid-cols-2 gap-x-4">
               <div className="space-y-2">
-                <Label htmlFor="new_brand">برند</Label>
-                <Input
-                  id="new_brand"
-                  name="brand"
-                  placeholder="مثال: STMicroelectronics"
-                  disabled={isPending}
-                />
+                <Label htmlFor="new_package">نوع ارز</Label>
+                <CurrencySelect 
+                value={selectedCurrency}
+                onChange={(newCurrency) => {
+                  setSelectedCurrency(newCurrency)
+                }}/>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="new_package">پکیج</Label>
@@ -165,18 +166,28 @@ const AddItemModal = () => {
                 />
               </div>
             </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="new_link">لینک محصول (اختیاری)</Label>
-              <Input
-                id="new_link"
-                name="link"
-                type="url"
-                dir="ltr"
-                className="text-left"
-                placeholder="https://..."
-                disabled={isPending}
-              />
+            <div className="grid grid-cols-2 gap-x-4">
+              <div className="space-y-2">
+                <Label htmlFor="new_brand">برند</Label>
+                <Input
+                  id="new_brand"
+                  name="brand"
+                  placeholder="مثال: STMicroelectronics"
+                  disabled={isPending}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="new_link">لینک محصول (اختیاری)</Label>
+                <Input
+                  id="new_link"
+                  name="link"
+                  type="url"
+                  dir="ltr"
+                  className="text-left"
+                  placeholder="https://..."
+                  disabled={isPending}
+                />
+              </div>
             </div>
 
             <div className="space-y-2">

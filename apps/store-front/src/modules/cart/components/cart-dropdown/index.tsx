@@ -160,7 +160,7 @@ const CartDropdown = ({
               />
             </>
           ) : (
-            <EmptyCart close={close} />
+            <EmptyCart title="سبد خرید شما خالی است!" close={close} />
           )}
         </PopoverContent>
       </Popover>

@@ -14,34 +14,13 @@ const EmptyCartMessage = () => {
       </div>
       <div className="flex flex-col items-center">
         <p className="text-base font-semibold leading-4 text-gray-700 lg:text-[22px]">
-          سبد خرید شما خالی است.
+          لیست استعلام شما خالی است.
         </p>
       </div>
       <LocalizedClientLink href="/">
         <Button className="cursor-pointer">مشاهده محصولات</Button>
       </LocalizedClientLink>
     </div>
-    // <div className="lg:border rounded-2xl w-full flex py-11 flex-col items-center">
-    //   <div className="max-w-48 w-48 h-48 mb-2.5 mt-11">
-    //     <div className="w-full relative">
-    //       <div className="absolute inset-0 w-full h-full">
-    //         <Thumbnail
-    //           thumbnail={"/images/empty-cart.jpg"}
-    //           images={null}
-    //           size="square"
-    //         />
-    //       </div>
-    //     </div>
-    //   </div>
-    //   <div className="text-center">
-    //     <p className="font-bold text-2xl mb-2">سبد خرید شما خالیه!</p>
-    //     <p className="text-xl text-gray-600 font-medium">
-    //       <LocalizedClientLink href="/store">
-    //         <Button className="cursor-pointer">مشاهده محصولات</Button>
-    //       </LocalizedClientLink>
-    //     </p>
-    //   </div>
-    // </div>
   )
 }
 

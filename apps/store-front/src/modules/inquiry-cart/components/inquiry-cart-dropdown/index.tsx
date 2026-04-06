@@ -10,15 +10,15 @@ import {
 import { useCustomer } from "@lib/context/customer-context"
 import { convertToLocale } from "@lib/util/money"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { ClipboardList } from "lucide-react" // 🎨 Changed Icon!
+import { ClipboardList } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"
 import CartDropdownHeader from "@modules/common/components/cart-dropdown-header"
-import CartDropdownItem from "@modules/cart/components/cart-dropdown-item"
-import CartDropdownFooter from "@modules/cart/components/cart-dropdown-footer"
+
 import EmptyCart from "@modules/common/components/empty-cart"
 import { getTotalQuantity } from "@lib/util/get-total-quantity"
-import InquiryCartDropdownItem from "../inquiry-cart-dropdown-item"
+import InquiryCartDropdownItem from "@modules/inquiry-cart/components/inquiry-cart-dropdown-item"
+import InquiryCartDropdownFooter from "@modules/inquiry-cart/components/inquiry-cart-dropdown-footer"
 
 const InquiryCartDropdown = ({
   cart: cartState,
@@ -141,18 +141,16 @@ const InquiryCartDropdown = ({
                     <InquiryCartDropdownItem key={item.id} cartItem={item} />
                   ))}
               </div>
-              <CartDropdownFooter
-                total={total}
+              <InquiryCartDropdownFooter
                 isNavigating={isNavigating}
                 isLoading={isLoading}
                 error={error}
                 customer={customer}
-                convertToLocale={convertToLocale}
                 handleLoginOrOrder={handleSubmitInquiry}
               />
             </>
           ) : (
-            <EmptyCart close={close} />
+            <EmptyCart title="لیست استعلام شما خالی است!" close={close} />
           )}
         </PopoverContent>
       </Popover>

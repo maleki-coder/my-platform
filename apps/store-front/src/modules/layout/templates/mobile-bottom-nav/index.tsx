@@ -3,15 +3,22 @@ import { MOBILE_FOOTER_HEIGHT } from "@lib/util/constants"
 import { HttpTypes } from "@medusajs/types"
 import MobileCategoryButton from "@modules/layout/components/mobile-category-button"
 import { NavItem } from "@modules/layout/components/mobile-nav-item"
-import { BookAIcon, HomeIcon, ShoppingCart, UserIcon } from "lucide-react"
+import { ClipboardList, HomeIcon, ShoppingCart, UserIcon } from "lucide-react"
+import { InquiryCartResponse } from "types/global"
 
 export default function MobileBottomNav({
   cart: cartState,
+  cartInquiry: cartInquiry
 }: {
   cart?: HttpTypes.StoreCart | null
+  cartInquiry? : InquiryCartResponse
 }) {
   const totalItems =
     cartState?.items?.reduce((acc, item) => {
+      return acc + item.quantity
+    }, 0) || 0
+  const totalInquiryItems =
+    cartInquiry?.items?.reduce((acc, item) => {
       return acc + item.quantity
     }, 0) || 0
   return (
@@ -33,7 +40,20 @@ export default function MobileBottomNav({
               ) : null
             }
           />
-          <NavItem className="flex-1" href="/blog" icon={<BookAIcon />} label="بلاگ" />
+          <NavItem
+            className="flex-1"
+            href="/inquiry-cart"
+            icon={<ClipboardList className="text-orange-500" />}
+            label="لیست استعلام"
+            badge={
+              totalInquiryItems > 0 ? (
+                <Badge className="absolute top-6.5 left-8 w-5 h-5 bg-orange-500">
+                  {totalInquiryItems}
+                </Badge>
+              ) : null
+            }
+          />
+          {/* <NavItem className="flex-1" href="/blog" icon={<BookAIcon />} label="بلاگ" /> */}
           <NavItem className="flex-1" href="/account" icon={<UserIcon />} label="حساب" />
         </div>
       </div>

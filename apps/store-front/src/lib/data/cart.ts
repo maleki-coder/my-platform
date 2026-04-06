@@ -472,7 +472,7 @@ async function createNewInquiryCart() {
   // 💡 CROSS-DEVICE MAGIC: If you have a logged-in user,
   // getAuthHeaders() should ideally pass their token,
   // or you can pass customer_id in the payload!
-  const response = await sdk.client.fetch<{ cart: { id: string } }>(
+  const response = await sdk.client.fetch<{ id: string }>(
     `/store/inquiry-carts`,
     {
       method: "POST",
@@ -485,8 +485,8 @@ async function createNewInquiryCart() {
   )
 
   // Save the new $ID$ to the browser cookie
-  await setInquiryCartId(response.cart.id)
-  return response.cart.id
+  await setInquiryCartId(response.id)
+  return response.id
 }
 
 export async function retrieveInquiryCart(cartId?: string) {
@@ -513,7 +513,7 @@ export async function retrieveInquiryCart(cartId?: string) {
         error
       )
 
-      // 🚀 THE MAGIC FIX: If cart is not found, DESTROY the ghost cookie!
+      // THE MAGIC FIX: If cart is not found, DESTROY the ghost cookie!
       // This forces the system to create a brand new cart next time.
       if (!cartId) {
         await removeInquiryCartId()
