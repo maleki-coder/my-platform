@@ -12,6 +12,7 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
+import { Button } from "@lib/components/ui/button"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -125,8 +126,21 @@ export default function ProductActions({
 
     setIsAdding(true)
 
+    await addToCart({
+      variantId: selectedVariant.id,
+      quantity: 1,
+      countryCode,
+    })
+
+    setIsAdding(false)
+  }
+  // add the selected variant to the cart
+  const handleAddToInquiryCart = async () => {
+    if (!selectedVariant?.id) return null
+
+    setIsAdding(true)
+
     await addToInquiryCart({
-      // variantId: selectedVariant.id,
       quantity: 1,
       product_id: product.id,
       variant_id: selectedVariant.id,
@@ -166,7 +180,7 @@ export default function ProductActions({
 
         <ProductPrice product={product} variant={selectedVariant} />
 
-        <button
+        <Button
           onClick={handleAddToCart}
           disabled={
             !inStock ||
@@ -185,7 +199,25 @@ export default function ProductActions({
             : !inStock || !isValidVariant
             ? "Out of stock"
             : "Add to cart"}
-        </button>
+        </Button>
+        <Button
+          onClick={handleAddToInquiryCart}
+          disabled={
+            !inStock ||
+            !selectedVariant ||
+            !!disabled ||
+            isAdding ||
+            !isValidVariant
+          }
+          className="w-full h-10"
+          data-testid="add-product-button"
+        >
+          {!selectedVariant
+            ? "Select variant"
+            : !isValidVariant
+            ? "Out of stock"
+            : "Add to inquiry cart"}
+        </Button>
         <MobileActions
           product={product}
           variant={selectedVariant}

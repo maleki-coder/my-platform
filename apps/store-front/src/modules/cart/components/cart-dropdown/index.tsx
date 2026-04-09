@@ -11,7 +11,7 @@ import { convertToLocale } from "@lib/util/money"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { ShoppingCart } from "lucide-react"
-import { usePathname, useRouter } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"
 import CartDropdownHeader from "@modules/common/components/cart-dropdown-header"
 import CartDropdownItem from "@modules/cart/components/cart-dropdown-item"
@@ -33,6 +33,8 @@ const CartDropdown = ({
   cart?: HttpTypes.StoreCart | null
 }) => {
   const step = getCheckoutStep(cartState!)
+  const params = useParams()
+  const countryCode = (params?.countryCode as string) || "ir"
   const router = useRouter()
   const { customer, isLoading, error } = useCustomer()
   const [activeTimer, setActiveTimer] = useState<NodeJS.Timeout | undefined>(
@@ -65,7 +67,7 @@ const CartDropdown = ({
       clearTimeout(activeTimer)
     }
 
-    if (!pathname.includes("ir/cart")) {
+    if (!pathname.includes(`${countryCode}/cart`)) {
       open()
     }
   }
@@ -83,7 +85,7 @@ const CartDropdown = ({
 
   // open cart dropdown when modifying the cart items, but only if we're not on the cart page
   useEffect(() => {
-    if (itemRef.current !== totalItems && !pathname.includes("ir/cart")) {
+    if (itemRef.current !== totalItems && !pathname.includes(`${countryCode}/cart`)) {
       timedOpen()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,7 +116,7 @@ const CartDropdown = ({
               {totalItems > 0 && (
                 <Badge
                   variant="default"
-                  className="absolute left-4 top-4 min-w-5 w-fit h-5"
+                  className="absolute left-4 pt-1.25 top-4 min-w-5 w-fit h-5"
                 >
                   {totalItems}
                 </Badge>
@@ -129,7 +131,7 @@ const CartDropdown = ({
           align="center"
           side="bottom"
           style={{ width: "400px", maxHeight: "calc(100vh - 10rem)" }}
-          className="rounded-xl left-6 top-4 shadow-custom border z-200 overflow-auto p-0 m-0 relative flex flex-col"
+          className="rounded-xl left-6 top-4 shadow-custom border z-200 overflow-auto p-0 m-0 relative hidden md:flex flex-col"
         >
           <CartDropdownHeader
             cartState={cartState}

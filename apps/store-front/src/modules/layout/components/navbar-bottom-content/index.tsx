@@ -4,7 +4,7 @@ import {
   ItemMedia,
   ItemTitle,
 } from "@lib/components/ui/item"
-import { BadgeCheckIcon, MessageCircleQuestionIcon } from "lucide-react"
+import { MessageCircleQuestionIcon } from "lucide-react"
 
 import Link from "next/link"
 import CategoryButton from "../category-button"
@@ -13,15 +13,10 @@ interface HeaderNavBarBottomContentProps {
   className?: string
 }
 export const headerItemsMap: Record<string, any> = {
-  "installment-purchase": {
-    translation: "خرید اقساطی",
-    icon: <BadgeCheckIcon className="size-4" />,
-    href: "test",
-  },
   inquiry: {
-    translation: "استعلام",
+    translation: "استعلام قطعه",
     icon: <MessageCircleQuestionIcon className="size-4" />,
-    href: "second",
+    href: "/ir/inquiry-cart",
   },
 }
 export default function HeaderNavBarBottomContent({
@@ -35,7 +30,7 @@ export default function HeaderNavBarBottomContent({
           <Link href={value.href}>
             <ItemMedia>{value.icon}</ItemMedia>
             <ItemContent>
-              <ItemTitle className="text-xs">{value.translation}</ItemTitle>
+              <ItemTitle className="text-sm font-bold transition-colors text-gray-900">{value.translation}</ItemTitle>
             </ItemContent>
           </Link>
         </Item>

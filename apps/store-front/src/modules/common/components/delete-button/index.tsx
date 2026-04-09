@@ -5,6 +5,7 @@ import { useState } from "react"
 
 const DeleteButton = ({
   id,
+  className
 }: {
   id: string
   className?: string
@@ -20,7 +21,7 @@ const DeleteButton = ({
 
   return (
       <button
-        className="w-full h-full flex justify-center items-center cursor-pointer"
+        className={`w-full h-full flex justify-center items-center cursor-pointer ${className}`}
         onClick={() => handleDelete(id)}
       >
         {isDeleting ? (

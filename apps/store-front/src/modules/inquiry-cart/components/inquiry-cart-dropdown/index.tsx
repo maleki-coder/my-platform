@@ -8,10 +8,9 @@ import {
   PopoverTrigger,
 } from "@lib/components/ui/popover"
 import { useCustomer } from "@lib/context/customer-context"
-import { convertToLocale } from "@lib/util/money"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import { ClipboardList } from "lucide-react"
-import { usePathname, useRouter } from "next/navigation"
+import { useParams, usePathname, useRouter } from "next/navigation"
 import { useEffect, useRef, useState, useTransition } from "react"
 import CartDropdownHeader from "@modules/common/components/cart-dropdown-header"
 
@@ -26,6 +25,9 @@ const InquiryCartDropdown = ({
   cart?: any | null // Replace 'any' with your InquiryCart type
 }) => {
   const router = useRouter()
+  const params = useParams()
+  // Safely extract the countryCode (fallback to "ir" if somehow undefined)
+  const countryCode = (params?.countryCode as string) || "ir"
   const { customer, isLoading, error } = useCustomer()
   const [activeTimer, setActiveTimer] = useState<NodeJS.Timeout | undefined>(
     undefined
@@ -42,7 +44,7 @@ const InquiryCartDropdown = ({
       (acc: number, item: any) => acc + item.quantity,
       0
     ) || 0
-  const total = (cartState?.total ?? 0) - (cartState?.shipping_total ?? 0)
+  // const total = (cartState?.total ?? 0) - (cartState?.shipping_total ?? 0)
 
   const itemRef = useRef<number>(totalItems || 0)
   const pathname = usePathname()
@@ -56,7 +58,7 @@ const InquiryCartDropdown = ({
   const openAndCancel = () => {
     if (activeTimer) clearTimeout(activeTimer)
     // Don't open if we are already on the inquiry cart page
-    if (!pathname.includes("ir/inquiry-cart")) {
+    if (!pathname.includes(`${countryCode}/inquiry-cart`)) {
       open()
     }
   }
@@ -70,7 +72,7 @@ const InquiryCartDropdown = ({
   useEffect(() => {
     if (
       itemRef.current !== totalItems &&
-      !pathname.includes("ir/inquiry-cart")
+      !pathname.includes(`${countryCode}/inquiry-cart`)
     ) {
       timedOpen()
     }
@@ -85,7 +87,7 @@ const InquiryCartDropdown = ({
       })
     } else {
       startTransition(() => {
-        router.push("/inquiry-checkout") // Update this route to your actual inquiry checkout page!
+        router.push(`/${countryCode}/inquiry-cart`) // Update this route to your actual inquiry checkout page!
       })
     }
   }
@@ -104,7 +106,7 @@ const InquiryCartDropdown = ({
               {totalItems > 0 && (
                 <Badge
                   variant="destructive"
-                  className="absolute left-4 top-4 w-fit min-w-5 h-5 bg-orange-500"
+                  className="absolute left-4 top-4 pt-1.25 w-fit min-w-5 h-5 bg-orange-500"
                 >
                   {totalItems}
                 </Badge>
@@ -119,7 +121,7 @@ const InquiryCartDropdown = ({
           align="center"
           side="bottom"
           style={{ width: "400px", maxHeight: "calc(100vh - 10rem)" }}
-          className="rounded-xl left-6 top-4 shadow-custom border z-200 overflow-auto p-0 m-0 relative flex flex-col"
+          className="rounded-xl left-6 top-4 shadow-custom border z-200 overflow-auto p-0 m-0 relative hidden md:flex flex-col"
         >
           {/* Reusing your header, but you might want to pass a title prop if it says "Cart" hardcoded inside */}
           <CartDropdownHeader

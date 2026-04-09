@@ -23,7 +23,7 @@ export default async function Addresses(props: {
 
   return (
     <div className="w-full" data-testid="addresses-page-wrapper">
-      <div className="mb-4 lg:mt-0 mt-4 flex flex-col gap-y-4">
+      <div className="mb-4 flex flex-col gap-y-4">
         <h1 className="text-2xl-semi">نشانی ها</h1>
       </div>
       <AddressBook customer={customer} showAddresses={true} />

@@ -18,7 +18,7 @@ export default async function Orders() {
 
   return (
     <div className="w-full" data-testid="orders-page-wrapper">
-      <div className="mb-4 lg:mt-0 mt-4 flex flex-col gap-y-4">
+      <div className="mb-4 flex flex-col gap-y-4">
         <h1 className="text-2xl-semi">سفارشات</h1>
       </div>
       <OrderOverview orders={orders} />

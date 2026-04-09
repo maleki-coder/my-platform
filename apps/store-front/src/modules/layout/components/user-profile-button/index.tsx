@@ -16,6 +16,7 @@ import { signout } from "@lib/data/customer"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import {
   ChevronLeftIcon,
+  ClipboardList,
   Edit2Icon,
   FileIcon,
   ListOrderedIcon,
@@ -65,6 +66,16 @@ export const UserProfileButton = () => {
       icon: <UserRoundPlusIcon size={16} />,
     },
     {
+      name: "سفارش های من",
+      redirectUrl: "/account/orders",
+      icon: <ListOrderedIcon size={16} />,
+    },
+    {
+      name: "استعلام های من",
+      redirectUrl: "/account/inquiries",
+      icon: <ClipboardList size={16} />,
+    },
+    {
       name: "ویرایش مشخصات فردی",
       redirectUrl: "/account/profile",
       icon: <Edit2Icon size={16} />,
@@ -73,11 +84,6 @@ export const UserProfileButton = () => {
       name: "لیست علاقه مندی",
       redirectUrl: "/account/like",
       icon: <FileIcon size={16} />,
-    },
-    {
-      name: "سفارش های من",
-      redirectUrl: "/account/orders",
-      icon: <ListOrderedIcon size={16} />,
     },
   ]
   return (

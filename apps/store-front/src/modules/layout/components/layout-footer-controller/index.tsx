@@ -8,21 +8,21 @@ import { MobileMenuSheet } from "../mobile-menu-sheet"
 
 interface Props {
   cart: HttpTypes.StoreCart
-  cartInquiry: InquiryCartResponse 
+  cartInquiry: InquiryCartResponse
   categories: CategoryWithImages[]
-  footerNode: React.ReactNode 
+  footerNode: React.ReactNode
 }
 
 export default function LayoutFooterController({
   cart,
   cartInquiry,
-  categories, 
+  categories,
   footerNode,
 }: Props) {
   const pathname = usePathname() || "/"
   const normalizedPath = pathname.replace(/^\/(ir|en|de)(\/|$)/, "/")
-  const MOBILE_NAV_ROUTES = ["/checkout", "/cart"]
-  
+  const MOBILE_NAV_ROUTES = ["/checkout", "/cart", "/inquiry-cart"]
+
   // We keep this JS logic because it depends on the URL route, not the screen size!
   const isMobileNavRoute = MOBILE_NAV_ROUTES.some(
     (route) =>
@@ -36,9 +36,11 @@ export default function LayoutFooterController({
         - Visibility: Hidden on mobile IF it's a nav route. ALWAYS visible on desktop.
         - Margins: Dynamically injected via CSS variables to avoid Tailwind compiler issues!
       */}
-      <div 
+      <div
         className={`max-w-screen-2xl w-full p-4 ${
-          isMobileNavRoute ? "hidden md:block " : "block md:mb-0 mobile-footer-nav-route-bottom-margin"
+          isMobileNavRoute
+            ? "hidden md:block"
+            : "block md:mb-0 mobile-footer-nav-route-bottom-margin"
         }`}
       >
         {footerNode}

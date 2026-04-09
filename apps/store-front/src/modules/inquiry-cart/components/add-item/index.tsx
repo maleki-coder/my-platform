@@ -82,16 +82,16 @@ const AddItemModal = () => {
       }}
     >
       <DialogTrigger asChild>
-        <button className="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200 rounded-full px-4 py-2 transition-colors cursor-pointer text-sm font-medium">
+        <Button className="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-blue-100 border border-blue-200 px-4 py-2 transition-colors cursor-pointer text-sm font-medium">
           <PlusIcon size={18} />
-          <span>افزودن کالای جدید</span>
-        </button>
+          <span>افزودن قطعه جدید</span>
+        </Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-150 w-full max-h-screen md:max-h-[90vh] overflow-y-auto z-10000">
         <DialogHeader>
           <DialogTitle className="text-right text-lg font-bold">
-            افزودن کالای جدید به استعلام
+            افزودن قطعه جدید به استعلام
           </DialogTitle>
         </DialogHeader>
 

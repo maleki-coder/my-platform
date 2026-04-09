@@ -81,9 +81,8 @@ const DesktopBottomNavBar = () => (
 export default function Header() {
   return (
     <header
-      className={`mx-auto w-full max-w-screen-2xl fixed max-h-${DESKTOP_HEADER_HEIGHT} w-full left-0 right-0 top-0 z-100 flex flex-col border-b border-brand-border bg-white`}
+      className={`max-w-screen-2xl px-4 fixed max-h-${DESKTOP_HEADER_HEIGHT} w-full left-0 right-0 top-0 z-100 flex flex-col border-b bg-white`}
     >
-      <div className="w-full mx-auto px-4 md:px-8">
         <div className="flex w-full flex-col items-center justify-between py-1 md:pt-4">
           {/* Top header section */}
           <div className="flex w-full items-center justify-between gap-4 md:pb-2.5">
@@ -102,7 +101,6 @@ export default function Header() {
           {/* Bottom navbar - Desktop only */}
           <DesktopBottomNavBar />
         </div>
-      </div>
     </header>
   )
 }

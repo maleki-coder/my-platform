@@ -34,7 +34,7 @@ export default function MobileBottomNav({
             label="سبد خرید"
             badge={
               totalItems > 0 ? (
-                <Badge className="absolute top-6.5 left-8 w-5 h-5">
+                <Badge className="absolute top-6.5 left-8 w-fit h-5">
                   {totalItems}
                 </Badge>
               ) : null
@@ -47,7 +47,7 @@ export default function MobileBottomNav({
             label="لیست استعلام"
             badge={
               totalInquiryItems > 0 ? (
-                <Badge className="absolute top-6.5 left-8 w-5 h-5 bg-orange-500">
+                <Badge className="absolute top-6.5 left-8 w-fit h-5 bg-orange-500">
                   {totalInquiryItems}
                 </Badge>
               ) : null

@@ -116,22 +116,22 @@ export default function ProductReviewsPage() {
           <Table.Header>
             <Table.Row>
               {/* ستون اول: هدر ثابت (Sticky Header) */}
-              <Table.HeaderCell className="sticky left-0 bg-ui-bg-subtle border-ui-border-base whitespace-nowrap px-6">
+              <Table.HeaderCell className="sticky text-right left-0 bg-ui-bg-subtle border-ui-border-base whitespace-nowrap px-6">
                 محصول
               </Table.HeaderCell>
-              <Table.HeaderCell className="whitespace-nowrap px-6">
+              <Table.HeaderCell className="whitespace-nowrap text-right px-6">
                 مشتری
               </Table.HeaderCell>
-              <Table.HeaderCell className="whitespace-nowrap text-center px-6">
+              <Table.HeaderCell className="whitespace-nowrap text-right px-6">
                 امتیاز
               </Table.HeaderCell>
-              <Table.HeaderCell className="min-w-62.5 px-6">
+              <Table.HeaderCell className="min-w-62.5 text-right px-6">
                 نظر
               </Table.HeaderCell>
-              <Table.HeaderCell className="whitespace-nowrap px-6 ">
+              <Table.HeaderCell className="whitespace-nowrap text-right px-6 ">
                 وضعیت
               </Table.HeaderCell>
-              <Table.HeaderCell className="whitespace-nowrap w-12.5 px-6"></Table.HeaderCell>
+              <Table.HeaderCell className="whitespace-nowrap w-12.5 text-right px-6"></Table.HeaderCell>
             </Table.Row>
           </Table.Header>
           <Table.Body>
@@ -159,7 +159,7 @@ export default function ProductReviewsPage() {
                   <Table.Cell className="whitespace-nowrap text-ui-fg-subtle px-6">
                     {review.customer_name}
                   </Table.Cell>
-                  <Table.Cell className="text-center font-medium whitespace-nowrap px-6">
+                  <Table.Cell className="font-medium whitespace-nowrap px-6">
                     {review.rating} / 5
                   </Table.Cell>
                   <Table.Cell className="text-ui-fg-subtle px-6">

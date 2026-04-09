@@ -31,7 +31,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
     <>
       <div className="flex w-full items-center justify-between px-4 pb-4 md:px-3">
         <div className="flex items-center gap-x-1.5 xl:gap-x-3">
-          <p className="text-sm font-bold xl:text-xl leading-5.5">
+          <p className="text-lg font-bold xl:text-xl leading-5.5">
             سبد خرید شما
           </p>
         </div>
@@ -58,8 +58,8 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
                   <></>
                 )}
               </div>
-              <div className="absolute left-3 top-2">
-                <DeleteButton id={item.id} className="p-2 border rounded-4xl" />
+              <div className="absolute left-3 top-2 z-5">
+                <DeleteButton id={item.id} className="w-full h-full flex justify-center items-center cursor-pointer p-2 border rounded-4xl" />
               </div>
               <div className="flex w-full justify-between">
                 <div className="flex w-0 grow flex-col pt-5">

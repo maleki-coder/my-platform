@@ -24,7 +24,7 @@ export default async function Profile() {
 
   return (
     <div className="w-full" data-testid="profile-page-wrapper">
-      <div className="mb-4 lg:mt-0 mt-4 flex flex-col gap-y-4">
+      <div className="mb-4 flex flex-col gap-y-4">
         <h1 className="text-2xl-semi">مشخصات</h1>
       </div>
       <div className="flex flex-col gap-y-8 w-full">

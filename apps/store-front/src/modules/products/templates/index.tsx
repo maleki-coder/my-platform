@@ -31,7 +31,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
   return (
     <>
       <div
-        className="content-container  flex flex-col small:flex-row small:items-start py-6 relative"
+        className="max-w-screen-2xl  flex flex-col small:flex-row small:items-start py-6 relative"
         data-testid="product-container"
       >
         <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-75 w-full py-8 gap-y-6">
@@ -44,20 +44,15 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         <div className="flex flex-col small:sticky small:top-48 small:py-0 small:max-w-75 w-full py-8 gap-y-12">
           <ProductOnboardingCta />
           <Suspense
-            fallback={
-              <ProductActions
-                disabled={true}
-                product={product}
-              />
-            }
+            fallback={<ProductActions disabled={true} product={product} />}
           >
             <ProductActionsWrapper product={product} />
           </Suspense>
         </div>
       </div>
-      <ProductReviews productId={product.id}/>
+      <ProductReviews productId={product.id} />
       <div
-        className="content-container my-16 small:my-32"
+        className="max-w-screen-2xl my-16 small:my-32"
         data-testid="related-products-container"
       >
         <Suspense fallback={<SkeletonRelatedProducts />}>

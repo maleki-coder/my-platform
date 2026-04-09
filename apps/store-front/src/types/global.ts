@@ -13,6 +13,13 @@ export interface InquiryCartResponse {
   created_at: string;
   updated_at: string;
 };
+export type SubmitInquiryPayload = {
+  email: string
+  phone: string
+  customer_name: string
+  customer_id: string
+  notes?: string
+}
 export enum InquiryCartStatus {
   ACTIVE = "active",
   SUBMITTED = "submitted",

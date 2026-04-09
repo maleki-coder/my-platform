@@ -10,6 +10,7 @@ import {
   ChevronLeftIcon,
   LogOutIcon,
   Loader2Icon,
+  ClipboardList,
 } from "lucide-react"
 import {
   Item,
@@ -26,6 +27,11 @@ const profileItems = [
     name: "سفارش های من",
     redirectUrl: "/account/orders",
     icon: ListOrderedIcon,
+  },
+  {
+    name: "استعلام های من",
+    redirectUrl: "/account/inquiries",
+    icon: ClipboardList,
   },
   {
     name: "ویرایش مشخصات فردی",

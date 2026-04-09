@@ -6,13 +6,15 @@ import ErrorMessage from "../../../checkout/components/error-message"
 import { Input } from "@lib/components/ui/input"
 import { useCustomer } from "@lib/context/customer-context"
 import { ChevronRight } from "lucide-react"
+import { useRouter } from "next/navigation"
 
 type Props = {
   phone: string
   onBack: () => void
+  backTo?: string | null
 }
 
-export const Otp = ({ phone, onBack }: Props) => {
+export const Otp = ({ phone, onBack, backTo }: Props) => {
   const [otp, setOtp] = useState<string>("")
   const [error, setError] = useState<string>("")
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -20,7 +22,7 @@ export const Otp = ({ phone, onBack }: Props) => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([])
 
   const { refreshCustomer } = useCustomer()
-
+  const router = useRouter()
   const handleSubmit = async () => {
     setIsLoading(true)
     const response = await verifyOtp({
@@ -31,6 +33,14 @@ export const Otp = ({ phone, onBack }: Props) => {
     setIsLoading(false)
     if (response.success) {
       await refreshCustomer()
+      const isSafeRedirect = backTo && backTo.startsWith("/")
+      if (isSafeRedirect) {
+        router.push(backTo)
+      } else {
+        router.push("/account")
+      }
+      router.refresh()
+      return
     }
     if (typeof response === "string") {
       setError(response)
@@ -84,10 +94,7 @@ export const Otp = ({ phone, onBack }: Props) => {
     >
       <div className="relative h-8 w-full">
         <div className="flex flex-col justify-center items-center h-8">
-          <button
-            type="button"
-            onClick={onBack}
-          >
+          <button type="button" onClick={onBack}>
             <ChevronRight className="absolute right-0 cursor-pointer" />
           </button>
           <img

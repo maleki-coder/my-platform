@@ -5,8 +5,8 @@ import { LOGIN_VIEW } from "@modules/account/templates/login-template"
 import ErrorMessage from "@modules/checkout/components/error-message"
 import { useState } from "react"
 import "react-phone-number-input/style.css"
-import { Otp } from "../otp"
-import { useParams } from "next/navigation"
+import { Otp } from "@modules/account/components/otp"
+import { useParams, useSearchParams } from "next/navigation"
 import { Button } from "@lib/components/ui/button"
 import { Label } from "@lib/components/ui/label"
 import { Input } from "@lib/components/ui/input"
@@ -21,6 +21,8 @@ const LoginPhone = ({ setCurrentView }: Props) => {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const [enterOtp, setEnterOtp] = useState(false)
+  const searchParams = useSearchParams()
+  const backTo = searchParams.get("backTo")
   const { countryCode } = useParams() as { countryCode: string }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,7 +39,7 @@ const LoginPhone = ({ setCurrentView }: Props) => {
   }
 
   if (enterOtp) {
-    return <Otp phone={phone} onBack={() => setEnterOtp(false)} />
+    return <Otp phone={phone} backTo={backTo} onBack={() => setEnterOtp(false)} />
   }
 
   return (

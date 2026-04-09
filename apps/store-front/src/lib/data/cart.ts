@@ -5,6 +5,7 @@ import medusaError from "@lib/util/medusa-error"
 import { HttpTypes } from "@medusajs/types"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
+import * as xlsx from "xlsx"
 import {
   getAuthHeaders,
   getCacheOptions,
@@ -17,7 +18,11 @@ import {
   setInquiryCartId,
 } from "./cookies"
 import { getRegion } from "./regions"
-import { InquiryCartItem, InquiryCartResponse } from "types/global"
+import {
+  InquiryCartItem,
+  InquiryCartResponse,
+  SubmitInquiryPayload,
+} from "types/global"
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -651,7 +656,7 @@ export async function updateInquiryItem(
       return { success: false, error: "Quantity must be positive" }
     }
 
-    const headers = { ...(await getAuthHeaders()) }
+    const headers = await getAuthHeaders()
 
     // 🚀 FORCE UPDATE QUANTITY
     const updateResponse = await sdk.client.fetch<{
@@ -673,7 +678,6 @@ export async function updateInquiryItem(
         datasheet_url: body.datasheet_url,
       },
     })
-
     revalidateTag("inquiry-carts")
     return { success: true, cart: updateResponse.cart }
   } catch (error) {
@@ -719,5 +723,104 @@ export async function uploadDatasheetAction(formData: FormData) {
   } catch (error: any) {
     console.error("Server Action Error (upload):", error.message)
     return { success: false, error: "Internal server error during upload." }
+  }
+}
+
+export async function uploadBOMAction(formData: FormData) {
+  try {
+    const file = formData.get("file") as File
+    if (!file) throw new Error("No file provided in the payload.")
+
+    // Convert the file to an ArrayBuffer, then parse the workbook
+    const arrayBuffer = await file.arrayBuffer()
+    const workbook = xlsx.read(arrayBuffer, { type: "buffer" })
+
+    // Extract the first sheet
+    const sheetName = workbook.SheetNames[0]
+    const worksheet = workbook.Sheets[sheetName]
+
+    // Convert sheet to a 2D Array Matrix (header: 1 means array of arrays)
+    const rows = xlsx.utils.sheet_to_json<any[]>(worksheet, { header: 1 })
+
+    // We assume row 0 is the header (Title, Qty, etc.), so we start from index $i = 1$
+    const itemsToAdd = []
+
+    for (let i = 1; i < rows.length; i++) {
+      const row = rows[i]
+      const uniqueManualId = `manual_${
+        crypto.randomUUID ? crypto.randomUUID() : Date.now()
+      }`
+      // Skip completely empty rows
+      if (!row || row.length === 0) continue
+
+      // Map columns A-H to indices $0-7$
+      const itemPayload = {
+        title: row[0]?.toString() || "", // Column A
+        quantity: Number(row[1]) || 1, // Column B
+        target_price: Number(row[2]) || null, // Column C
+        currency: row[3]?.toString() || "USD", // Column D
+        package: row[4]?.toString() || "", // Column E
+        brand: row[5]?.toString() || "", // Column F
+        link: row[6]?.toString() || "", // Column G
+        description: row[7]?.toString() || "", // Column H
+        product_id: uniqueManualId,
+      }
+
+      // Only add if there is at least a title
+      if (itemPayload.title) {
+        itemsToAdd.push(itemPayload)
+      }
+    }
+
+    console.log(
+      `Successfully parsed $N = ${itemsToAdd.length}$ items from BOM.`
+    )
+
+    // TODO: Loop through itemsToAdd and call your Medusa backend to add them to the cart
+
+    for (const item of itemsToAdd) {
+      await addToInquiryCart({
+        title: item.title,
+        quantity: item.quantity,
+        target_price: String(item.target_price),
+        currency: item.currency,
+        package: item.brand,
+        link: item.link,
+        description: item.description,
+        product_id: item.product_id,
+      })
+    }
+
+    // Revalidate the cart to instantly update the UI! ✨
+    revalidateTag("inquiry-carts")
+
+    return { success: true, count: itemsToAdd.length }
+  } catch (error) {
+    console.error("BOM Parsing Error:", error)
+    return { success: false, error: "Failed to parse the Excel file." }
+  }
+}
+
+export async function submitInquiryCart(
+  cartId: string,
+  payload: SubmitInquiryPayload
+) {
+  try {
+    const headers = await getAuthHeaders()
+
+    const response = await sdk.client.fetch<{
+      cart: InquiryCartResponse
+    }>(`/store/inquiry-carts/${cartId}/submit`, {
+      method: "POST",
+      headers: headers,
+      body: payload,
+      cache: "no-store",
+    })
+    removeInquiryCartId()
+    revalidateTag("inquiry-carts")
+    return { success: true, data: response.cart }
+  } catch (error: any) {
+    console.error("Error submitting inquiry:", error.message)
+    return { success: false, error: error.message }
   }
 }

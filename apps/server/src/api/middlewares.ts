@@ -1,4 +1,5 @@
 import {
+  authenticate,
   defineMiddlewares,
   validateAndTransformBody,
 } from "@medusajs/framework/http";
@@ -15,6 +16,13 @@ import {
 import { Modules } from "@medusajs/framework/utils";
 export default defineMiddlewares({
   routes: [
+    {
+      // Protect all customer inquiry routes
+      matcher: "/store/inquiries*",
+      middlewares: [
+        authenticate("customer", ["session", "bearer"]),
+      ],
+    },
     {
       matcher: "/admin/categories/:category_id/images",
       method: ["POST"],

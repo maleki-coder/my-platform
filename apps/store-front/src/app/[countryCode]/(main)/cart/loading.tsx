@@ -6,7 +6,7 @@ import SkeletonSummaryCart from "@modules/skeletons/components/skeleton-summary-
 export default function Loading() {
   return (
     <div
-      className="content-container md:px-12 px-0 mt-2 md:mt-8"
+      className="max-w-screen-2xl px-4 mt-2 md:mt-8"
       data-testid="cart-container"
     >
       <div className="grid grid-cols-1 small:grid-cols-[1fr_360px] gap-x-16">

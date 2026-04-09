@@ -8,13 +8,7 @@ type OrderDetailsProps = {
   showStatus?: boolean
 }
 
-const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
-  const formatStatus = (str: string) => {
-    const formatted = str.split("_").join(" ")
-
-    return formatted.slice(0, 1).toUpperCase() + formatted.slice(1)
-  }
-
+const OrderDetails = ({ order }: OrderDetailsProps) => {
   return (
     <div className="flex flex-col">
       <h2 className="w-full flex gap-1 mt-4 items-center  text-sm font-medium lg:font-bold leading-5 mb-2">
@@ -47,7 +41,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
             <div className="flex w-fit items-start justify-between mb-4 pe-4 lg:w-fit!">
               <p className="whitespace-nowrap text-xs leading-5 text-gray-600 lg:text-sm lg:leading-6">
                 مبلغ کل:
-              </p> 
+              </p>
               <div className="flex items-center flex-wrap">
                 <p className="ms-2 text-xs font-bold leading-5 lg:text-sm lg:leading-6">
                   {convertToLocale({
@@ -69,7 +63,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
                     amount: order.shipping_subtotal,
                   })}
                 </p>
-                <span className="text-xs font-medium mr-1 text-gray-600! ">
+                <span className="text-xs font-medium mr-1 text-gray-600!">
                   تومان
                 </span>
               </div>
@@ -91,16 +85,16 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
             </div>
           </div>
           <div className="flex w-fit items-start justify-between mb-4 lg:mb-0! lg:w-fit!">
-            <p className="whitespace-nowrap text-xs leading-5 text-gray-600  lg:text-sm lg:leading-6">
+            <p className="whitespace-nowrap text-xs leading-5 text-gray-600 lg:text-sm lg:leading-6">
               مبلغ پرداخت شده:
             </p>
             <div className="flex items-center flex-wrap ">
-              <p className="ms-2  text-xs font-bold leading-5  lg:text-sm lg:leading-6">
+              <p className="ms-2 text-xs font-bold leading-5 lg:text-sm lg:leading-6">
                 {convertToLocale({
                   amount: order.total,
                 })}
               </p>
-              <span className=" text-xs font-medium mr-1 text-gray-600! ">
+              <span className="text-xs font-medium mr-1 text-gray-600! ">
                 تومان
               </span>
             </div>
@@ -108,49 +102,6 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
         </div>
       </div>
     </div>
-    // <div>
-    //   <p>
-    //     We have sent the order confirmation details to{" "}
-    //     <span
-    //       className="text-ui-fg-medium-plus font-bold"
-    //       data-testid="order-email"
-    //     >
-    //       {order.email}
-    //     </span>
-    //     .
-    //   </p>
-    //   <p className="mt-2">
-    //     Order date:{" "}
-    //     <span data-testid="order-date">
-    //       {new Date(order.created_at).toDateString()}
-    //     </span>
-    //   </p>
-    //   <p className="mt-2 text-ui-fg-interactive">
-    //     Order number: <span data-testid="order-id">{order.display_id}</span>
-    //   </p>
-
-    //   <div className="flex items-center text-compact-small gap-x-4 mt-4">
-    //     {showStatus && (
-    //       <>
-    //         <p>
-    //           Order status:{" "}
-    //           <span className="text-ui-fg-subtle " data-testid="order-status">
-    //             {formatStatus(order.fulfillment_status)}
-    //           </span>
-    //         </p>
-    //         <p>
-    //           Payment status:{" "}
-    //           <span
-    //             className="text-ui-fg-subtle "
-    //             sata-testid="order-payment-status"
-    //           >
-    //             {formatStatus(order.payment_status)}
-    //           </span>
-    //         </p>
-    //       </>
-    //     )}
-    //   </div>
-    // </div>
   )
 }
 

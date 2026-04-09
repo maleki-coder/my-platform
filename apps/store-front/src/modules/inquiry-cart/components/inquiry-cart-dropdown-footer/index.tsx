@@ -25,7 +25,7 @@ const InquiryCartDropdownFooter = ({
     if (isNavigating) {
       return <Spinner />
     }
-    return <div className="font-semibold">ادامه خرید</div>
+    return <div className="font-semibold">تکمیل لیست استعلام</div>
   })()
   return (
     <div className="sticky bottom-0 border-t-2 p-4 w-full flex flex-col gap-y-4">
