@@ -2,10 +2,7 @@ import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http";
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils";
 
 // --- GET DETAILS ---
-export const GET = async (
-  req: MedusaRequest,
-  res: MedusaResponse
-) => {
+export const GET = async (req: MedusaRequest, res: MedusaResponse) => {
   const { id } = req.params;
   const query = req.scope.resolve(ContainerRegistrationKeys.QUERY);
 
@@ -30,13 +27,20 @@ export const GET = async (
   if (cart.status === "contacted") uiStatus = "reviewed";
 
   // Map the items to match the UI `BOMItem` structure
-  const mappedItems = cart.items?.map((item: any) => ({
-    id: item.id,
-    part_number: item.title || item.product_handle || "Unknown Part",
-    quantity: item.quantity,
-    target_price: item.target_price,
-    datasheet_url: item.datasheet_url,
-  })) || [];
+  const mappedItems =
+    cart.items?.map((item: any) => ({
+      id: item.id,
+      part_number: item.title || item.product_handle || "Unknown Part",
+      quantity: item.quantity,
+      target_price: item.target_price,
+      datasheet_url: item.datasheet_url,
+      currency: item.currency,
+      package: item.package,
+      brand: item.brand,
+      link: item.link,
+      description: item.description,
+      thumbnail: item.thumbnail,
+    })) || [];
 
   const mappedDetails = {
     id: cart.id,
@@ -53,21 +57,18 @@ export const GET = async (
 };
 
 // --- DELETE INQUIRY ---
-export const DELETE = async (
-  req: MedusaRequest,
-  res: MedusaResponse
-) => {
+export const DELETE = async (req: MedusaRequest, res: MedusaResponse) => {
   const { id } = req.params;
-  
+
   // Resolve your custom module service using the module key string
   const inquiryModuleService = req.scope.resolve("inquiry");
 
   // Use the auto-generated MedusaService method
   await inquiryModuleService.deleteInquiryCarts(id);
 
-  res.status(200).json({ 
-    id, 
-    object: "inquiry_cart", 
-    deleted: true 
+  res.status(200).json({
+    id,
+    object: "inquiry_cart",
+    deleted: true,
   });
 };
