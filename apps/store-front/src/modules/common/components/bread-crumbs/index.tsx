@@ -5,21 +5,32 @@ import { getCategoryByHandle, listCategories } from "@lib/data/categories"
 import { notFound } from "next/navigation"
 
 type BreadCrumbsProps = {
-  categoryHandle: string[]
+  categoryHandle?: string[]
+  productCategoryObj?: HttpTypes.StoreProductCategory // Pass this from the product page
+  productTitle?: string // Pass the product title here
   "data-testid"?: string
 }
 
 const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
   categoryHandle,
+  productCategoryObj,
+  productTitle,
   "data-testid": dataTestId,
 }) => {
-  const productCategory = await getCategoryByHandle(categoryHandle)
-  if (!productCategory) notFound()
-  const categories = await listCategories()
-  // Create a lookup map for quick category access by ID
+  // Determine the base category: either passed directly or fetched via handle
+  let productCategory = productCategoryObj;
+  
+  if (!productCategory && categoryHandle) {
+    productCategory = await getCategoryByHandle(categoryHandle)
+  }
+
+  if (!productCategory && !productTitle) notFound()
+
+  // Only fetch the category tree if we have a category to map
+  const categories = productCategory ? await listCategories() : []
+
   const createCategoryMap = (cats: any[]): Map<string, any> => {
     const map = new Map()
-
     const flattenCategories = (categories: any[]) => {
       categories.forEach((cat) => {
         map.set(cat.id, cat)
@@ -28,33 +39,29 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
         }
       })
     }
-
     flattenCategories(cats)
     return map
   }
 
-  // Build breadcrumb trail using the category map
   const getBreadcrumbTrail = (
-    currentCategory: HttpTypes.StoreProductCategory
+    currentCategory: HttpTypes.StoreProductCategory | undefined
   ): any[] => {
+    if (!currentCategory) return []
+    
     const trail: any[] = []
     const categoryMap = createCategoryMap(categories)
 
     let currentId = currentCategory.id
     let currentCat = categoryMap.get(currentId)
 
-    // Walk up the parent chain until we reach the root
     while (currentCat) {
       trail.unshift(currentCat)
-
-      // If this category has a parent_id, get the parent from the map
       if (currentCat.parent_category_id) {
         currentCat = categoryMap.get(currentCat.parent_category_id)
       } else {
         currentCat = null
       }
     }
-
     return trail
   }
 
@@ -63,6 +70,7 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
   return (
     <nav data-testid={dataTestId} className="w-full" aria-label="bread-crumb">
       <ul className="no-scrollbar flex gap-1 mt-4 overflow-scroll mx-0 md:px-4 xs:max-w-full md:mb-1.25 lg:px-0 xl:gap-1.75">
+        
         {/* Home/Root link */}
         <li className="inline-flex items-center">
           <Link
@@ -73,18 +81,19 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
           </Link>
         </li>
 
-        {/* Only add separator if there are categories */}
-        {breadcrumbTrail.length > 0 && <li className="text-blue-300">/</li>}
+        {/* Separator if categories or product title exist */}
+        {(breadcrumbTrail.length > 0 || productTitle) && <li className="text-blue-300">/</li>}
 
         {/* Dynamic category breadcrumbs */}
         {breadcrumbTrail.map((cat, index) => {
-          const isLast = index === breadcrumbTrail.length - 1
+          // It's the last category IF there is no product title AND it's the last in the array
+          const isLastCategory = index === breadcrumbTrail.length - 1 && !productTitle
           const categoryUrl = `/categories/${cat.handle}`
 
           return (
             <React.Fragment key={cat.id}>
               <li className="inline-flex items-center">
-                {isLast ? (
+                {isLastCategory ? (
                   <span
                     className="block whitespace-nowrap text-xs font-regular leading-4 text-shadow-xs xl:leading-6.25"
                     aria-current="page"
@@ -101,11 +110,23 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
                 )}
               </li>
 
-              {/* Add separator if not the last item */}
-              {!isLast && <li className="text-blue-300">/</li>}
+              {/* Add separator if not the absolute last item */}
+              {(!isLastCategory || productTitle) && <li className="text-blue-300">/</li>}
             </React.Fragment>
           )
         })}
+
+        {/* Product Title at the end of the trail */}
+        {productTitle && (
+          <li className="inline-flex items-center">
+            <span
+              className="block whitespace-nowrap text-xs font-regular leading-4 text-shadow-xs xl:leading-6.25"
+              aria-current="page"
+            >
+              {productTitle}
+            </span>
+          </li>
+        )}
       </ul>
     </nav>
   )

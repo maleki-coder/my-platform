@@ -13,6 +13,13 @@ import ProductPrice from "../product-price"
 import MobileActions from "./mobile-actions"
 import { useRouter } from "next/navigation"
 import { Button } from "@lib/components/ui/button"
+import TimedDiscountBadge from "../timed-discount-badge"
+import { getProductPrice } from "@lib/util/get-product-price"
+import { clx } from "@lib/util/clx"
+import ProductInStockInfo from "../product-in-stock-info/product-in-stock-info"
+import ProductGarrantyInfo from "../product-garranty-info.tsx"
+import { CarrotIcon, ClipboardList, ShoppingCart } from "lucide-react"
+import { Spinner } from "@lib/components/ui/spinner"
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
@@ -40,11 +47,35 @@ export default function ProductActions({
   const [isAdding, setIsAdding] = useState(false)
   const countryCode = useParams().countryCode as string
 
-  // If there is only 1 variant, preselect the options
+  // auto select the first avilable product variant
   useEffect(() => {
-    if (product.variants?.length === 1) {
-      const variantOptions = optionsAsKeymap(product.variants[0].options)
-      setOptions(variantOptions ?? {})
+    if (isValidVariant) return
+    if (product.variants && product.variants.length > 0) {
+      // Find the first variant that is actually in stock
+      const firstAvailableVariant = product.variants.find((v) => {
+        // Condition $1$: Inventory is not managed
+        if (!v.manage_inventory) return true
+
+        // Condition $2$: Backorders are allowed
+        if (v.allow_backorder) return true
+
+        // Condition $3$: Inventory is managed AND quantity is greater than $0$
+        if (v.manage_inventory && (v.inventory_quantity || 0) > 0) return true
+
+        // Otherwise, it's out of stock
+        return false
+      })
+
+      // If we found an in-stock variant, pre-select its options!
+      // If none are in stock, you can either fallback to the first one (product.variants[0])
+      // or leave it as is (which will show out of stock).
+      // Here, we select the first available one, or fallback to the absolute first one if ALL are out of stock.
+      const variantToSelect = firstAvailableVariant || product.variants[0]
+
+      if (variantToSelect) {
+        const variantOptions = optionsAsKeymap(variantToSelect.options)
+        setOptions(variantOptions ?? {})
+      }
     }
   }, [product.variants])
 
@@ -66,7 +97,9 @@ export default function ProductActions({
       [optionId]: value,
     }))
   }
-
+  const { cheapestPrice } = getProductPrice({
+    product,
+  })
   //check if the selected options produce a valid variant
   const isValidVariant = useMemo(() => {
     return product.variants?.some((v) => {
@@ -89,7 +122,7 @@ export default function ProductActions({
       params.delete("v_id")
     }
 
-    router.replace(pathname + "?" + params.toString())
+    router.replace(pathname + "?" + params.toString(), { scroll: false })
   }, [selectedVariant, isValidVariant])
 
   // check if the selected variant is in stock
@@ -144,43 +177,98 @@ export default function ProductActions({
       quantity: 1,
       product_id: product.id,
       variant_id: selectedVariant.id,
-      product_handle : product.handle,
+      product_handle: product.handle,
       thumbnail: product.thumbnail!,
-      title: product.title
+      title: product.title,
       // countryCode,
     })
 
     setIsAdding(false)
   }
 
+  const hasValidTimedDiscount =
+    cheapestPrice?.percentage_diff &&
+    parseInt(cheapestPrice.percentage_diff) > 0 &&
+    cheapestPrice?.ends_at
+
   return (
     <>
-      <div className="flex flex-col gap-y-2" ref={actionsRef}>
-        <div>
-          {(product.variants?.length ?? 0) > 1 && (
-            <div className="flex flex-col gap-y-4">
-              {(product.options || []).map((option) => {
-                return (
-                  <div key={option.id}>
-                    <OptionSelect
-                      option={option}
-                      current={options[option.id]}
-                      updateOption={setOptionValue}
-                      title={option.title ?? ""}
-                      data-testid="product-options"
-                      disabled={!!disabled || isAdding}
-                    />
-                  </div>
-                )
-              })}
-              <Divider />
-            </div>
+      <div
+        className={`flex flex-col gap-y-6 border-b border-gray-100 rounded-2xl p-2 bg-white shadow-custom sticky top-12`}
+      >
+        {hasValidTimedDiscount ? (
+          <div className="border-b border-gray-100 pb-4">
+            <TimedDiscountBadge
+              startsAt={cheapestPrice.starts_at}
+              endsAt={cheapestPrice.ends_at!}
+            />
+          </div>
+        ) : null}
+        {inStock && (
+          <div className="flex flex-col gap-1">
+            <ProductInStockInfo />
+            <ProductGarrantyInfo />
+          </div>
+        )}
+        <ProductPrice product={product} variant={selectedVariant} />
+        <div className="mt-4 pt-6 border-t border-gray-100">
+          {inStock && isValidVariant ? (
+            <Button
+              onClick={handleAddToCart}
+              disabled={!!disabled || isAdding}
+              className="relative w-full h-12 text-sm text-white cursor-pointer font-bold shadow-md transition-all duration-300 bg-sky-900 hover:bg-sky-700"
+            >
+              {isAdding ? (
+                <Spinner />
+              ) : (
+                <>
+                  <span>افزودن به سبد خرید</span>
+                  <ShoppingCart size={24} className="absolute left-3.5" />
+                </>
+              )}
+            </Button>
+          ) : (
+            <Button
+              onClick={handleAddToInquiryCart}
+              disabled={!!disabled || isAdding}
+              className="relative w-full h-12 text-sm text-white cursor-pointer font-bold shadow-md transition-all duration-300 bg-green-900 hover:bg-green-700"
+            >
+              {isAdding ? (
+                <Spinner />
+              ) : (
+                <>
+                  <span>افزودن به لیست استعلام</span>
+                  <ClipboardList size={24} className="absolute left-3.5" />
+                </>
+              )}
+            </Button>
           )}
         </div>
+      </div>
+      {/* <div className="flex flex-col gap-y-2 md:mb-0 mb-40" ref={actionsRef}> */}
+      <div>
+        {(product.variants?.length ?? 0) > 1 && (
+          <div className="flex flex-col gap-y-4">
+            {(product.options || []).map((option) => {
+              return (
+                <div key={option.id}>
+                  <OptionSelect
+                    option={option}
+                    current={options[option.id]}
+                    updateOption={setOptionValue}
+                    title={option.title ?? ""}
+                    data-testid="product-options"
+                    disabled={!!disabled || isAdding}
+                  />
+                </div>
+              )
+            })}
+            <Divider />
+          </div>
+        )}
+      </div>
 
-        <ProductPrice product={product} variant={selectedVariant} />
-
-        <Button
+      {/* <Button
           onClick={handleAddToCart}
           disabled={
             !inStock ||
@@ -199,8 +287,8 @@ export default function ProductActions({
             : !inStock || !isValidVariant
             ? "Out of stock"
             : "Add to cart"}
-        </Button>
-        <Button
+        </Button> */}
+      {/* <Button
           onClick={handleAddToInquiryCart}
           disabled={
             !inStock ||
@@ -217,8 +305,8 @@ export default function ProductActions({
             : !isValidVariant
             ? "Out of stock"
             : "Add to inquiry cart"}
-        </Button>
-        <MobileActions
+        </Button> */}
+      {/* <MobileActions
           product={product}
           variant={selectedVariant}
           options={options}
@@ -228,8 +316,8 @@ export default function ProductActions({
           isAdding={isAdding}
           show={!inView}
           optionsDisabled={!!disabled || isAdding}
-        />
-      </div>
+        /> */}
+      {/* </div> */}
     </>
   )
 }

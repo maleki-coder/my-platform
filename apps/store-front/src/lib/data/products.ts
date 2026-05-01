@@ -76,7 +76,7 @@ export const listProducts = async ({
           region_id: region?.id,
           handle: queryParams.handle,
           fields:
-            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,+metadata,+tags",
+            "*variants.calculated_price,+variants.inventory_quantity,*variants.images,+metadata,+tags,*categories",
           category_id: queryParams.category_id,
           id: product_ids,
         },

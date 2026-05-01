@@ -1,4 +1,3 @@
-// @modules/products/components/product-preview/index.tsx
 import { getProductPrice, StitchedProduct } from "@lib/util/get-product-price"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import PreviewPrice from "@modules/products/components/product-preview/price"
@@ -8,7 +7,7 @@ import TimedDiscountBadge from "@modules/products/components/timed-discount-badg
 export default async function ProductPreview({
   product,
 }: {
-  product: StitchedProduct // استفاده از تایپ توسعه‌یافته برای جلوگیری از خطای TS
+  product: StitchedProduct
 }) {
   const { cheapestPrice } = getProductPrice({
     product,

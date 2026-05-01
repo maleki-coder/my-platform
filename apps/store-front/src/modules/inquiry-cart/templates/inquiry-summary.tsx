@@ -234,10 +234,10 @@ export default function InquirySummary({ cart }: InquirySummaryProps) {
             onClick={handleAction}
             disabled={!hasItems || isPending}
             className={clx(
-              "w-full h-14 text-base cursor-pointer font-bold shadow-md transition-all duration-300",
+              "w-full h-12 text-sm cursor-pointer font-bold shadow-md transition-all duration-300",
               !hasItems
                 ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white"
+                : "bg-sky-900 hover:bg-sky-700 text-white"
             )}
           >
             {isPending || isCustomerLoading ? (
