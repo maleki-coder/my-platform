@@ -26,6 +26,7 @@ import { Input } from "@lib/components/ui/input"
 import { Label } from "@lib/components/ui/label"
 import { Button } from "@lib/components/ui/button"
 import { Switch } from "@lib/components/ui/switch"
+import { useScrollVisibility } from "@lib/hooks/use-scroll-visibility"
 
 interface CategoryFilterSidebarProps {
   filterOptions: CategoryOption[]
@@ -38,8 +39,7 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
-  const [isVisible, setIsVisible] = useState(true)
-  const [lastScroll, setLastScroll] = useState(0)
+  const isVisible = useScrollVisibility(10)
   const [expandedSections, setExpandedSections] = useState<string[]>(() => {
     const active: string[] = []
     if (searchParams.get("in_stock")) active.push("availability")
@@ -58,17 +58,6 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
     setMinPrice(searchParams.get("min_price") || "")
     setMaxPrice(searchParams.get("max_price") || "")
   }, [searchParams])
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScroll = window.scrollY
-      if (currentScroll < 0) return
-      setIsVisible(currentScroll < lastScroll || currentScroll === 0)
-      setLastScroll(currentScroll)
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [lastScroll])
 
   const toggleSection = (sectionName: string) => {
     setExpandedSections((prev) =>
@@ -110,17 +99,6 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
     },
     [searchParams, pathname, router]
   )
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentScroll = window.scrollY
-      if (currentScroll < 0) return
-      setIsVisible(currentScroll < lastScroll || currentScroll === 0)
-      setLastScroll(currentScroll)
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [lastScroll])
 
   const applyPriceFilter = () => {
     const params = new URLSearchParams(searchParams.toString())
@@ -257,7 +235,9 @@ const CategoryFilterSidebar: React.FC<CategoryFilterSidebarProps> = ({
                     </div>
                   </div>
 
-                  <Button className="cursor-pointer" onClick={applyPriceFilter}>اعمال قیمت</Button>
+                  <Button className="cursor-pointer" onClick={applyPriceFilter}>
+                    اعمال قیمت
+                  </Button>
                 </div>
               )}
             </div>

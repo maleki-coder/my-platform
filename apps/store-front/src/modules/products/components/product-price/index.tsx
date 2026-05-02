@@ -15,20 +15,14 @@ export default function ProductPrice({
     product,
     variantId: variant?.id,
   })
-
   const selectedPrice = variant ? variantPrice : cheapestPrice
-  // const hasValidTimedDiscount =
-  //   cheapestPrice?.percentage_diff &&
-  //   parseInt(cheapestPrice.percentage_diff) > 0 &&
-  //   cheapestPrice?.ends_at;
   if (!selectedPrice) {
     return <div className="block w-32 h-9 bg-gray-100 animate-pulse" />
   }
   const original = Number(cheapestPrice?.original_price_number ?? 0)
   const calculated = Number(cheapestPrice?.calculated_price_number ?? 0)
   const calculatedDiscountPrice = convertToLocale({
-    amount:
-      original - calculated,
+    amount: original - calculated,
   })
   return (
     <div
@@ -63,45 +57,5 @@ export default function ProductPrice({
         </div>
       </div>
     </div>
-    // <div className="relative flex flex-col">
-    //   <span
-    //     className={clx("text-xl-semi", {
-    //       "text-ui-fg-interactive": selectedPrice.price_type === "sale",
-    //     })}
-    //   >
-    //     {!variant && "From "}
-    //     <span
-    //       data-testid="product-price"
-    //       data-value={selectedPrice.calculated_price_number}
-    //     >
-    //       {selectedPrice.calculated_price}
-    //     </span>
-    //   </span>
-    //   {selectedPrice.price_type === "sale" && (
-    //     <>
-    //       <p>
-    //         <span className="text-ui-fg-subtle">Original: </span>
-    //         <span
-    //           className="line-through"
-    //           data-testid="original-product-price"
-    //           data-value={selectedPrice.original_price_number}
-    //         >
-    //           {selectedPrice.original_price}
-    //         </span>
-    //       </p>
-    //       <span className="text-ui-fg-interactive">
-    //         -{selectedPrice.percentage_diff}%
-    //       </span>
-    //     </>
-    //   )}
-    //   <div className="absolute top-0 w-full">
-    //     {hasValidTimedDiscount ? (
-    //       <TimedDiscountBadge
-    //         startsAt={cheapestPrice.starts_at}
-    //         endsAt={cheapestPrice.ends_at!}
-    //       />
-    //     ) : null}
-    //   </div>
-    // </div>
   )
 }

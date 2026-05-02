@@ -9,7 +9,7 @@ const InquiryCartTemplate = ({
 }) => {
   return (
     <div
-      className="max-w-screen-2xl px-4 mt-8 md:mb-0 mb-24"
+      className="max-w-screen-2xl px-4 mt-8 md:mb-0 mb-44"
       data-testid="cart-container"
     >
       <div className="grid grid-cols-1 small:grid-cols-[1fr_360px] gap-x-16 gap-y-8">

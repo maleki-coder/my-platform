@@ -31,7 +31,7 @@ export default function MultipleBannerBlock({ data }: Props) {
   const strapiUrl =
     process.env.NEXT_PUBLIC_STRAPI_URL || "http://localhost:1337"
   return (
-    <section className="w-full px-4 lg:px-0">
+    <section className="w-full">
       <div
         className={`grid grid-cols-1 gap-4 sm:gap-6 ${getGridClass(
           displayBanners.length

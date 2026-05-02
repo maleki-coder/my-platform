@@ -11,7 +11,7 @@ export default async function Footer() {
   // مدیریت حالت قطعی بک‌اند (Fallback)
   if (!footerData) {
     return (
-      <footer className="m-4 lg:mt-12 mt-6 overflow-hidden rounded-2xl bg-[#1b3570] p-8 text-white text-center">
+      <footer className="overflow-hidden rounded-2xl bg-[#1b3570] p-8 text-white text-center">
         <p>در حال بروزرسانی اطلاعات سایت...</p>
       </footer>
     )
@@ -20,7 +20,7 @@ export default async function Footer() {
   const { data } = footerData
 
   return (
-    <footer className="mt-4 left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
+    <footer className="left-0 right-0 overflow-hidden rounded-2xl bg-linear-to-r from-[#0079b1] to-[#1b3570]">
       <div className="px-4 mx-auto w-full lg:px-8 xl:px-6 max-w-screen-2xl">
         <div className="px-4">
           {/* بخش هدر فوتر و دکمه بازگشت به بالا */}

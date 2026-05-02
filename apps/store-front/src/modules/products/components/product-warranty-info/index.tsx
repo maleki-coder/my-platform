@@ -1,9 +1,9 @@
-import { BadgeCheck, CheckCircle } from "lucide-react"
+import { BadgeCheck } from "lucide-react"
 
 type Props = {
   garrantType?: string
 }
-export default function ProductGarrantyInfo({ garrantType }: Props) {
+export default function ProductWarrantyInfo({ garrantType }: Props) {
   return (
     <div className=" w-full items-center flex bg-blue-50 rounded">
       <div className="relative flex h-full items-center w-full min-w-[60%] pt-3 px-4">

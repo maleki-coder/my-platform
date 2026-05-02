@@ -21,7 +21,7 @@ export default function LayoutFooterController({
 }: Props) {
   const pathname = usePathname() || "/"
   const normalizedPath = pathname.replace(/^\/(ir|en|de)(\/|$)/, "/")
-  const MOBILE_NAV_ROUTES = ["/checkout", "/cart", "/inquiry-cart"]
+  const MOBILE_NAV_ROUTES = ["/checkout", "/cart", "/inquiry-cart", "/products"]
 
   // We keep this JS logic because it depends on the URL route, not the screen size!
   const isMobileNavRoute = MOBILE_NAV_ROUTES.some(

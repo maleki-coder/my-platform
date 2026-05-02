@@ -7,6 +7,7 @@ import { useTransition } from "react"
 import { useCustomer } from "@lib/context/customer-context"
 import { useRouter } from "next/navigation"
 import { Spinner } from "@lib/components/ui/spinner"
+import { FileSpreadsheet } from "lucide-react"
 
 type SummaryProps = {
   cart: HttpTypes.StoreCart & {
@@ -52,8 +53,13 @@ const Summary = ({ cart }: SummaryProps) => {
   })()
 
   return (
-    <div className="flex flex-col gap-y-2 md:mb-0 mb-40">
-      <header className="flex text-lg font-bold px-4">صورتحساب</header>
+    <div className="flex flex-col gap-y-2 border border-gray-200 rounded-2xl p-6 bg-white shadow-custom md:mb-0 mb-44">
+      <div className="border-b border-gray-100 pb-4">
+        <h2 className="text-lg font-extrabold text-gray-900 flex items-center gap-2">
+          <FileSpreadsheet className="text-blue-600" />
+          صورتحساب
+        </h2>
+      </div>
       <CartTotals totals={cart} cart={cart} />
       <div className="md:block hidden">
         <Button

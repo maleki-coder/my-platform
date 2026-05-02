@@ -230,24 +230,50 @@ export default function InquirySummary({ cart }: InquirySummaryProps) {
               {submitError}
             </p>
           )}
-          <Button
-            onClick={handleAction}
-            disabled={!hasItems || isPending}
-            className={clx(
-              "w-full h-12 text-sm cursor-pointer font-bold shadow-md transition-all duration-300",
-              !hasItems
-                ? "bg-gray-200 text-gray-500 cursor-not-allowed"
-                : "bg-sky-900 hover:bg-sky-700 text-white"
-            )}
-          >
-            {isPending || isCustomerLoading ? (
-              <Spinner className="w-5 h-5" />
-            ) : !customer ? (
-              "ورود و ارسال"
-            ) : (
-              "ارسال نهایی"
-            )}
-          </Button>
+          <div className="md:block hidden">
+            <Button
+              onClick={handleAction}
+              disabled={!hasItems || isPending}
+              className={clx(
+                "w-full h-12 text-sm cursor-pointer font-bold shadow-md transition-all duration-300",
+                !hasItems
+                  ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                  : "bg-sky-900 hover:bg-sky-700 text-white"
+              )}
+            >
+              {isPending || isCustomerLoading ? (
+                <Spinner className="w-5 h-5" />
+              ) : !customer ? (
+                "ورود و ارسال"
+              ) : (
+                "ارسال نهایی"
+              )}
+            </Button>
+          </div>
+          <div className="md:hidden block">
+            <div
+              className={`fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-3 px-6 py-4 bg-gray-100!`}
+            >
+              <Button
+                onClick={handleAction}
+                disabled={!hasItems || isPending}
+                className={clx(
+                  "w-full h-12 text-sm cursor-pointer font-bold shadow-md transition-all duration-300",
+                  !hasItems
+                    ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                    : "bg-sky-900 hover:bg-sky-700 text-white"
+                )}
+              >
+                {isPending || isCustomerLoading ? (
+                  <Spinner className="w-5 h-5" />
+                ) : !customer ? (
+                  "ورود و ارسال"
+                ) : (
+                  "ارسال نهایی"
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
       <SuccessInquiryModal
