@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { Container, Heading, Text, Table, Badge, Button } from "@medusajs/ui";
 import { sdk } from "../../../lib/sdk";
 import { ArrowLeft } from "@medusajs/icons";
+import { useTranslation } from "react-i18next";
 
 // 1. Extended Data Structure for Details
 type BOMItem = {
@@ -36,6 +37,7 @@ type InquiryResponse = {
 };
 
 export default function InquiryDetailsPage() {
+  const { t } = useTranslation("custom");
   const { id } = useParams();
   const navigate = useNavigate();
   const [inquiry, setInquiry] = useState<InquiryDetails | null>(null);
@@ -52,19 +54,19 @@ export default function InquiryDetailsPage() {
         );
         setInquiry(data.inquiry);
       } catch (error) {
-        console.error("خطا در دریافت جزئیات استعلام:", error);
+        console.error(t("inquiryDetails.errors.fetchError"), error);
       } finally {
         setIsLoading(false);
       }
     };
 
     if (id) fetchInquiryDetails();
-  }, [id]);
+  }, [id, t]);
 
   if (isLoading) {
     return (
       <Container className="p-6 flex items-center justify-center min-h-50">
-        <Text className="text-ui-fg-subtle">در حال بارگذاری جزئیات...</Text>
+        <Text className="text-ui-fg-subtle">{t("inquiryDetails.loading")}</Text>
       </Container>
     );
   }
@@ -72,13 +74,13 @@ export default function InquiryDetailsPage() {
   if (!inquiry) {
     return (
       <Container className="p-6">
-        <Text className="text-ui-fg-error">اطلاعاتی یافت نشد!</Text>
+        <Text className="text-ui-fg-error">{t("inquiryDetails.notFound")}</Text>
         <Button
           variant="secondary"
           onClick={() => navigate(-1)}
           className="mt-4"
         >
-          بازگشت
+          {t("inquiryDetails.backButton")}
         </Button>
       </Container>
     );
@@ -94,7 +96,7 @@ export default function InquiryDetailsPage() {
         className="self-start text-ui-fg-subtle hover:text-ui-fg-base"
       >
         <ArrowLeft className="mr-2 ml-2" />
-        بازگشت به لیست استعلام‌ها
+        {t("inquiryDetails.backToList")}
       </Button>
 
       {/* Overview Container */}
@@ -102,10 +104,10 @@ export default function InquiryDetailsPage() {
         <div className="flex justify-between items-start border-b border-ui-border-base pb-4">
           <div>
             <Heading level="h1" className="text-ui-fg-base">
-              جزئیات استعلام
+              {t("inquiryDetails.title")}
             </Heading>
             <Text className="text-ui-fg-subtle font-mono text-xs mt-2 uppercase">
-              شناسه: {inquiry.id}
+              {t("inquiryDetails.idLabel")}: {inquiry.id}
             </Text>
           </div>
           <Badge
@@ -119,10 +121,10 @@ export default function InquiryDetailsPage() {
             size="large"
           >
             {inquiry.status === "completed"
-              ? "تکمیل شده"
+              ? t("inquiryDetails.status.completed")
               : inquiry.status === "reviewed"
-                ? "بررسی شده"
-                : "در انتظار بررسی"}
+                ? t("inquiryDetails.status.reviewed")
+                : t("inquiryDetails.status.pending")}
           </Badge>
         </div>
 
@@ -130,13 +132,13 @@ export default function InquiryDetailsPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex flex-col gap-y-1">
             <Text className="text-ui-fg-subtle text-xs font-medium">
-              نام مشتری
+              {t("inquiryDetails.customerInfo.name")}
             </Text>
             <Text className="text-ui-fg-base">{inquiry.customer_name}</Text>
           </div>
           <div className="flex flex-col gap-y-1">
             <Text className="text-ui-fg-subtle text-xs font-medium">
-              ایمیل ارتباطی
+              {t("inquiryDetails.customerInfo.email")}
             </Text>
             <Text className="text-ui-fg-base">
               {inquiry.email}
@@ -144,7 +146,7 @@ export default function InquiryDetailsPage() {
           </div>
           <div className="flex flex-col gap-y-1">
             <Text className="text-ui-fg-subtle text-xs font-medium">
-              شماره تماس
+              {t("inquiryDetails.customerInfo.phone")}
             </Text>
             <Text className="text-ui-fg-base font-mono">{inquiry.phone}</Text>
           </div>
@@ -152,11 +154,11 @@ export default function InquiryDetailsPage() {
           {/* Notes Section spanning all columns */}
           <div className="col-span-1 md:col-span-3 flex flex-col gap-y-2 mt-2 border-t border-ui-border-base pt-4">
             <Text className="text-ui-fg-subtle text-xs font-medium">
-              یادداشت مشتری
+              {t("inquiryDetails.customerInfo.notes")}
             </Text>
             <div className="bg-ui-bg-subtle p-4 rounded-lg border border-ui-border-base">
               <Text className="text-ui-fg-base whitespace-pre-wrap">
-                {inquiry.notes || "یادداشتی ثبت نشده است."}
+                {inquiry.notes || t("inquiryDetails.customerInfo.noNotes")}
               </Text>
             </div>
           </div>
@@ -167,10 +169,10 @@ export default function InquiryDetailsPage() {
       <Container className="p-0 overflow-hidden mt-2">
         <div className="px-6 py-4 border-b border-ui-border-base">
           <Heading level="h2" className="text-ui-fg-base">
-            لیست قطعات درخواستی (BOM)
+            {t("inquiryDetails.bomTable.title")}
           </Heading>
           <Text className="text-ui-fg-subtle text-sm mt-1">
-            مجموع: {inquiry.items?.length || 0} قطعه
+            {t("inquiryDetails.bomTable.total")}: {inquiry.items?.length || 0} {t("inquiryDetails.bomTable.parts")}
           </Text>
         </div>
 
@@ -179,34 +181,34 @@ export default function InquiryDetailsPage() {
             <Table.Header>
               <Table.Row>
                 <Table.HeaderCell className="sticky right-0 bg-ui-bg-subtle border-ui-border-base px-6 whitespace-nowrap text-center">
-                  شماره فنی (Part Number)
+                  {t("inquiryDetails.bomTable.columns.partNumber")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  تعداد (Qty)
+                  {t("inquiryDetails.bomTable.columns.quantity")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  قیمت هدف
+                  {t("inquiryDetails.bomTable.columns.targetPrice")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  نوع ارز
+                  {t("inquiryDetails.bomTable.columns.currency")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  پکیج
+                  {t("inquiryDetails.bomTable.columns.package")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  برند
+                  {t("inquiryDetails.bomTable.columns.brand")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  لینک
+                  {t("inquiryDetails.bomTable.columns.link")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="min-w-80 px-6 whitespace-nowrap text-center">
-                  توضیحات
+                  {t("inquiryDetails.bomTable.columns.description")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  تصویر
+                  {t("inquiryDetails.bomTable.columns.image")}
                 </Table.HeaderCell>
                 <Table.HeaderCell className="px-6 whitespace-nowrap text-center">
-                  دیتاشیت (Datasheet)
+                  {t("inquiryDetails.bomTable.columns.datasheet")}
                 </Table.HeaderCell>
               </Table.Row>
             </Table.Header>
@@ -214,7 +216,7 @@ export default function InquiryDetailsPage() {
               {inquiry.items?.length === 0 ? (
                 <Table.Row>
                   <Table.Cell className="text-center py-8 text-ui-fg-subtle">
-                    هیچ قطعه‌ای در این استعلام یافت نشد.
+                    {t("inquiryDetails.bomTable.noItems")}
                   </Table.Cell>
                 </Table.Row>
               ) : (
@@ -269,7 +271,7 @@ export default function InquiryDetailsPage() {
                           rel="noreferrer noopener" // Security best practice for external tabs!
                           className="text-blue-500 hover:text-blue-700 underline transition-colors duration-200"
                         >
-                          مشاهده لینک
+                          {t("inquiryDetails.bomTable.viewLink")}
                         </a>
                       ) : (
                         "-"
@@ -300,7 +302,7 @@ export default function InquiryDetailsPage() {
                         >
                           <img
                             src={item.thumbnail}
-                            alt={`تصویر ${item.part_number}`}
+                            alt={t("inquiryDetails.bomTable.imageAlt", { partNumber: item.part_number })}
                             className="w-10 h-10 min-w-10 min-h-10 object-cover rounded-md border border-ui-border-base shadow-sm hover:opacity-80 transition-opacity duration-200"
                             loading="lazy"
                           />
@@ -308,7 +310,7 @@ export default function InquiryDetailsPage() {
                       ) : (
                         <span className="text-ui-fg-subtle font-mono">-</span>
                       )}
-                      </Table.Cell>
+                    </Table.Cell>
                     <Table.Cell className="px-6 whitespace-nowrap">
                       {item.datasheet_url ? (
                         <a
@@ -317,11 +319,11 @@ export default function InquiryDetailsPage() {
                           rel="noreferrer"
                           className="text-blue-500 hover:text-blue-700 underline text-sm"
                         >
-                          دانلود فایل
+                          {t("inquiryDetails.bomTable.downloadFile")}
                         </a>
                       ) : (
                         <Text className="text-ui-fg-subtle text-sm">
-                          بدون فایل
+                          {t("inquiryDetails.bomTable.noFile")}
                         </Text>
                       )}
                     </Table.Cell>

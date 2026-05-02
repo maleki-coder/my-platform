@@ -1,0 +1,99 @@
+{
+    "reviews": {
+        "label": "user reviews",
+        "fetchError": "Error fetching reviews:",
+        "approveError": "Error approving review:",
+        "deleteConfirm": "Are you sure you want to permanently delete this review?",
+        "deleteError": "Error deleting review:",
+        "deleteAlert": "Failed to delete the review. Please try again.",
+        "pageTitle": "User Reviews",
+        "pageSubtitle": "Manage and review ratings submitted for products",
+        "colProduct": "Product",
+        "colCustomer": "Customer",
+        "colRating": "Rating",
+        "colComment": "Comment",
+        "colStatus": "Status",
+        "loading": "Fetching data...",
+        "emptyState": "No reviews have been submitted yet.",
+        "statusApproved": "Approved",
+        "statusPending": "Pending Approval",
+        "actionApprove": "Approve Review",
+        "actionDelete": "Delete Review"
+    },
+    "inquiries": {
+        "label": "B2B Inquiries",
+        "title": "Inquiry Requests (BOM)",
+        "subtitle": "Manage and review Excel files and parts supply requests",
+        "table": {
+            "requestId": "Request ID",
+            "customer": "Customer",
+            "contact": "Email / Phone",
+            "date": "Registration Date",
+            "status": "Status"
+        },
+        "status": {
+            "completed": "Completed",
+            "reviewed": "Reviewed",
+            "pending": "Pending Review"
+        },
+        "actions": {
+            "viewDetails": "View Details",
+            "markReviewed": "Confirm and Mark as Reviewed",
+            "delete": "Delete Inquiry"
+        },
+        "loading": "Loading data...",
+        "noData": "No inquiries have been registered yet.",
+        "confirmDelete": "Are you sure you want to delete this inquiry request?",
+        "deleteFailedAlert": "Failed to delete inquiry. Please try again.",
+        "errors": {
+            "fetchError": "Error fetching inquiries list:",
+            "reviewError": "Error changing inquiry status:",
+            "deleteError": "Error deleting inquiry:"
+        }
+    },
+    "inquiryDetails": {
+        "title": "Inquiry Details",
+        "idLabel": "ID",
+        "backButton": "Back",
+        "backToList": "Back to Inquiries List",
+        "loading": "Loading details...",
+        "notFound": "No data found!",
+        "status": {
+            "completed": "Completed",
+            "reviewed": "Reviewed",
+            "pending": "Pending Review"
+        },
+        "customerInfo": {
+            "name": "Customer Name",
+            "email": "Contact Email",
+            "phone": "Phone Number",
+            "notes": "Customer Notes",
+            "noNotes": "No notes recorded."
+        },
+        "bomTable": {
+            "title": "Requested Parts List (BOM)",
+            "total": "Total",
+            "parts": "parts",
+            "noItems": "No parts found in this inquiry.",
+            "viewLink": "View Link",
+            "downloadFile": "Download File",
+            "noFile": "No File",
+            "imageAlt": "Image of {{partNumber}}",
+            "columns": {
+                "partNumber": "Part Number",
+                "quantity": "Quantity (Qty)",
+                "targetPrice": "Target Price",
+                "currency": "Currency",
+                "package": "Package",
+                "brand": "Brand",
+                "link": "Link",
+                "description": "Description",
+                "image": "Image",
+                "datasheet": "Datasheet"
+            }
+        },
+        "errors": {
+            "fetchError": "Error fetching inquiry details:"
+        }
+    }
+}

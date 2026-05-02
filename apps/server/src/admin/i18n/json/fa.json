@@ -1,0 +1,99 @@
+{
+    "reviews": {
+        "label": "نظرات کاربران",
+        "fetchError": "خطا در دریافت نظرات:",
+        "approveError": "خطا در تایید نظر:",
+        "deleteConfirm": "آیا از حذف دائمی این نظر اطمینان دارید؟",
+        "deleteError": "خطا در حذف نظر:",
+        "deleteAlert": "حذف نظر با شکست مواجه شد. لطفا دوباره تلاش کنید.",
+        "pageTitle": "نظرات کاربران",
+        "pageSubtitle": "مدیریت و بررسی امتیازات ثبت شده برای محصولات",
+        "colProduct": "محصول",
+        "colCustomer": "مشتری",
+        "colRating": "امتیاز",
+        "colComment": "نظر",
+        "colStatus": "وضعیت",
+        "loading": "در حال دریافت اطلاعات...",
+        "emptyState": "تا کنون نظری ثبت نشده است.",
+        "statusApproved": "تایید شده",
+        "statusPending": "در انتظار تایید",
+        "actionApprove": "تایید نظر",
+        "actionDelete": "حذف نظر"
+    },
+    "inquiries": {
+        "label": "استعلام‌های B2B",
+        "title": "درخواست‌های استعلام (BOM)",
+        "subtitle": "مدیریت و بررسی فایل‌های اکسل و درخواست‌های تامین قطعات",
+        "table": {
+            "requestId": "شناسه درخواست",
+            "customer": "مشتری",
+            "contact": "ایمیل / شماره تماس",
+            "date": "تاریخ ثبت",
+            "status": "وضعیت"
+        },
+        "status": {
+            "completed": "تکمیل شده",
+            "reviewed": "بررسی شده",
+            "pending": "در انتظار بررسی"
+        },
+        "actions": {
+            "viewDetails": "مشاهده جزئیات",
+            "markReviewed": "تایید و بررسی شد",
+            "delete": "حذف استعلام"
+        },
+        "loading": "در حال دریافت اطلاعات...",
+        "noData": "تا کنون استعلامی ثبت نشده است.",
+        "confirmDelete": "آیا از حذف این درخواست استعلام اطمینان دارید؟",
+        "deleteFailedAlert": "حذف استعلام با شکست مواجه شد. لطفا دوباره تلاش کنید.",
+        "errors": {
+            "fetchError": "خطا در دریافت لیست استعلام‌ها:",
+            "reviewError": "خطا در تغییر وضعیت استعلام:",
+            "deleteError": "خطا در حذف استعلام:"
+        }
+    },
+    "inquiryDetails": {
+        "title": "جزئیات استعلام",
+        "idLabel": "شناسه",
+        "backButton": "بازگشت",
+        "backToList": "بازگشت به لیست استعلام‌ها",
+        "loading": "در حال بارگذاری جزئیات...",
+        "notFound": "اطلاعاتی یافت نشد!",
+        "status": {
+            "completed": "تکمیل شده",
+            "reviewed": "بررسی شده",
+            "pending": "در انتظار بررسی"
+        },
+        "customerInfo": {
+            "name": "نام مشتری",
+            "email": "ایمیل ارتباطی",
+            "phone": "شماره تماس",
+            "notes": "یادداشت مشتری",
+            "noNotes": "یادداشتی ثبت نشده است."
+        },
+        "bomTable": {
+            "title": "لیست قطعات درخواستی (BOM)",
+            "total": "مجموع",
+            "parts": "قطعه",
+            "noItems": "هیچ قطعه‌ای در این استعلام یافت نشد.",
+            "viewLink": "مشاهده لینک",
+            "downloadFile": "دانلود فایل",
+            "noFile": "بدون فایل",
+            "imageAlt": "تصویر {{partNumber}}",
+            "columns": {
+                "partNumber": "شماره فنی (Part Number)",
+                "quantity": "تعداد (Qty)",
+                "targetPrice": "قیمت هدف",
+                "currency": "نوع ارز",
+                "package": "پکیج",
+                "brand": "برند",
+                "link": "لینک",
+                "description": "توضیحات",
+                "image": "تصویر",
+                "datasheet": "دیتاشیت (Datasheet)"
+            }
+        },
+        "errors": {
+            "fetchError": "خطا در دریافت جزئیات استعلام:"
+        }
+    }
+}

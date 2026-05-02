@@ -17,8 +17,9 @@ import {
   CheckCircleSolid,
   Trash,
 } from "@medusajs/icons";
+import { useTranslation } from "react-i18next";
 
-// ۱. تعریف ساختار داده
+
 type ProductReview = {
   id: string;
   product_id: string;
@@ -36,10 +37,12 @@ type ReviewsResponse = {
 };
 
 export default function ProductReviewsPage() {
+  const { t } = useTranslation(); // <-- Initialized the translation hook
+
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // ۲. دریافت اطلاعات از API
+
   useEffect(() => {
     const fetchReviews = async () => {
       try {
@@ -52,48 +55,46 @@ export default function ProductReviewsPage() {
         );
         setReviews(data.reviews);
       } catch (error) {
-        console.error("خطا در دریافت نظرات:", error);
+        console.error(t("reviews.fetchError"), error); 
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchReviews();
-  }, []);
+  }, [t]);
 
-  // ۳. اکشن تایید نظر
+
   const handleApprove = async (id: string) => {
     try {
       await sdk.client.fetch(`/admin/product-reviews/${id}/approve`, {
         method: "POST",
       });
 
-      // آپدیت وضعیت در رابط کاربری
       setReviews(
         reviews.map((r) => (r.id === id ? { ...r, is_approved: true } : r)),
       );
     } catch (error) {
-      console.error("خطا در تایید نظر:", error);
+      console.error(t("reviews.approveError"), error); 
     }
   };
 
   const handleDelete = async (id: string) => {
-    // تاییدیه گرفتن از کاربر قبل از حذف (جلوگیری از خطای انسانی)
-    if (!window.confirm("آیا از حذف دائمی این نظر اطمینان دارید؟")) return;
+    if (!window.confirm(t("reviews.deleteConfirm"))) return; 
 
     try {
-      // ارسال درخواست DELETE به مسیر جدیدی که ساختیم
+
       await sdk.client.fetch(`/admin/product-reviews/${id}/delete`, {
         method: "DELETE",
       });
 
-      // به‌روزرسانی State و حذف ردیف مورد نظر از جدول بدون نیاز به رفرش صفحه
+
       setReviews((prevReviews) =>
         prevReviews.filter((review) => review.id !== id),
       );
     } catch (error) {
-      console.error("خطا در حذف نظر:", error);
-      alert("حذف نظر با شکست مواجه شد. لطفا دوباره تلاش کنید.");
+      console.error(t("reviews.deleteError"), error); 
+      alert(t("reviews.deleteAlert")); 
     }
   };
 
@@ -102,34 +103,32 @@ export default function ProductReviewsPage() {
       <div className="flex items-center justify-between px-6 py-4 border-b border-ui-border-base">
         <div>
           <Heading level="h1" className="text-ui-fg-base">
-            نظرات کاربران
+            {t("reviews.pageTitle")} 
           </Heading>
           <Text className="text-ui-fg-subtle text-sm mt-1">
-            مدیریت و بررسی امتیازات ثبت شده برای محصولات
+            {t("reviews.pageSubtitle")} 
           </Text>
         </div>
       </div>
 
-      {/* کانتینر با اسکرول افقی */}
       <div className="w-full overflow-x-auto relative">
         <Table>
           <Table.Header>
             <Table.Row>
-              {/* ستون اول: هدر ثابت (Sticky Header) */}
               <Table.HeaderCell className="sticky text-right left-0 bg-ui-bg-subtle border-ui-border-base whitespace-nowrap px-6">
-                محصول
+                {t("reviews.colProduct")} 
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap text-right px-6">
-                مشتری
+                {t("reviews.colCustomer")} 
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap text-right px-6">
-                امتیاز
+                {t("reviews.colRating")} 
               </Table.HeaderCell>
               <Table.HeaderCell className="min-w-62.5 text-right px-6">
-                نظر
+                {t("reviews.colComment")} 
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap text-right px-6 ">
-                وضعیت
+                {t("reviews.colStatus")} 
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap w-12.5 text-right px-6"></Table.HeaderCell>
             </Table.Row>
@@ -138,24 +137,22 @@ export default function ProductReviewsPage() {
             {isLoading ? (
               <Table.Row>
                 <Table.Cell className="text-center py-8 text-ui-fg-subtle">
-                  در حال دریافت اطلاعات...
+                  {t("reviews.loading")} 
                 </Table.Cell>
               </Table.Row>
             ) : reviews.length === 0 ? (
               <Table.Row>
                 <Table.Cell className="text-center py-8 text-ui-fg-subtle">
-                  تا کنون نظری ثبت نشده است.
+                  {t("reviews.emptyState")} 
                 </Table.Cell>
               </Table.Row>
             ) : (
               reviews.map((review) => (
                 <Table.Row key={review.id}>
-                  {/* ستون اول: سلول ثابت (Sticky Cell) با پس‌زمینه و حاشیه */}
                   <Table.Cell className="sticky left-0 bg-ui-bg-base border-ui-border-base font-medium text-ui-fg-base whitespace-nowrap px-6 shadow-[1px_0_0_0_var(--borders-base)]">
                     {review.product_name}
                   </Table.Cell>
 
-                  {/* سایر ستون‌ها (اسکرول شونده) */}
                   <Table.Cell className="whitespace-nowrap text-ui-fg-subtle px-6">
                     {review.customer_name}
                   </Table.Cell>
@@ -170,11 +167,11 @@ export default function ProductReviewsPage() {
                   <Table.Cell className="whitespace-nowrap px-6">
                     {review.is_approved ? (
                       <Badge color="green" size="small">
-                        تایید شده
+                        {t("reviews.statusApproved")} 
                       </Badge>
                     ) : (
                       <Badge color="orange" size="small">
-                        در انتظار تایید
+                        {t("reviews.statusPending")} 
                       </Badge>
                     )}
                   </Table.Cell>
@@ -192,7 +189,7 @@ export default function ProductReviewsPage() {
                             className="gap-x-2"
                           >
                             <CheckCircleSolid className="text-ui-fg-subtle" />
-                            تایید نظر
+                            {t("reviews.actionApprove")} 
                           </DropdownMenu.Item>
                         )}
                         <DropdownMenu.Separator />
@@ -201,7 +198,7 @@ export default function ProductReviewsPage() {
                           className="gap-x-2 text-ui-fg-error"
                         >
                           <Trash className="text-ui-fg-error" />
-                          حذف نظر
+                          {t("reviews.actionDelete")} 
                         </DropdownMenu.Item>
                       </DropdownMenu.Content>
                     </DropdownMenu>
@@ -216,8 +213,8 @@ export default function ProductReviewsPage() {
   );
 }
 
-// تنظیمات مسیر منو (آیکون به ChatBubbleLeftRight تغییر یافت تا معنایی‌تر باشد)
 export const config = defineRouteConfig({
-  label: "نظرات کاربران",
+  label: "reviews.label", 
+  translationNs: "custom-reviews",
   icon: ChatBubbleLeftRightSolid,
 });

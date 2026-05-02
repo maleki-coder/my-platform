@@ -19,6 +19,7 @@ import {
   Trash,
 } from "@medusajs/icons";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 // 1. Data Structure Definition
 type Inquiry = {
@@ -35,6 +36,7 @@ type InquiriesResponse = {
 };
 
 export default function B2BInquiriesPage() {
+  const { t } = useTranslation("custom");
   const [inquiries, setInquiries] = useState<Inquiry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
@@ -50,14 +52,14 @@ export default function B2BInquiriesPage() {
         );
         setInquiries(data.inquiries);
       } catch (error) {
-        console.error("خطا در دریافت لیست استعلام‌ها:", error);
+        console.error(t("inquiries.errors.fetchError"), error);
       } finally {
         setIsLoading(false);
       }
     };
 
     fetchInquiries();
-  }, []);
+  }, [t]);
 
   // 3. Mark as Reviewed Action
   const handleMarkAsReviewed = async (id: string) => {
@@ -69,13 +71,13 @@ export default function B2BInquiriesPage() {
         prev.map((inq) => (inq.id === id ? { ...inq, status: "reviewed" } : inq))
       );
     } catch (error) {
-      console.error("خطا در تغییر وضعیت استعلام:", error);
+      console.error(t("inquiries.errors.reviewError"), error);
     }
   };
 
   // 4. Delete Action
   const handleDelete = async (id: string) => {
-    if (!window.confirm("آیا از حذف این درخواست استعلام اطمینان دارید؟")) return;
+    if (!window.confirm(t("inquiries.confirmDelete"))) return;
 
     try {
       await sdk.client.fetch(`/admin/inquiries/${id}`, {
@@ -83,8 +85,8 @@ export default function B2BInquiriesPage() {
       });
       setInquiries((prev) => prev.filter((inq) => inq.id !== id));
     } catch (error) {
-      console.error("خطا در حذف استعلام:", error);
-      alert("حذف استعلام با شکست مواجه شد. لطفا دوباره تلاش کنید.");
+      console.error(t("inquiries.errors.deleteError"), error);
+      alert(t("inquiries.deleteFailedAlert"));
     }
   };
 
@@ -98,10 +100,10 @@ export default function B2BInquiriesPage() {
       <div className="flex items-center justify-between px-6 py-4 border-b border-ui-border-base">
         <div>
           <Heading level="h1" className="text-ui-fg-base">
-            درخواست‌های استعلام (BOM)
+            {t("inquiries.title")}
           </Heading>
           <Text className="text-ui-fg-subtle text-sm mt-1">
-            مدیریت و بررسی فایل‌های اکسل و درخواست‌های تامین قطعات
+            {t("inquiries.subtitle")}
           </Text>
         </div>
       </div>
@@ -112,19 +114,19 @@ export default function B2BInquiriesPage() {
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell className="sticky text-right left-0 bg-ui-bg-subtle border-ui-border-base whitespace-nowrap px-6">
-                شناسه درخواست
+                {t("inquiries.table.requestId")}
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap text-right px-6">
-                مشتری
+                {t("inquiries.table.customer")}
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap text-right px-6">
-                ایمیل / شماره تماس
+                {t("inquiries.table.contact")}
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap text-right px-6">
-                تاریخ ثبت
+                {t("inquiries.table.date")}
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap text-right px-6">
-                وضعیت
+                {t("inquiries.table.status")}
               </Table.HeaderCell>
               <Table.HeaderCell className="whitespace-nowrap w-12.5 text-right px-6"></Table.HeaderCell>
             </Table.Row>
@@ -133,13 +135,13 @@ export default function B2BInquiriesPage() {
             {isLoading ? (
               <Table.Row>
                 <Table.Cell className="text-center py-8 text-ui-fg-subtle">
-                  در حال دریافت اطلاعات...
+                  {t("inquiries.loading")}
                 </Table.Cell>
               </Table.Row>
             ) : inquiries.length === 0 ? (
               <Table.Row>
                 <Table.Cell className="text-center py-8 text-ui-fg-subtle">
-                  تا کنون استعلامی ثبت نشده است.
+                  {t("inquiries.noData")}
                 </Table.Cell>
               </Table.Row>
             ) : (
@@ -163,11 +165,11 @@ export default function B2BInquiriesPage() {
                   </Table.Cell>
                   <Table.Cell className="whitespace-nowrap px-6">
                     {inquiry.status === "completed" ? (
-                      <Badge color="green" size="small">تکمیل شده</Badge>
+                      <Badge color="green" size="small">{t("inquiries.status.completed")}</Badge>
                     ) : inquiry.status === "reviewed" ? (
-                      <Badge color="blue" size="small">بررسی شده</Badge>
+                      <Badge color="blue" size="small">{t("inquiries.status.reviewed")}</Badge>
                     ) : (
-                      <Badge color="orange" size="small">در انتظار بررسی</Badge>
+                      <Badge color="orange" size="small">{t("inquiries.status.pending")}</Badge>
                     )}
                   </Table.Cell>
                   
@@ -185,7 +187,7 @@ export default function B2BInquiriesPage() {
                           className="gap-x-2"
                         >
                           <Eye className="text-ui-fg-subtle" />
-                          مشاهده جزئیات
+                          {t("inquiries.actions.viewDetails")}
                         </DropdownMenu.Item>
 
                         {inquiry.status === "pending" && (
@@ -194,7 +196,7 @@ export default function B2BInquiriesPage() {
                             className="gap-x-2"
                           >
                             <CheckCircleSolid className="text-ui-fg-subtle" />
-                            تایید و بررسی شد
+                            {t("inquiries.actions.markReviewed")}
                           </DropdownMenu.Item>
                         )}
                         <DropdownMenu.Separator />
@@ -203,7 +205,7 @@ export default function B2BInquiriesPage() {
                           className="gap-x-2 text-ui-fg-error"
                         >
                           <Trash className="text-ui-fg-error" />
-                          حذف استعلام
+                          {t("inquiries.actions.delete")}
                         </DropdownMenu.Item>
                       </DropdownMenu.Content>
                     </DropdownMenu>
@@ -220,6 +222,7 @@ export default function B2BInquiriesPage() {
 
 // Menu Route Configuration
 export const config = defineRouteConfig({
-  label: "استعلام‌های B2B",
+  label: "inquiries.label",
+  translationNs: "custom-inquiries",
   icon: DocumentTextSolid,
 });

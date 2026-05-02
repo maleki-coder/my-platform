@@ -1,0 +1,43 @@
+/* -----------------------------------------------------
+   1. SWAP THE LOGO (Scoped to Login Page ONLY)
+----------------------------------------------------- */
+/* Hide the default Medusa SVG */
+.custom-login-page .bg-ui-bg-subtle > div > div:first-child svg {
+    display: none !important;
+}
+
+/* Inject your glorious custom logo */
+.custom-login-page .bg-ui-bg-subtle > div > div:first-child > div {
+    /* Make sure to point this to your actual asset path! */
+    background-image: url('./assets/my-logo.png'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 100%;
+    height: 100%;
+    /* Ensures the div doesn't collapse */
+    min-width: 48px; 
+    min-height: 48px;
+}
+
+/* -----------------------------------------------------
+   2. CHANGE THE "WELCOME" TEXT (Scoped to Login Page ONLY)
+----------------------------------------------------- */
+/* Hide the original text while keeping its DOM spacing */
+.custom-login-page h1.h1-core {
+    visibility: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+/* Overlay your custom text using the dynamic CSS variable! */
+.custom-login-page h1.h1-core::after {
+    /* We use the variable we injected via React! */
+    /* "Welcome!" is just a fallback in case the variable fails to load */
+    content: var(--custom-login-title, "Welcome!"); 
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    white-space: nowrap;
+}
