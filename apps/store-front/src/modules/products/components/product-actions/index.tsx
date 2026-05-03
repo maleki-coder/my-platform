@@ -12,8 +12,6 @@ import { getProductPrice } from "@lib/util/get-product-price"
 import { useProductSelection } from "@modules/products/components/product-selection-provider"
 
 // 3. UI Components
-import { Button } from "@lib/components/ui/button"
-import { Spinner } from "@lib/components/ui/spinner"
 import ProductPrice from "@modules/products/components/product-price"
 import TimedDiscountBadge from "@modules/products/components/timed-discount-badge"
 import ProductInStockInfo from "@modules/products/components/product-in-stock-info"
@@ -113,7 +111,7 @@ export default function ProductActions({
     } catch (err) {
       console.error("Failed to add to inquiry cart:", err);
     } finally {
-      setIsAdding(false); // ✅ Always runs!
+      setIsAdding(false);
     }
   };
 
@@ -123,12 +121,11 @@ export default function ProductActions({
 
     setIsRemoving(true);
     try {
-      // Assuming you have a delete function here later!
-      // await deleteFromInquiryCart(inquiryLineItem.id); 
+      await deleteFromInquiryCart(inquiryLineItem!.id); 
     } catch (err) {
       console.error("Failed to remove from inquiry cart:", err);
     } finally {
-      setIsRemoving(false); // ✅ Always runs!
+      setIsRemoving(false);
     }
   };
 

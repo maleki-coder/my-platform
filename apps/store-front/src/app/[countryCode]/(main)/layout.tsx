@@ -28,7 +28,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       <Header />
       <SidebarWrapper />
       <main
-        className={`w-full relative mobile-header-top-margin md:desktop-header-top-margin`}
+        className={`w-full bg-[#fcfeff] relative mobile-header-top-margin md:desktop-header-top-margin`}
       >
         {props.children}
       </main>

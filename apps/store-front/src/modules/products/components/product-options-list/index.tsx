@@ -24,6 +24,7 @@ export default function ProductOptionsList({
             current={options[option.id]}
             updateOption={setOptionValue}
             title={option.title ?? ""}
+            variants={product.variants ?? []}
             data-testid="product-options"
             disabled={false}
           />

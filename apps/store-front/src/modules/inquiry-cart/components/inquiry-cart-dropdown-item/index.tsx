@@ -2,12 +2,7 @@
 
 import Thumbnail from "@modules/products/components/thumbnail"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import { BadgePercent, BoxIcon } from "lucide-react"
 import { QuantitySelector } from "@modules/inquiry-cart/components/quantity-selector"
-import { VariantTagScroll } from "@modules/cart/components/variant-tag-scroll"
-import { getDiscountPercent } from "@lib/util/get-discount-percent"
-import { isVariantDiscounted } from "@lib/util/is-variant-discounted"
-import { convertToLocale } from "@lib/util/money"
 import { useParams } from "next/navigation"
 import { InquiryCartItem } from "types/global"
 
