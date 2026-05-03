@@ -1,5 +1,4 @@
 import { retrieveInquiryCart } from "@lib/data/cart"
-import { HttpTypes } from "@medusajs/types"
 import InquiryCartTemplate from "@modules/inquiry-cart/templates"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"

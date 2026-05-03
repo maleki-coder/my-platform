@@ -1,13 +1,13 @@
 "use client"
 
 // 1. External & React Imports
-import { useState } from "react"
-import { useParams } from "next/navigation"
+import { useState, useTransition } from "react"
+import { useParams, useRouter } from "next/navigation"
 import { HttpTypes } from "@medusajs/types"
-import { ClipboardList, ShoppingCart } from "lucide-react"
+import { ArrowLeft, ClipboardList, ShoppingCart } from "lucide-react"
 
 // 2. Library & Context Imports
-import { addToCart, addToInquiryCart } from "@lib/data/cart"
+import { addToCart, addToInquiryCart, deleteFromInquiryCart, deleteLineItem } from "@lib/data/cart"
 import { getProductPrice } from "@lib/util/get-product-price"
 import { useProductSelection } from "@modules/products/components/product-selection-provider"
 
@@ -18,12 +18,20 @@ import ProductPrice from "@modules/products/components/product-price"
 import TimedDiscountBadge from "@modules/products/components/timed-discount-badge"
 import ProductInStockInfo from "@modules/products/components/product-in-stock-info"
 import ProductWarrantyInfo from "@modules/products/components/product-warranty-info"
+import { InquiryCartResponse } from "types/global"
+import AnimatedCartButton from "../animated-cart-product"
 
 // --- Types & Constants ---
 
 type ProductActionsProps = {
   product: HttpTypes.StoreProduct
   disabled?: boolean
+  cart?:
+  | (HttpTypes.StoreCart & {
+    promotions: HttpTypes.StorePromotion[]
+  })
+  | null
+  inquiryCart?: InquiryCartResponse | null
 }
 
 const BUTTON_BASE_CLASSES =
@@ -34,65 +42,114 @@ const BUTTON_BASE_CLASSES =
 export default function ProductActions({
   product,
   disabled,
+  cart,
+  inquiryCart
 }: ProductActionsProps) {
   // State & Hooks
-  const [isAdding, setIsAdding] = useState(false)
+  const [isAdding, setIsAdding] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
+  const [isPending, startTransition] = useTransition(); // Perfect for Next.js navigation!
   const countryCode = useParams().countryCode as string
-
+  const router = useRouter()
   // Context
   const { selectedVariant, isValidVariant, inStock } = useProductSelection()
 
   // Derived Data
-  const { cheapestPrice } = getProductPrice({ product })
+  const { variantPrice } = getProductPrice({ product, variantId: selectedVariant?.id })
 
   const hasValidTimedDiscount =
-    cheapestPrice?.percentage_diff &&
-    parseInt(cheapestPrice.percentage_diff) > 0 &&
-    cheapestPrice?.ends_at
+    variantPrice?.percentage_diff &&
+    parseInt(variantPrice.percentage_diff) > 0 &&
+    variantPrice?.ends_at
+  // --- Cart Detection Logic ---
+  const cartLineItem = cart?.items?.find(
+    (item: any) => item.variant_id === selectedVariant?.id
+  )
+  const inquiryLineItem = inquiryCart?.items?.find(
+    (item: any) => item.variant_id === selectedVariant?.id
+  )
 
   const isActionDisabled = !!disabled || isAdding
 
   // --- Handlers ---
 
   const handleAddToCart = async () => {
-    if (!selectedVariant?.id) return null
-    setIsAdding(true)
-    await addToCart({ variantId: selectedVariant.id, quantity: 1, countryCode })
-    setIsAdding(false)
-  }
+    if (!selectedVariant?.id) return null;
+    setIsAdding(true);
+    try {
+      await addToCart({ variantId: selectedVariant.id, quantity: 1, countryCode });
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+    } finally {
+      setIsAdding(false); // ✅ Always runs!
+    }
+  };
+
+  const handleRemoveFromCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!cartLineItem?.id) return;
+    setIsRemoving(true);
+    try {
+      await deleteLineItem(cartLineItem.id);
+    } catch (err) {
+      console.error("Failed to remove from cart:", err);
+    } finally {
+      setIsRemoving(false); // ✅ Fixes the infinite spinner!
+    }
+  };
 
   const handleAddToInquiryCart = async () => {
-    if (!selectedVariant?.id) return null
-    setIsAdding(true)
-    await addToInquiryCart({
-      quantity: 1,
-      product_id: product.id,
-      variant_id: selectedVariant.id,
-      product_handle: product.handle,
-      thumbnail: product.thumbnail!,
-      title: product.title,
-    })
-    setIsAdding(false)
-  }
+    if (!selectedVariant?.id) return null;
+    setIsAdding(true);
+    try {
+      await addToInquiryCart({
+        quantity: 1,
+        product_id: product.id,
+        variant_id: selectedVariant.id,
+        product_handle: product.handle,
+        thumbnail: product.thumbnail!,
+        title: product.title,
+      });
+    } catch (err) {
+      console.error("Failed to add to inquiry cart:", err);
+    } finally {
+      setIsAdding(false); // ✅ Always runs!
+    }
+  };
 
-  // --- Render Helpers ---
+  const handleRemoveFromInquiryCart = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!inquiryLineItem?.id) return;
 
-  const renderCartButtonContent = () => {
-    if (isAdding) return <Spinner />
+    setIsRemoving(true);
+    try {
+      // Assuming you have a delete function here later!
+      // await deleteFromInquiryCart(inquiryLineItem.id); 
+    } catch (err) {
+      console.error("Failed to remove from inquiry cart:", err);
+    } finally {
+      setIsRemoving(false); // ✅ Always runs!
+    }
+  };
+
+  const handleNavigate = (type: "inquiry-cart" | "cart") => {
+    // useTransition is the standard way to show loading states during Next.js routing!
+    startTransition(() => {
+      router.push(`/${type}`);
+    });
+  };
+
+  const renderSkeletonButton = () => {
     return (
       <>
-        <span>افزودن به سبد خرید</span>
-        <ShoppingCart size={24} className="absolute left-3.5" />
-      </>
-    )
-  }
-
-  const renderInquiryButtonContent = () => {
-    if (isAdding) return <Spinner />
-    return (
-      <>
-        <span>افزودن به لیست استعلام</span>
-        <ClipboardList size={24} className="absolute left-3.5" />
+        <div className="md:block hidden">
+          <div className={`${BUTTON_BASE_CLASSES} animate-pulse rounded-md bg-gray-300`} />
+        </div>
+        <div className="md:hidden block">
+          <div className="fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
+            <div className={`${BUTTON_BASE_CLASSES} animate-pulse rounded-md bg-gray-300`} />
+          </div>
+        </div>
       </>
     )
   }
@@ -105,16 +162,17 @@ export default function ProductActions({
       {inStock && isValidVariant && hasValidTimedDiscount && (
         <div className="border-b border-gray-100 pb-4">
           <TimedDiscountBadge
-            startsAt={cheapestPrice.starts_at}
-            endsAt={cheapestPrice.ends_at!}
+            startsAt={variantPrice.starts_at}
+            endsAt={variantPrice.ends_at!}
           />
         </div>
       )}
 
       {/* Stock & Warranty Info */}
       <div className="flex flex-col gap-1">
-        <ProductInStockInfo inStock={inStock} />
-        {inStock && <ProductWarrantyInfo />}
+        {/* We can show a skeleton for these too if you want, but for now they just hide until valid */}
+        {isValidVariant && <ProductInStockInfo inStock={inStock} />}
+        {isValidVariant && inStock && <ProductWarrantyInfo />}
       </div>
 
       {/* Price */}
@@ -124,53 +182,82 @@ export default function ProductActions({
 
       {/* Actions */}
       <div className="border-t border-gray-100 pt-6">
-        {inStock && isValidVariant ? (
+        {/* LOGIC FIX: Check for validation first! */}
+        {!isValidVariant ? (
+          renderSkeletonButton()
+        ) : inStock ? (
           <>
-            <div className="md:block hidden">
-              <Button
-                onClick={handleAddToCart}
-                disabled={isActionDisabled}
-                className={`${BUTTON_BASE_CLASSES} bg-sky-900 hover:bg-sky-700`}
-              >
-                {renderCartButtonContent()}
-              </Button>
+            <div className="md:flex hidden w-full">
+              <AnimatedCartButton
+                isInCart={!!cartLineItem}
+                isAdding={isAdding}
+                isNavigating={isPending}
+                isRemoving={isRemoving}
+                onAdd={handleAddToCart}
+                onRemove={handleRemoveFromCart}
+                onNavigate={() => handleNavigate('cart')}
+                addLabel="افزودن به سبد خرید"
+                navigateLabel="مشاهده سبد خرید"
+                AddIcon={<ShoppingCart size={20} />}
+                NavigateIcon={<ArrowLeft size={20} />}
+                activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
+                inactiveClasses="bg-sky-900 hover:bg-sky-700 text-white" />
             </div>
-            <div className="md:hidden block">
-              <div
-                className={`fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-3 px-6 py-4 bg-gray-100!`}
-              >
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={isActionDisabled}
-                  className={`${BUTTON_BASE_CLASSES} bg-sky-900 hover:bg-sky-700`}
-                >
-                  {renderCartButtonContent()}
-                </Button>
+            <div className="md:hidden flex w-full">
+              <div className="fixed flex bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
+                <AnimatedCartButton
+                  isInCart={!!cartLineItem}
+                  isAdding={isAdding}
+                  isNavigating={isPending}
+                  isRemoving={isRemoving}
+                  onAdd={handleAddToCart}
+                  onRemove={handleRemoveFromCart}
+                  onNavigate={() => router.push("/cart")}
+                  addLabel="افزودن به سبد خرید"
+                  navigateLabel="مشاهده سبد خرید"
+                  AddIcon={<ShoppingCart size={20} />}
+                  NavigateIcon={<ArrowLeft size={20} />}
+                  activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
+                  inactiveClasses="bg-sky-900 hover:bg-sky-700 text-white" />
               </div>
             </div>
           </>
         ) : (
           <>
-            <div className="md:block hidden">
-              <Button
-                onClick={handleAddToInquiryCart}
-                disabled={isActionDisabled}
-                className={`${BUTTON_BASE_CLASSES} bg-green-900 hover:bg-green-700`}
-              >
-                {renderInquiryButtonContent()}
-              </Button>
+            <div className="md:flex hidden w-full">
+              <AnimatedCartButton
+                isInCart={!!inquiryLineItem}
+                isAdding={isAdding}
+                isRemoving={isRemoving}
+                isNavigating={isPending}
+                onAdd={handleAddToInquiryCart}
+                onRemove={handleRemoveFromInquiryCart}
+                onNavigate={() => handleNavigate("inquiry-cart")}
+                addLabel="افزودن به لیست استعلام"
+                navigateLabel="مشاهده لیست استعلام"
+                AddIcon={<ClipboardList size={20} />}
+                NavigateIcon={<ArrowLeft size={20} />}
+                activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
+                inactiveClasses="bg-blue-600 hover:bg-blue-500 text-white"
+              />
             </div>
-            <div className="md:hidden block">
-              <div
-                className={`fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-3 px-6 py-4 bg-gray-100!`}
-              >
-                <Button
-                  onClick={handleAddToInquiryCart}
-                  disabled={isActionDisabled}
-                  className={`${BUTTON_BASE_CLASSES} bg-green-900 hover:bg-green-700`}
-                >
-                  {renderInquiryButtonContent()}
-                </Button>
+            <div className="md:hidden flex w-full">
+              <div className="fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
+                <AnimatedCartButton
+                  isInCart={!!inquiryLineItem}
+                  isAdding={isAdding}
+                  isRemoving={isRemoving}
+                  isNavigating={isPending}
+                  onAdd={handleAddToInquiryCart}
+                  onRemove={handleRemoveFromInquiryCart}
+                  onNavigate={() => handleNavigate("inquiry-cart")}
+                  addLabel="افزودن به لیست استعلام"
+                  navigateLabel="مشاهده لیست استعلام"
+                  AddIcon={<ClipboardList size={20} />}
+                  NavigateIcon={<ArrowLeft size={20} />}
+                  activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
+                  inactiveClasses="bg-blue-600 hover:bg-blue-500 text-white"
+                />
               </div>
             </div>
           </>
