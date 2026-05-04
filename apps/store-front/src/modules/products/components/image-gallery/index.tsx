@@ -29,13 +29,13 @@ type ProductGalleryProps = {
 export default function ProductGallery({ images, title }: ProductGalleryProps) {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
-  
+
   const [activeIndex, setActiveIndex] = useState(0)
   const [modalSwiper, setModalSwiper] = useState<any>(null)
 
   useEffect(() => {
     if (isModalOpen && modalSwiper) {
-      modalSwiper.slideTo(activeIndex, 0) 
+      modalSwiper.slideTo(activeIndex, 0)
     }
   }, [isModalOpen, modalSwiper, activeIndex])
 
@@ -43,9 +43,9 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
-      
+
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        
+
         {/* --- MAIN PAGE GALLERY --- */}
         <div className="relative w-full aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 group">
           <Swiper
@@ -58,7 +58,7 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
           >
             {images.map((image, index) => (
               <SwiperSlide key={`main-${image.id}`}>
-                <div 
+                <div
                   className="relative w-full h-full cursor-pointer"
                   onClick={() => setIsModalOpen(true)}
                 >
@@ -74,19 +74,19 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
               </SwiperSlide>
             ))}
           </Swiper>
-          
+
           <DialogTrigger asChild>
-            <button 
+            <button
               className="absolute bottom-4 right-4 z-10 bg-white/90 p-2.5 rounded-full shadow-md opacity-0 group-hover:opacity-100 transition-all hover:scale-105 duration-200"
               aria-label="Open image gallery fullscreen"
             >
-               <ZoomIn size={20} className="text-gray-800" />
+              <ZoomIn size={20} className="text-gray-800" />
             </button>
           </DialogTrigger>
         </div>
 
         {/* --- UPGRADED WIDE MODAL --- */}
-        <DialogContent 
+        <DialogContent
           className="min-w-screen h-full p-0 border-none bg-white flex flex-col shadow-2xl overflow-hidden z-10000"
         >
           {/* Header */}
@@ -98,10 +98,10 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
               <X size={22} className="text-gray-700" />
             </DialogClose>
           </DialogHeader>
-          
+
           {/* Modal Split Layout - Now heavily prioritizing horizontal space */}
           <div className="flex-1 w-full h-full grid grid-cols-1 lg:grid-cols-12 bg-white overflow-hidden">
-            
+
             {/* LEFT SIDE: Large Active Image (Takes up 7 columns now) */}
             <div className="lg:col-span-7 h-full p-4 lg:p-8 flex items-center justify-center bg-gray-50/30">
               <Swiper
@@ -131,14 +131,9 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
 
             {/* RIGHT SIDE: 5-Column Grid Thumbnails (Takes up 5 columns for maximum width) */}
             <div className="hidden lg:flex lg:col-span-5 h-full border-l border-gray-100 flex-col overflow-y-auto p-6 gap-6 custom-scrollbar bg-white">
-              
-              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-                 <h3 className="text-base font-semibold text-gray-800">Product Gallery</h3>
-                 <span className="text-xs font-medium px-2.5 py-1 bg-gray-100 text-gray-600 rounded-full">
-                   {images.length} Images
-                 </span>
-              </div>
-              
+
+              <div className="flex items-center justify-between pb-3 border-b border-gray-100"></div>
+
               {/* grid-cols-5 creates the exact 5-per-row horizontal stack */}
               <div className="grid grid-cols-5 gap-3 auto-rows-max">
                 {images.map((image, index) => {
@@ -151,11 +146,10 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
                           modalSwiper.slideTo(index);
                         }
                       }}
-                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${
-                        isActive 
-                          ? "border-blue-600 shadow-md scale-105 z-10" 
+                      className={`cursor-pointer relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${isActive
+                          ? "border-blue-600 shadow-md scale-105 z-10"
                           : "border-gray-100 hover:border-gray-300 opacity-60 hover:opacity-100 hover:scale-105"
-                      }`}
+                        }`}
                     >
                       <Image
                         src={image.url}
@@ -179,25 +173,25 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
         <Swiper
           onSwiper={setThumbsSwiper}
           spaceBetween={12}
-          slidesPerView={4} 
+          slidesPerView={4}
           freeMode={true}
           watchSlidesProgress={true}
           modules={[FreeMode, Navigation, Thumbs]}
           className="w-full h-full product-thumbnails"
         >
           {images.map((image, index) => (
-            <SwiperSlide 
-              key={`thumb-${image.id}`} 
+            <SwiperSlide
+              key={`thumb-${image.id}`}
               className="cursor-pointer overflow-hidden rounded-xl border-2 border-transparent [&.swiper-slide-thumb-active]:border-gray-900 transition-colors bg-gray-50 opacity-60 [&.swiper-slide-thumb-active]:opacity-100 hover:opacity-100"
             >
-               <div className="relative w-full h-full">
+              <div className="relative w-full h-full">
                 <Image
-                    src={image.url}
-                    alt={`Thumbnail ${index + 1}`}
-                    fill
-                    className="object-cover"
+                  src={image.url}
+                  alt={`Thumbnail ${index + 1}`}
+                  fill
+                  className="object-cover"
                 />
-               </div>
+              </div>
             </SwiperSlide>
           ))}
         </Swiper>

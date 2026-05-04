@@ -121,7 +121,7 @@ export default function ProductActions({
 
     setIsRemoving(true);
     try {
-      await deleteFromInquiryCart(inquiryLineItem!.id); 
+      await deleteFromInquiryCart(inquiryLineItem!.id);
     } catch (err) {
       console.error("Failed to remove from inquiry cart:", err);
     } finally {
@@ -179,87 +179,53 @@ export default function ProductActions({
 
       {/* Actions */}
       <div className="border-t border-gray-100 pt-6">
-        {/* LOGIC FIX: Check for validation first! */}
         {!isValidVariant ? (
           renderSkeletonButton()
-        ) : inStock ? (
-          <>
-            <div className="md:flex hidden w-full">
-              <AnimatedCartButton
-                isInCart={!!cartLineItem}
-                isAdding={isAdding}
-                isNavigating={isPending}
-                isRemoving={isRemoving}
-                onAdd={handleAddToCart}
-                onRemove={handleRemoveFromCart}
-                onNavigate={() => handleNavigate('cart')}
-                addLabel="افزودن به سبد خرید"
-                navigateLabel="مشاهده سبد خرید"
-                AddIcon={<ShoppingCart size={20} />}
-                NavigateIcon={<ArrowLeft size={20} />}
-                activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
-                inactiveClasses="bg-sky-900 hover:bg-sky-700 text-white" />
-            </div>
-            <div className="md:hidden flex w-full">
-              <div className="fixed flex bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
-                <AnimatedCartButton
-                  isInCart={!!cartLineItem}
-                  isAdding={isAdding}
-                  isNavigating={isPending}
-                  isRemoving={isRemoving}
-                  onAdd={handleAddToCart}
-                  onRemove={handleRemoveFromCart}
-                  onNavigate={() => router.push("/cart")}
-                  addLabel="افزودن به سبد خرید"
-                  navigateLabel="مشاهده سبد خرید"
-                  AddIcon={<ShoppingCart size={20} />}
-                  NavigateIcon={<ArrowLeft size={20} />}
-                  activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
-                  inactiveClasses="bg-sky-900 hover:bg-sky-700 text-white" />
-              </div>
-            </div>
-          </>
         ) : (
           <>
+            {/* Desktop version (md and larger) */}
             <div className="md:flex hidden w-full">
               <AnimatedCartButton
-                isInCart={!!inquiryLineItem}
+                isInCart={inStock ? !!cartLineItem : !!inquiryLineItem}
                 isAdding={isAdding}
-                isRemoving={isRemoving}
                 isNavigating={isPending}
-                onAdd={handleAddToInquiryCart}
-                onRemove={handleRemoveFromInquiryCart}
-                onNavigate={() => handleNavigate("inquiry-cart")}
-                addLabel="افزودن به لیست استعلام"
-                navigateLabel="مشاهده لیست استعلام"
-                AddIcon={<ClipboardList size={20} />}
+                isRemoving={isRemoving}
+                onAdd={inStock ? handleAddToCart : handleAddToInquiryCart}
+                onRemove={inStock ? handleRemoveFromCart : handleRemoveFromInquiryCart}
+                onNavigate={() => handleNavigate(inStock ? 'cart' : 'inquiry-cart')}
+                addLabel={inStock ? "افزودن به سبد خرید" : "افزودن به لیست استعلام"}
+                navigateLabel={inStock ? "مشاهده سبد خرید" : "مشاهده لیست استعلام"}
+                AddIcon={inStock ? <ShoppingCart size={20} /> : <ClipboardList size={20} />}
                 NavigateIcon={<ArrowLeft size={20} />}
                 activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
-                inactiveClasses="bg-blue-600 hover:bg-blue-500 text-white"
+                inactiveClasses={inStock ? "bg-sky-900 hover:bg-sky-700 text-white" : "bg-blue-600 hover:bg-blue-500 text-white"}
               />
             </div>
+
+            {/* Mobile version (smaller than md) */}
             <div className="md:hidden flex w-full">
               <div className="fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
                 <AnimatedCartButton
-                  isInCart={!!inquiryLineItem}
+                  isInCart={inStock ? !!cartLineItem : !!inquiryLineItem}
                   isAdding={isAdding}
-                  isRemoving={isRemoving}
                   isNavigating={isPending}
-                  onAdd={handleAddToInquiryCart}
-                  onRemove={handleRemoveFromInquiryCart}
-                  onNavigate={() => handleNavigate("inquiry-cart")}
-                  addLabel="افزودن به لیست استعلام"
-                  navigateLabel="مشاهده لیست استعلام"
-                  AddIcon={<ClipboardList size={20} />}
+                  isRemoving={isRemoving}
+                  onAdd={inStock ? handleAddToCart : handleAddToInquiryCart}
+                  onRemove={inStock ? handleRemoveFromCart : handleRemoveFromInquiryCart}
+                  onNavigate={() => handleNavigate(inStock ? 'cart' : 'inquiry-cart')}
+                  addLabel={inStock ? "افزودن به سبد خرید" : "افزودن به لیست استعلام"}
+                  navigateLabel={inStock ? "مشاهده سبد خرید" : "مشاهده لیست استعلام"}
+                  AddIcon={inStock ? <ShoppingCart size={20} /> : <ClipboardList size={20} />}
                   NavigateIcon={<ArrowLeft size={20} />}
                   activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
-                  inactiveClasses="bg-blue-600 hover:bg-blue-500 text-white"
+                  inactiveClasses={inStock ? "bg-sky-900 hover:bg-sky-700 text-white" : "bg-blue-600 hover:bg-blue-500 text-white"}
                 />
               </div>
             </div>
           </>
         )}
       </div>
+
     </div>
   )
 }

@@ -7,9 +7,9 @@ import { Spinner } from "@lib/components/ui/spinner"
 
 interface AnimatedCartButtonProps {
     isInCart: boolean
-    isAdding: boolean       // 🆕 Specific state for Add to Cart
-    isNavigating: boolean   // 🆕 Specific state for Navigation transition
-    isRemoving: boolean     // 🆕 Specific state for Trash button
+    isAdding: boolean    
+    isNavigating: boolean
+    isRemoving: boolean  
     onAdd: () => void
     onRemove: (e: React.MouseEvent) => void
     onNavigate: () => void
