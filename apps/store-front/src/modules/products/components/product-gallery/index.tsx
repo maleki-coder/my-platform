@@ -24,9 +24,28 @@ import "swiper/css/thumbs"
 type ProductGalleryProps = {
   images: HttpTypes.StoreProductImage[] | undefined
   title: string
+  inStock?: boolean
+  isValidVariant?: boolean
+  hasValidTimedDiscount?: boolean | string
+  variantPrice?: {
+    starts_at?: string
+    ends_at?: string
+  }
+  TimedDiscountBadge?: React.ComponentType<{
+    startsAt?: string
+    endsAt: string
+  }>
 }
 
-export default function ProductGallery({ images, title }: ProductGalleryProps) {
+export default function ProductGallery({ 
+  images, 
+  title,
+  inStock,
+  isValidVariant,
+  hasValidTimedDiscount,
+  variantPrice,
+  TimedDiscountBadge
+}: ProductGalleryProps) {
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -40,6 +59,8 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
   }, [isModalOpen, modalSwiper, activeIndex])
 
   if (!images || images.length === 0) return null
+
+  const showTimedDiscount = inStock && isValidVariant && hasValidTimedDiscount && TimedDiscountBadge && variantPrice?.ends_at
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -74,6 +95,16 @@ export default function ProductGallery({ images, title }: ProductGalleryProps) {
               </SwiperSlide>
             ))}
           </Swiper>
+
+          {/* Timed Discount Badge Overlay - Only visible on mobile (< md) */}
+          {showTimedDiscount && (
+            <div className="absolute top-4 left-4 z-20 md:hidden">
+              <TimedDiscountBadge
+                startsAt={variantPrice.starts_at}
+                endsAt={variantPrice.ends_at!}
+              />
+            </div>
+          )}
 
           <DialogTrigger asChild>
             <button

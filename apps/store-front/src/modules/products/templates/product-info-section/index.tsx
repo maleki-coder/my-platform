@@ -1,13 +1,23 @@
+import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
-import ImageGallery from "@modules/products/components/image-gallery"
+import ProductGallery from "@modules/products/components/product-gallery"
 import ProductOptionsList from "@modules/products/components/product-options-list"
+import { useProductSelection } from "@modules/products/components/product-selection-provider"
+import TimedDiscountBadge from "@modules/products/components/timed-discount-badge"
 
 type ProductInfoProps = {
   product: HttpTypes.StoreProduct
 }
 
 const ProductInfoSection = ({ product }: ProductInfoProps) => {
+  const { selectedVariant, isValidVariant, inStock } = useProductSelection()
+  const { variantPrice } = getProductPrice({ product, variantId: selectedVariant?.id })
+  const hasValidTimedDiscount =
+    variantPrice?.percentage_diff &&
+    parseInt(variantPrice.percentage_diff) > 0 &&
+    variantPrice?.ends_at;
+
   return (
     <div
       id="product-info"
@@ -25,7 +35,7 @@ const ProductInfoSection = ({ product }: ProductInfoProps) => {
             {product.collection.title}
           </LocalizedClientLink>
         )}
-        
+
         <h2
           className="text-3xl leading-10 font-bold text-gray-900"
           data-testid="product-title"
@@ -44,11 +54,19 @@ const ProductInfoSection = ({ product }: ProductInfoProps) => {
         <hr className="border-t border-gray-100 my-2" />
 
         <div className="mt-4">
-            <ProductOptionsList product={product} />
+          <ProductOptionsList product={product} />
         </div>
       </div>
       <div className="w-full flex flex-col">
-        <ImageGallery images={product.images!} title={product.title} />
+        <ProductGallery
+          images={product.images!}
+          title={product.title}
+          inStock={inStock}
+          isValidVariant={isValidVariant}
+          hasValidTimedDiscount={hasValidTimedDiscount!}
+          variantPrice={{ starts_at: variantPrice?.starts_at!, ends_at: variantPrice?.ends_at! }}
+          TimedDiscountBadge={TimedDiscountBadge}
+        />
       </div>
 
     </div>

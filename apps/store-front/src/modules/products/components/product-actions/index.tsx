@@ -46,7 +46,7 @@ export default function ProductActions({
   // State & Hooks
   const [isAdding, setIsAdding] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
-  const [isPending, startTransition] = useTransition(); // Perfect for Next.js navigation!
+  const [isPending, startTransition] = useTransition();
   const countryCode = useParams().countryCode as string
   const router = useRouter()
   // Context
@@ -67,10 +67,7 @@ export default function ProductActions({
     (item: any) => item.variant_id === selectedVariant?.id
   )
 
-  const isActionDisabled = !!disabled || isAdding
-
   // --- Handlers ---
-
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null;
     setIsAdding(true);
@@ -79,7 +76,7 @@ export default function ProductActions({
     } catch (err) {
       console.error("Failed to add to cart:", err);
     } finally {
-      setIsAdding(false); // ✅ Always runs!
+      setIsAdding(false);
     }
   };
 
@@ -92,7 +89,7 @@ export default function ProductActions({
     } catch (err) {
       console.error("Failed to remove from cart:", err);
     } finally {
-      setIsRemoving(false); // ✅ Fixes the infinite spinner!
+      setIsRemoving(false);
     }
   };
 
@@ -130,7 +127,6 @@ export default function ProductActions({
   };
 
   const handleNavigate = (type: "inquiry-cart" | "cart") => {
-    // useTransition is the standard way to show loading states during Next.js routing!
     startTransition(() => {
       router.push(`/${type}`);
     });
@@ -157,7 +153,7 @@ export default function ProductActions({
     <div className="sticky top-12 flex flex-col gap-y-6 rounded-2xl border-b border-gray-100 bg-white p-2 shadow-custom">
       {/* Discount Badge */}
       {inStock && isValidVariant && hasValidTimedDiscount && (
-        <div className="border-b border-gray-100 pb-4">
+        <div className="border-b border-gray-100 pb-4 md:block hidden">
           <TimedDiscountBadge
             startsAt={variantPrice.starts_at}
             endsAt={variantPrice.ends_at!}
