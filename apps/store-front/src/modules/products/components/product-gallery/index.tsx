@@ -20,32 +20,27 @@ import "swiper/css"
 import "swiper/css/free-mode"
 import "swiper/css/navigation"
 import "swiper/css/thumbs"
+import { useProductSelection } from "../product-selection-provider"
+import { getProductPrice } from "@lib/util/get-product-price"
+import TimedDiscountBadge from "../timed-discount-badge"
 
 type ProductGalleryProps = {
-  images: HttpTypes.StoreProductImage[] | undefined
-  title: string
-  inStock?: boolean
-  isValidVariant?: boolean
-  hasValidTimedDiscount?: boolean | string
-  variantPrice?: {
-    starts_at?: string
-    ends_at?: string
-  }
-  TimedDiscountBadge?: React.ComponentType<{
-    startsAt?: string
-    endsAt: string
-  }>
+   product: HttpTypes.StoreProduct
+}
+
+type ProductInfoProps = {
+ 
 }
 
 export default function ProductGallery({ 
-  images, 
-  title,
-  inStock,
-  isValidVariant,
-  hasValidTimedDiscount,
-  variantPrice,
-  TimedDiscountBadge
+  product
 }: ProductGalleryProps) {
+    const { selectedVariant, isValidVariant, inStock } = useProductSelection()
+  const { variantPrice } = getProductPrice({ product, variantId: selectedVariant?.id })
+  const hasValidTimedDiscount =
+    variantPrice?.percentage_diff &&
+    parseInt(variantPrice.percentage_diff) > 0 &&
+    variantPrice?.ends_at;
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -58,9 +53,9 @@ export default function ProductGallery({
     }
   }, [isModalOpen, modalSwiper, activeIndex])
 
-  if (!images || images.length === 0) return null
+  if (!product.images || product.images.length === 0) return null
 
-  const showTimedDiscount = inStock && isValidVariant && hasValidTimedDiscount && TimedDiscountBadge && variantPrice?.ends_at
+  const showTimedDiscount = inStock && isValidVariant && hasValidTimedDiscount && variantPrice?.ends_at
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -77,7 +72,7 @@ export default function ProductGallery({
             onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
             className="w-full h-full"
           >
-            {images.map((image, index) => (
+            {product.images.map((image, index) => (
               <SwiperSlide key={`main-${image.id}`}>
                 <div
                   className="relative w-full h-full cursor-pointer"
@@ -85,7 +80,7 @@ export default function ProductGallery({
                 >
                   <Image
                     src={image.url}
-                    alt={`${title} - Image ${index + 1}`}
+                    alt={`${product.title} - Image ${index + 1}`}
                     fill
                     className="object-contain"
                     sizes="(max-width: 768px) 100vw, 50vw"
@@ -123,7 +118,7 @@ export default function ProductGallery({
           {/* Header */}
           <DialogHeader className="w-full flex flex-row items-center justify-between p-5 border-b border-gray-100 bg-white z-50 shadow-sm">
             <DialogTitle className="text-gray-900 text-xl font-bold tracking-tight">
-              {title}
+              {product.title}
             </DialogTitle>
             <DialogClose className="p-2.5 bg-gray-100 rounded-full hover:bg-gray-200 hover:rotate-90 transition-all duration-300">
               <X size={22} className="text-gray-700" />
@@ -143,12 +138,12 @@ export default function ProductGallery({
                 onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
                 className="w-full h-full max-h-[75vh]"
               >
-                {images.map((image, index) => (
+                {product.images.map((image, index) => (
                   <SwiperSlide key={`modal-main-${image.id}`}>
                     <div className="relative w-full h-full flex items-center justify-center">
                       <Image
                         src={image.url}
-                        alt={`${title} Fullscreen ${index + 1}`}
+                        alt={`${product.title} Fullscreen ${index + 1}`}
                         fill
                         className="object-contain select-none drop-shadow-sm"
                         sizes="60vw"
@@ -167,7 +162,7 @@ export default function ProductGallery({
 
               {/* grid-cols-5 creates the exact 5-per-row horizontal stack */}
               <div className="grid grid-cols-5 gap-3 auto-rows-max">
-                {images.map((image, index) => {
+                {product.images.map((image, index) => {
                   const isActive = activeIndex === index;
                   return (
                     <button
@@ -210,7 +205,7 @@ export default function ProductGallery({
           modules={[FreeMode, Navigation, Thumbs]}
           className="w-full h-full product-thumbnails"
         >
-          {images.map((image, index) => (
+          {product.images.map((image, index) => (
             <SwiperSlide
               key={`thumb-${image.id}`}
               className="cursor-pointer overflow-hidden rounded-xl border-2 border-transparent [&.swiper-slide-thumb-active]:border-gray-900 transition-colors bg-gray-50 opacity-60 [&.swiper-slide-thumb-active]:opacity-100 hover:opacity-100"

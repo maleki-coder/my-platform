@@ -1,22 +1,12 @@
-import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import ProductGallery from "@modules/products/components/product-gallery"
 import ProductOptionsList from "@modules/products/components/product-options-list"
-import { useProductSelection } from "@modules/products/components/product-selection-provider"
-import TimedDiscountBadge from "@modules/products/components/timed-discount-badge"
-
 type ProductInfoProps = {
   product: HttpTypes.StoreProduct
 }
 
 const ProductInfoSection = ({ product }: ProductInfoProps) => {
-  const { selectedVariant, isValidVariant, inStock } = useProductSelection()
-  const { variantPrice } = getProductPrice({ product, variantId: selectedVariant?.id })
-  const hasValidTimedDiscount =
-    variantPrice?.percentage_diff &&
-    parseInt(variantPrice.percentage_diff) > 0 &&
-    variantPrice?.ends_at;
 
   return (
     <div
@@ -59,13 +49,7 @@ const ProductInfoSection = ({ product }: ProductInfoProps) => {
       </div>
       <div className="w-full flex flex-col">
         <ProductGallery
-          images={product.images!}
-          title={product.title}
-          inStock={inStock}
-          isValidVariant={isValidVariant}
-          hasValidTimedDiscount={hasValidTimedDiscount!}
-          variantPrice={{ starts_at: variantPrice?.starts_at!, ends_at: variantPrice?.ends_at! }}
-          TimedDiscountBadge={TimedDiscountBadge}
+          product={product}
         />
       </div>
 
