@@ -103,10 +103,10 @@ export const listProducts = async ({
           products.forEach((product) => {
             product.variants?.forEach((variant) => {
               if (discounts[variant.id]) {
-                ;(variant as any).discount_starts_at =
+                ; (variant as any).discount_starts_at =
                   discounts[variant.id].starts_at
-                ;(variant as any).discount_ends_at =
-                  discounts[variant.id].ends_at
+                  ; (variant as any).discount_ends_at =
+                    discounts[variant.id].ends_at
               }
             })
           })
@@ -285,6 +285,39 @@ export async function submitProductReviewAction(
       success: true,
       message:
         "نظر شما با موفقیت ثبت شد و پس از تایید مدیریت نمایش داده می‌شود.",
+    }
+  } catch (error: any) {
+    console.error("Server Action Error:", error)
+    return {
+      success: false,
+      error:
+        error.message || "خطا در برقراری ارتباط با سرور. لطفا مجددا تلاش کنید.",
+    }
+  }
+}
+
+export async function getProductMainOptions(productId: string) {
+  try {
+    const next = {
+      ...(await getCacheOptions("product-main-options")),
+    }
+    const headers = { ...(await getAuthHeaders()) }
+    const response = await sdk.client.fetch<any>(`/store/products/${productId}/main-options`, {
+      method: "GET",
+      next,
+      headers,
+      cache: "no-cache",
+    })
+    const product = response.product;
+
+    // Filter out the VIPs (Main Characters) for special UI treatment ✨
+    const mainCharacterOptions = product.options.filter(
+      (opt: any) => opt.option_extension?.is_main_character === true
+    );
+
+    return {
+      success: true,
+      main_options: mainCharacterOptions
     }
   } catch (error: any) {
     console.error("Server Action Error:", error)

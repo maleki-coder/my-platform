@@ -95,5 +95,21 @@
         "errors": {
             "fetchError": "Error fetching inquiry details:"
         }
-    }
+    },
+    "mainCharacter": {
+        "heading": "Main Character Options ✨",
+        "description": "Select which option should be highlighted as the \"Main Character\" on the storefront.",
+        "loading": "Summoning VIP data... ⏳",
+        "noOptions": "No product options available.",
+        "table": {
+          "optionTitle": "Option Title",
+          "status": "Main Character Status"
+        },
+        "toast": {
+          "successTitle": "Success! 🌟",
+          "successDesc": "The main character tag has been successfully updated.",
+          "errorTitle": "Oops! 🚨",
+          "errorDesc": "Something went wrong while updating. Reverting."
+        }
+      }
 }

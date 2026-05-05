@@ -1,5 +1,6 @@
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
+import MainCharacterOptions from "@modules/products/components/main-product-options"
 import ProductGallery from "@modules/products/components/product-gallery"
 import ProductOptionsList from "@modules/products/components/product-options-list"
 type ProductInfoProps = {
@@ -40,6 +41,7 @@ const ProductInfoSection = ({ product }: ProductInfoProps) => {
           {product.description}
         </p>
 
+        <MainCharacterOptions productId={product.id} />
         {/* Separator line for visual hierarchy */}
         <hr className="border-t border-gray-100 my-2" />
 

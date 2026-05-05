@@ -2,8 +2,10 @@ import { useState, useEffect } from "react";
 import { Container, Heading, Text, Switch, Table, toast } from "@medusajs/ui";
 import { AdminProduct, AdminProductOption } from "@medusajs/framework/types";
 import { defineWidgetConfig } from "@medusajs/admin-sdk";
+import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 
-// 1. Types remain exactly as you perfectly defined them
+// 1. Types
 type ExtendedProductOption = AdminProductOption & {
   option_extension?: {
     is_main_character: boolean;
@@ -15,31 +17,36 @@ type ExtendedProduct = AdminProduct & {
 };
 
 type MainCharacterWidgetProps = {
-  data: ExtendedProduct;
+  data: AdminProduct;
 };
 
-const MainCharacterWidget = ({ data: product }: MainCharacterWidgetProps) => {
-  // 2. 🚀 Introduce Local State for Instant Reactivity!
-  // We map option IDs to their boolean status for $O(1)$ lookups.
+const MainCharacterWidget = ({ data: baseProduct }: MainCharacterWidgetProps) => {
+  const { t } = useTranslation(); // 🚀 Initialize the translation hook
   const [mainCharacterStates, setMainCharacterStates] = useState<Record<string, boolean>>({});
 
-  // 3. Sync the injected data into our local state when the component mounts
+  const { data: fetchedProduct, isLoading } = useQuery({
+    queryKey: ["product-main-options", baseProduct.id],
+    queryFn: async () => {
+      const response = await fetch(`/admin/products/${baseProduct.id}/main-options`);
+      if (!response.ok) throw new Error("Failed to fetch fresh option data");
+      const json = await response.json();
+      return json.product as ExtendedProduct;
+    },
+  });
+
   useEffect(() => {
-    if (product?.options) {
+    if (fetchedProduct?.options) {
       const initialStates: Record<string, boolean> = {};
-      product.options.forEach((baseOption) => {
-        const option = baseOption as ExtendedProductOption;
+      fetchedProduct.options.forEach((option: ExtendedProductOption) => {
         initialStates[option.id] = !!option.option_extension?.is_main_character;
       });
       setMainCharacterStates(initialStates);
     }
-  }, [product]);
+  }, [fetchedProduct]);
 
-  // 4. The Optimistic Toggle Handler
   const handleToggle = async (optionId: string, currentStatus: boolean) => {
     const targetStatus = !currentStatus;
 
-    // 🔥 OPTIMISTIC UPDATE: Change the UI instantly before the API even finishes!
     setMainCharacterStates((prev) => ({
       ...prev,
       [optionId]: targetStatus,
@@ -48,39 +55,46 @@ const MainCharacterWidget = ({ data: product }: MainCharacterWidgetProps) => {
     try {
       const response = await fetch(`/admin/product-option/${optionId}/main`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ is_main_character: targetStatus }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to update the main character status!");
-      }
+      if (!response.ok) throw new Error("Failed to update!");
 
-      toast.success("Success! 🌟", {
-        description: "The main character tag has been successfully updated.",
+      toast.success(t("mainCharacter.toast.successTitle", "Success! 🌟"), {
+        description: t("mainCharacter.toast.successDesc", "The main character tag has been successfully updated."),
       });
     } catch (error) {
       console.error("Error updating option:", error);
-      
-      // 🚨 ROLLBACK: If the API fails, revert the switch back to its original state
       setMainCharacterStates((prev) => ({
         ...prev,
         [optionId]: currentStatus,
       }));
-
-      toast.error("Oops! 🚨", {
-        description: "Something went wrong while updating the option. Reverting.",
+      toast.error(t("mainCharacter.toast.errorTitle", "Oops! 🚨"), {
+        description: t("mainCharacter.toast.errorDesc", "Something went wrong while updating. Reverting."),
       });
     }
   };
 
-  if (!product || !product.options || product.options.length === 0) {
+  if (isLoading) {
     return (
       <Container className="p-6 mt-4">
-        <Heading level="h2" className="mb-2">Main Character Options ✨</Heading>
-        <Text className="text-ui-fg-subtle">No product options available.</Text>
+        <Text className="text-ui-fg-subtle animate-pulse">
+          {t("mainCharacter.loading", "Summoning VIP data... ⏳")}
+        </Text>
+      </Container>
+    );
+  }
+
+  if (!fetchedProduct || !fetchedProduct.options || fetchedProduct.options.length === 0) {
+    return (
+      <Container className="p-6 mt-4">
+        <Heading level="h2" className="mb-2">
+          {t("mainCharacter.heading", "Main Character Options ✨")}
+        </Heading>
+        <Text className="text-ui-fg-subtle">
+          {t("mainCharacter.noOptions", "No product options available.")}
+        </Text>
       </Container>
     );
   }
@@ -88,22 +102,21 @@ const MainCharacterWidget = ({ data: product }: MainCharacterWidgetProps) => {
   return (
     <Container className="p-6 mt-4">
       <Heading level="h2" className="mb-2">
-        Main Character Options ✨
+        {t("mainCharacter.heading", "Main Character Options ✨")}
       </Heading>
       <Text className="mb-6 text-ui-fg-subtle">
-        Select which option should be highlighted as the "Main Character" on the storefront.
+        {t("mainCharacter.description", "Select which option should be highlighted as the \"Main Character\" on the storefront.")}
       </Text>
 
       <Table>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>Option Title</Table.HeaderCell>
-            <Table.HeaderCell>Main Character Status</Table.HeaderCell>
+            <Table.HeaderCell>{t("mainCharacter.table.optionTitle", "Option Title")}</Table.HeaderCell>
+            <Table.HeaderCell>{t("mainCharacter.table.status", "Main Character Status")}</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {product.options.map((option) => {
-            // Read from our local state map instead of the static prop!
+          {fetchedProduct.options.map((option) => {
             const isMainCharacter = !!mainCharacterStates[option.id];
 
             return (
