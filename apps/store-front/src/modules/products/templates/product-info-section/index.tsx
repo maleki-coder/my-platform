@@ -8,16 +8,19 @@ type ProductInfoProps = {
 }
 
 const ProductInfoSection = ({ product }: ProductInfoProps) => {
-
   return (
     <div
       id="product-info"
       // We use a CSS Grid here. 1 column on mobile, 2 perfectly equal columns on large screens!
-      className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 min-w-142 grow rounded-2xl border-gray-200 xl:min-w-185.5 2xl:min-w-0 2xl:max-w-300 bg-white shadow-custom border p-6 mx-auto"
+      className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 grow rounded-2xl border-gray-200 xl:min-w-185.5 2xl:min-w-0 2xl:max-w-300 bg-white shadow-custom border p-0 md:p-6 mx-auto"
     >
-      {/* LEFT COLUMN: Image Gallery */}
-      {/* RIGHT COLUMN: Product Details */}
-      <div className="flex flex-col gap-y-6 w-full">
+      {/* LEFT COLUMN (Top on Mobile): Image Gallery */}
+      <div className="w-full z-0">
+        <ProductGallery product={product} />
+      </div>
+
+      {/* RIGHT COLUMN (Bottom on Mobile): Product Details */}
+      <div className="flex flex-col gap-y-4 w-full md:p-0 p-4">
         {product.collection && (
           <LocalizedClientLink
             href={`/collections/${product.collection.handle}`}
@@ -41,20 +44,16 @@ const ProductInfoSection = ({ product }: ProductInfoProps) => {
           {product.description}
         </p>
 
-        <MainCharacterOptions productId={product.id} />
+        {/* Your shiny new Main Character component! */}
+
         {/* Separator line for visual hierarchy */}
-        <hr className="border-t border-gray-100 my-2" />
+        {/* <hr className="border-t border-gray-100 my-2" /> */}
 
-        <div className="mt-4">
-          <ProductOptionsList product={product} />
-        </div>
+        {/* <div className="mt-4"> */}
+        <ProductOptionsList product={product} />
+        <MainCharacterOptions productId={product.id} />
+        {/* </div> */}
       </div>
-      <div className="w-full flex flex-col">
-        <ProductGallery
-          product={product}
-        />
-      </div>
-
     </div>
   )
 }

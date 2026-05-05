@@ -8,7 +8,7 @@ type OptionSelectProps = {
   updateOption: (title: string, value: string) => void
   title: string
   disabled: boolean
-  variants: HttpTypes.StoreProductVariant[] // ✨ NEW: We need the variants to check against
+  variants: HttpTypes.StoreProductVariant[]
   "data-testid"?: string
 }
 
@@ -48,8 +48,8 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
   }
 
   return (
-    <div className="flex flex-col gap-y-3">
-      <span className="text-sm font-medium text-ui-fg-base">{title}</span>
+    <div className="flex flex-col gap-y-2">
+      <span className="text-sm font-medium">{title}</span>
       <div
         className="flex flex-wrap gap-2"
         data-testid={dataTestId}
@@ -60,10 +60,10 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
               onClick={() => updateOption(option.id, v as string)}
               key={v}
               className={clx(
-                "border text-xs font-medium rounded-md px-3 py-1.5 transition-all duration-200 min-w-[60px]",
+                "border cursor-pointer text-xs font-medium rounded-md px-3 py-1.5 transition-all duration-200 min-w-15",
                 {
-                  "border-ui-fg-base bg-ui-fg-base text-ui-bg-base shadow-sm": v === current,
-                  "border-ui-border-base bg-ui-bg-base text-ui-fg-base hover:border-ui-fg-muted hover:bg-ui-bg-subtle": v !== current,
+                  "shadow-sm": v === current,
+                  "": v !== current,
                 }
               )}
               disabled={disabled}

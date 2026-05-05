@@ -10,14 +10,10 @@ import { ProductSelectionProvider } from "@modules/products/components/product-s
 
 type ProductTemplateProps = {
   product: HttpTypes.StoreProduct
-  countryCode: string
-  images: HttpTypes.StoreProductImage[]
 }
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
-  product,
-  countryCode,
-  images,
+  product
 }) => {
   if (!product || !product.id) {
     return notFound()
@@ -36,10 +32,10 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           />
         </div>
         <ProductSelectionProvider product={product}>
-          <article className="grid grid-cols-1 small:grid-cols-[1fr_360px] gap-x-16 gap-y-8">
+          <article className="grid grid-cols-1 small:grid-cols-[1fr_360px] gap-x-16 gap-y-8 mt-2">
             <ProductInfoSection product={product} />
             <div className="relative">
-              <div className="flex flex-col gap-y-8 sticky top-12">
+              <div className="flex flex-col gap-y-8 sticky top-34">
                 <Suspense
                   fallback={
                     <ProductActions disabled={true} product={product} />

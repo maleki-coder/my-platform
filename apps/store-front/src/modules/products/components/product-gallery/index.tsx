@@ -75,7 +75,7 @@ export default function ProductGallery({
             {product.images.map((image, index) => (
               <SwiperSlide key={`main-${image.id}`}>
                 <div
-                  className="relative w-full h-full cursor-pointer"
+                  className="relative w-full md:mt-0 mt-16 h-full cursor-pointer"
                   onClick={() => setIsModalOpen(true)}
                 >
                   <Image
@@ -93,7 +93,7 @@ export default function ProductGallery({
 
           {/* Timed Discount Badge Overlay - Only visible on mobile (< md) */}
           {showTimedDiscount && (
-            <div className="absolute top-4 left-4 z-20 md:hidden">
+            <div className="absolute w-full top-4 px-4 z-20 md:hidden">
               <TimedDiscountBadge
                 startsAt={variantPrice.starts_at}
                 endsAt={variantPrice.ends_at!}
@@ -195,15 +195,15 @@ export default function ProductGallery({
       </Dialog>
 
       {/* --- MAIN PAGE THUMBNAILS (Below main image on product page) --- */}
-      <div className="h-24 w-full">
+      <div className="h-14 w-full px-4 md:px-0">
         <Swiper
           onSwiper={setThumbsSwiper}
           spaceBetween={12}
-          slidesPerView={4}
+          slidesPerView={6}
           freeMode={true}
           watchSlidesProgress={true}
           modules={[FreeMode, Navigation, Thumbs]}
-          className="w-full h-full product-thumbnails"
+          className="w-full h-full"
         >
           {product.images.map((image, index) => (
             <SwiperSlide

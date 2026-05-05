@@ -150,7 +150,7 @@ export default function ProductActions({
   // --- Main Render ---
 
   return (
-    <div className="sticky top-12 flex flex-col gap-y-6 rounded-2xl border-b border-gray-100 bg-white p-2 shadow-custom">
+    <div className="flex flex-col gap-y-6 rounded-2xl border-b border-gray-100 bg-white p-2 shadow-custom">
       {/* Discount Badge */}
       {inStock && isValidVariant && hasValidTimedDiscount && (
         <div className="border-b border-gray-100 pb-4 md:block hidden">
