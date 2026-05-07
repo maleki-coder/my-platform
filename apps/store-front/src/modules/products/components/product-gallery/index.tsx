@@ -13,7 +13,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-  DialogClose
+  DialogClose,
 } from "@lib/components/ui/dialog"
 
 import "swiper/css"
@@ -25,22 +25,19 @@ import { getProductPrice } from "@lib/util/get-product-price"
 import TimedDiscountBadge from "../timed-discount-badge"
 
 type ProductGalleryProps = {
-   product: HttpTypes.StoreProduct
+  product: HttpTypes.StoreProduct
 }
 
-type ProductInfoProps = {
- 
-}
-
-export default function ProductGallery({ 
-  product
-}: ProductGalleryProps) {
-    const { selectedVariant, isValidVariant, inStock } = useProductSelection()
-  const { variantPrice } = getProductPrice({ product, variantId: selectedVariant?.id })
+export default function ProductGallery({ product }: ProductGalleryProps) {
+  const { selectedVariant, isValidVariant, inStock } = useProductSelection()
+  const { variantPrice } = getProductPrice({
+    product,
+    variantId: selectedVariant?.id,
+  })
   const hasValidTimedDiscount =
     variantPrice?.percentage_diff &&
     parseInt(variantPrice.percentage_diff) > 0 &&
-    variantPrice?.ends_at;
+    variantPrice?.ends_at
   const [thumbsSwiper, setThumbsSwiper] = useState<any>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -55,19 +52,21 @@ export default function ProductGallery({
 
   if (!product.images || product.images.length === 0) return null
 
-  const showTimedDiscount = inStock && isValidVariant && hasValidTimedDiscount && variantPrice?.ends_at
+  const showTimedDiscount =
+    inStock && isValidVariant && hasValidTimedDiscount && variantPrice?.ends_at
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
-
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-
         {/* --- MAIN PAGE GALLERY --- */}
-        <div className="relative w-full aspect-square bg-white rounded-2xl overflow-hidden border border-gray-100 group">
+        <div className="relative w-full h-60 md:h-85 bg-white overflow-hidden group">
           <Swiper
             spaceBetween={10}
             // navigation={true}
-            thumbs={{ swiper: thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null }}
+            thumbs={{
+              swiper:
+                thumbsSwiper && !thumbsSwiper.destroyed ? thumbsSwiper : null,
+            }}
             modules={[FreeMode, Navigation, Thumbs]}
             onSlideChange={(swiper) => setActiveIndex(swiper.activeIndex)}
             className="w-full h-full"
@@ -75,17 +74,21 @@ export default function ProductGallery({
             {product.images.map((image, index) => (
               <SwiperSlide key={`main-${image.id}`}>
                 <div
-                  className="relative w-full md:mt-0 mt-16 h-full cursor-pointer"
+                  className={`relative w-full h-full cursor-pointer flex md:items-center justify-center
+                    ${showTimedDiscount ? "items-end" : "items-center"}
+                    `}
                   onClick={() => setIsModalOpen(true)}
                 >
-                  <Image
-                    src={image.url}
-                    alt={`${product.title} - Image ${index + 1}`}
-                    fill
-                    className="object-contain"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    priority={index === 0}
-                  />
+                  <div className="relative w-[70%] h-[70%] md:w-[80%] md:h-[80%]">
+                    <Image
+                      src={image.url}
+                      alt={`${product.title} - Image ${index + 1}`}
+                      fill
+                      className="object-contain"
+                      sizes="(max-width: 768px) 70vw, 40vw"
+                      priority={index === 0}
+                    />
+                  </div>
                 </div>
               </SwiperSlide>
             ))}
@@ -112,9 +115,7 @@ export default function ProductGallery({
         </div>
 
         {/* --- UPGRADED WIDE MODAL --- */}
-        <DialogContent
-          className="min-w-screen h-full p-0 border-none bg-white flex flex-col shadow-2xl overflow-hidden z-10000"
-        >
+        <DialogContent className="min-w-screen h-full p-0 border-none bg-white flex flex-col shadow-2xl overflow-hidden z-10000">
           {/* Header */}
           <DialogHeader className="w-full flex flex-row items-center justify-between p-5 border-b border-gray-100 bg-white z-50 shadow-sm">
             <DialogTitle className="text-gray-900 text-xl font-bold tracking-tight">
@@ -126,9 +127,8 @@ export default function ProductGallery({
           </DialogHeader>
 
           {/* Modal Split Layout - Now heavily prioritizing horizontal space */}
-          <div className="flex-1 w-full h-full grid grid-cols-1 lg:grid-cols-12 bg-white overflow-hidden">
-
-            {/* LEFT SIDE: Large Active Image (Takes up 7 columns now) */}
+          <div className="flex-1 w-full h-full flex flex-col lg:grid lg:grid-cols-12 bg-white overflow-hidden">
+            {/* LEFT SIDE: Large Active Image (Takes up 7 columns on desktop) */}
             <div className="lg:col-span-7 h-full p-4 lg:p-8 flex items-center justify-center bg-gray-50/30">
               <Swiper
                 onSwiper={setModalSwiper}
@@ -155,47 +155,77 @@ export default function ProductGallery({
               </Swiper>
             </div>
 
-            {/* RIGHT SIDE: 5-Column Grid Thumbnails (Takes up 5 columns for maximum width) */}
-            <div className="hidden lg:flex lg:col-span-5 h-full border-l border-gray-100 flex-col overflow-y-auto p-6 gap-6 custom-scrollbar bg-white">
+            {/* RIGHT SIDE / BOTTOM: Thumbnails (5 columns on desktop, horizontal scroll on mobile) */}
+            <div className="lg:col-span-5 h-auto lg:h-full border-t lg:border-t-0 lg:border-l border-gray-100 bg-white">
+              {/* Desktop: Grid layout with vertical scroll */}
+              <div className="hidden lg:flex flex-col overflow-y-auto p-6 gap-6 custom-scrollbar h-full">
+                <div className="flex items-center justify-between pb-3 border-b border-gray-100"></div>
+                <div className="grid grid-cols-5 gap-3 auto-rows-max">
+                  {product.images.map((image, index) => {
+                    const isActive = activeIndex === index
+                    return (
+                      <button
+                        key={`modal-thumb-${image.id}`}
+                        onClick={() => {
+                          if (modalSwiper) {
+                            modalSwiper.slideTo(index)
+                          }
+                        }}
+                        className={`cursor-pointer relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                          isActive
+                            ? "border-blue-600 shadow-md scale-105 z-10"
+                            : "border-gray-100 hover:border-gray-300 opacity-60 hover:opacity-100 hover:scale-105"
+                        }`}
+                      >
+                        <Image
+                          src={image.url}
+                          alt={`Thumbnail ${index + 1}`}
+                          fill
+                          className="object-cover"
+                          sizes="10vw"
+                        />
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
 
-              <div className="flex items-center justify-between pb-3 border-b border-gray-100"></div>
-
-              {/* grid-cols-5 creates the exact 5-per-row horizontal stack */}
-              <div className="grid grid-cols-5 gap-3 auto-rows-max">
+              {/* Mobile: Horizontal scrollable row */}
+              <div className="flex lg:hidden overflow-x-auto gap-3 p-4 scrollbar-hide">
                 {product.images.map((image, index) => {
-                  const isActive = activeIndex === index;
+                  const isActive = activeIndex === index
                   return (
                     <button
-                      key={`modal-thumb-${image.id}`}
+                      key={`modal-thumb-mobile-${image.id}`}
                       onClick={() => {
                         if (modalSwiper) {
-                          modalSwiper.slideTo(index);
+                          modalSwiper.slideTo(index)
                         }
                       }}
-                      className={`cursor-pointer relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-300 ${isActive
-                          ? "border-blue-600 shadow-md scale-105 z-10"
-                          : "border-gray-100 hover:border-gray-300 opacity-60 hover:opacity-100 hover:scale-105"
-                        }`}
+                      className={`cursor-pointer relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                        isActive
+                          ? "border-blue-600 shadow-md scale-105"
+                          : "border-gray-100 opacity-60"
+                      }`}
                     >
                       <Image
                         src={image.url}
                         alt={`Thumbnail ${index + 1}`}
                         fill
                         className="object-cover"
-                        sizes="10vw"
+                        sizes="80px"
                       />
                     </button>
-                  );
+                  )
                 })}
               </div>
             </div>
-
           </div>
         </DialogContent>
       </Dialog>
 
       {/* --- MAIN PAGE THUMBNAILS (Below main image on product page) --- */}
-      <div className="h-14 w-full px-4 md:px-0">
+      <div className="md:flex hidden h-14 w-full px-4 md:px-0">
         <Swiper
           onSwiper={setThumbsSwiper}
           spaceBetween={12}
@@ -222,7 +252,6 @@ export default function ProductGallery({
           ))}
         </Swiper>
       </div>
-
     </div>
   )
 }

@@ -49,7 +49,7 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
 
   return (
     <div className="flex flex-col gap-y-2">
-      <span className="text-sm font-medium">{title}</span>
+      <span className="text-sm font-medium">{title} : {current}</span>
       <div
         className="flex flex-wrap gap-2"
         data-testid={dataTestId}
@@ -62,7 +62,7 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
               className={clx(
                 "border cursor-pointer text-xs font-medium rounded-md px-3 py-1.5 transition-all duration-200 min-w-15",
                 {
-                  "shadow-sm": v === current,
+                  "shadow-sm border-black": v === current,
                   "": v !== current,
                 }
               )}

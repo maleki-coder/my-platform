@@ -1,6 +1,5 @@
 "use client"
 
-import { Spinner } from "@lib/components/ui/spinner"
 import { getProductMainOptions } from "@lib/data/products"
 import { useEffect, useState } from "react"
 
@@ -38,7 +37,40 @@ const MainCharacterOptions = ({ productId }: MainCharacterOptionsProps) => {
   }, [productId])
 
   if (loading) {
-    return <Spinner />
+    return (
+      <div className="border rounded-xl overflow-hidden shadow-sm">
+        <table className="w-full table-fixed divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                colSpan={3}
+                className="w-full px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                <div className="h-4 bg-gray-200 rounded animate-pulse w-32" />
+              </th>
+            </tr>
+          </thead>
+
+          <tbody className="bg-white divide-y divide-gray-200">
+            {[1, 2].map((index) => (
+              <tr key={index} className="animate-pulse">
+                <td colSpan={1} className="w-1/3 px-6 py-4">
+                  <div className="h-4 bg-gray-200 rounded w-24" />
+                </td>
+
+                <td colSpan={2} className="w-2/3 px-6 py-4">
+                  <div className="flex flex-wrap gap-2">
+                    <div className="h-7 bg-gray-200 rounded-md w-20" />
+                    <div className="h-7 bg-gray-200 rounded-md w-16" />
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )
   }
 
   if (error) {
@@ -50,56 +82,47 @@ const MainCharacterOptions = ({ productId }: MainCharacterOptionsProps) => {
   }
 
   return (
-   <div className="border rounded-xl overflow-hidden shadow-sm">
-  <table className="w-full table-fixed divide-y divide-gray-200">
-    <thead className="bg-gray-50">
-      <tr>
-        {/* FIX: Set colSpan={3} so the header spans all 3 conceptual columns */}
-        <th
-          scope="col"
-          colSpan={3}
-          className="w-full px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-        >
-          ویژگی های اصلی
-        </th>
-      </tr>
-    </thead>
+    <div className="border rounded-xl overflow-hidden shadow-sm">
+      <table className="w-full table-fixed divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              colSpan={3}
+              className="w-full px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              ویژگی های اصلی
+            </th>
+          </tr>
+        </thead>
 
-    <tbody className="bg-white divide-y divide-gray-200">
-      {options.map((opt) => (
-        <tr key={opt.id} className="hover:bg-gray-50 transition-colors">
-          
-          {/* FIX: Title takes 1 column (w-1/3) */}
-          <td 
-            colSpan={1} 
-            className="w-1/3 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate"
-          >
-            {opt.title}
-          </td>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {options.map((opt) => (
+            <tr key={opt.id} className="hover:bg-gray-50 transition-colors">
+              <td
+                colSpan={1}
+                className="w-1/3 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 truncate"
+              >
+                {opt.title}
+              </td>
 
-          {/* 🚀 FIX: Values take 2 columns (colSpan={2} and w-2/3) */}
-          <td 
-            colSpan={2} 
-            className="w-2/3 px-6 py-4 text-sm text-gray-600"
-          >
-            <div className="flex flex-wrap gap-2">
-              {opt.values?.map((val: any) => (
-                <span
-                  key={val.value}
-                  className="px-2 py-1 bg-gray-100 rounded-md border text-xs break-words max-w-full"
-                >
-                  {val.value}
-                </span>
-              ))}
-            </div>
-          </td>
-
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+              <td colSpan={2} className="w-2/3 px-6 py-4 text-sm text-gray-600">
+                <div className="flex flex-wrap gap-2">
+                  {opt.values?.map((val: any) => (
+                    <span
+                      key={val.value}
+                      className="px-2 py-1 bg-gray-100 rounded-md border text-xs wrap-break-word max-w-full"
+                    >
+                      {val.value}
+                    </span>
+                  ))}
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
 

@@ -60,9 +60,7 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
   }
 
   return (
-    <div className="mt-12 border-t pt-8 border-gray-200">
-      <h3 className="text-xl font-bold mb-6">نظرات کاربران</h3>
-
+    
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 max-w-2xl mb-12"
@@ -117,6 +115,5 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
           </div>
         )}
       </form>
-    </div>
   )
 }
