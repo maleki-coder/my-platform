@@ -202,7 +202,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
                           modalSwiper.slideTo(index)
                         }
                       }}
-                      className={`cursor-pointer relative flex-shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
+                      className={`cursor-pointer relative shrink-0 w-20 h-20 rounded-lg overflow-hidden border-2 transition-all duration-300 ${
                         isActive
                           ? "border-blue-600 shadow-md scale-105"
                           : "border-gray-100 opacity-60"
@@ -225,7 +225,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
       </Dialog>
 
       {/* --- MAIN PAGE THUMBNAILS (Below main image on product page) --- */}
-      <div className="md:flex hidden h-14 w-full px-4 md:px-0">
+      {/* <div className="md:flex hidden h-14 w-full px-4 md:px-0">
         <Swiper
           onSwiper={setThumbsSwiper}
           spaceBetween={12}
@@ -251,7 +251,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div>
+      </div> */}
     </div>
   )
 }

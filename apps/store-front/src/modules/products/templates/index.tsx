@@ -21,7 +21,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({ product }) => {
   return (
     <>
       <div
-        className="max-w-screen-2xl md:px-4 px-0 mx-auto w-full md:mb-0 mb-44"
+        className="max-w-screen-2xl md:px-4 px-0 mx-auto w-full md:mb-0 mb-40"
         data-testid="product-container"
       >
         <div className="px-4">

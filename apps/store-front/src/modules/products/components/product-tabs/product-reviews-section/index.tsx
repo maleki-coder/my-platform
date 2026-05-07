@@ -1,4 +1,4 @@
-// src/modules/products/components/product-reviews/index.tsx
+// src/modules/products/product-tabs/components/product-reviews-section/index.tsx
 "use client"
 
 import { useState } from "react"
@@ -11,7 +11,7 @@ interface ProductReviewsProps {
   productId: string
 }
 
-export default function ProductReviews({ productId }: ProductReviewsProps) {
+export function ProductReviewsSection({ productId }: ProductReviewsProps) {
   const router = useRouter()
   const pathname = usePathname() // دریافت آدرس فعلی محصول
   const { customer, isLoading, error } = useCustomer()
@@ -60,7 +60,9 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
   }
 
   return (
-    
+    <div>
+      <h3 className="text-lg font-bold text-gray-900 mb-4 md:p-0 px-4">نظرات کاربران</h3>
+      <div className="border rounded-xl p-8 bg-gray-50 text-center"></div>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-4 max-w-2xl mb-12"
@@ -115,5 +117,6 @@ export default function ProductReviews({ productId }: ProductReviewsProps) {
           </div>
         )}
       </form>
+    </div>
   )
 }

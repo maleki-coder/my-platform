@@ -38,7 +38,7 @@ const MainCharacterOptions = ({ productId }: MainCharacterOptionsProps) => {
 
   if (loading) {
     return (
-      <div className="border rounded-xl overflow-hidden shadow-sm">
+      <div className="border md:rounded-xl overflow-hidden shadow-sm">
         <table className="w-full table-fixed divide-y divide-gray-200">
           <thead className="bg-gray-50">
             <tr>
@@ -82,7 +82,7 @@ const MainCharacterOptions = ({ productId }: MainCharacterOptionsProps) => {
   }
 
   return (
-    <div className="border rounded-xl overflow-hidden shadow-sm">
+    <div className="border md:rounded-xl overflow-hidden shadow-sm">
       <table className="w-full table-fixed divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>

@@ -24,7 +24,7 @@ export default function ProductPrice({
   })
   return (
     <div
-      className={`flex w-full px-0 md:px-4 pb-4 ${
+      className={`flex w-full px-0 md:px-4 ${
         Number(selectedPrice?.percentage_diff) > 0
           ? "justify-between"
           : "justify-end"

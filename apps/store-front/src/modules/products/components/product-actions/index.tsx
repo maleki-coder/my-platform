@@ -233,7 +233,7 @@ export default function ProductActions({
             </div>
           </div>
           {/* Mobile version (smaller than md) */}
-          <div className="md:hidden flex border-t border-gray-100 pt-6">
+          <div className="md:hidden flex md:border-t md:border-gray-100 md:pt-6">
             <div className="w-full">
               <div className="fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
                 <AnimatedCartButton

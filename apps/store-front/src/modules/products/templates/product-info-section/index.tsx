@@ -20,27 +20,28 @@ const ProductInfoSection = ({ product }: ProductInfoProps) => {
       </div>
 
       {/* RIGHT COLUMN (Bottom on Mobile): Product Details */}
-      <div className="flex flex-col gap-y-4 w-full md:p-0 p-4">
+      <div className="flex flex-col gap-y-4 w-full">
         <h2
-          className="text-3xl leading-10 font-bold text-gray-900"
+          className="text-sm leading-6.5 wrap-break-word md:text-lg font-bold text-gray-900 md:p-0 px-4"
           data-testid="product-title"
         >
           {product.title}
         </h2>
 
         <p
-          className="text-medium whitespace-pre-line text-gray-600 leading-relaxed"
+          className="text-medium whitespace-pre-line text-gray-600 leading-relaxed md:p-0 px-4"
           data-testid="product-description"
         >
           {product.description}
         </p>
-
-        <ProductOptionsList product={product} />
-        <MainCharacterOptions productId={product.id} />
+        <div className="md:p-0 px-4">
+          <ProductOptionsList product={product} />
+        </div>
+          <MainCharacterOptions productId={product.id} />
       </div>
 
       {/* ProductTabs spans full width across both columns */}
-      <div className="col-span-2">
+      <div className="col-span-1 lg:col-span-2">
         <ProductTabs product={product} />
       </div>
     </div>
