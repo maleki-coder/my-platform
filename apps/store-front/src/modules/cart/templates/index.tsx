@@ -22,9 +22,9 @@ const CartTemplate = ({
       data-testid="cart-container"
     >
       {cart?.items?.length ? (
-        <div className="grid grid-cols-1 small:grid-cols-[1fr_360px] gap-x-16 gap-y-8">
+        <div className="grid grid-cols-1 small:grid-cols-[1fr_360px] gap-8">
           <div className="md:block hidden">
-            <div className="flex flex-col bg-white gap-y-1">
+            <div className="flex flex-col gap-y-1">
               <ItemsTemplate cart={cart} />
             </div>
           </div>

@@ -41,7 +41,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
           </p>
         </div>
       </div>
-      <div>
+      <div className="bg-white shadow-custom rounded-2xl">
         {items!
           .sort((a, b) =>
             (a.created_at ?? "") > (b.created_at ?? "") ? -1 : 1
@@ -49,7 +49,7 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
           .map((item: StoreCartLineItem) => (
             <div
               key={item.id}
-              className="relative mb-6 flex w-full flex-col rounded-2xl border px-11 pb-11 pt-6 last:mb-0"
+              className="relative mb-6 flex w-full flex-col rounded-2xl px-11 pb-11 pt-6 last:mb-0"
             >
               <div className="absolute h-6 w-15 top-3">
                 {isVariantDiscounted(item) ? (

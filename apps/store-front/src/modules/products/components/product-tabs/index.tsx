@@ -4,41 +4,43 @@ import { useState, useRef, useEffect } from "react"
 import { HttpTypes } from "@medusajs/types"
 import { TechnicalSpecificationsSection } from "@modules/products/components/product-tabs/technical-specification-section"
 import { ProductDetailsSection } from "@modules/products/components/product-tabs/product-detail-section"
-import { ShippingReturnsSection } from "@modules/products/components/product-tabs/shipping-returns-section"
 import { ProductReviewsSection } from "@modules/products/components/product-tabs/product-reviews-section"
 import { useScrollVisibility } from "@lib/hooks/use-scroll-visibility"
+import { ProductDescriptionSection } from "@modules/products/components/product-tabs/product-description-section"
 
 export type ProductTabsProps = {
   product: HttpTypes.StoreProduct
 }
 
-type TabId = "technical" | "details" | "shipping" | "reviews"
+type TabId = "description" | "technical" | "details" | "reviews"
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
-  const [activeTab, setActiveTab] = useState<TabId>("technical")
-  const technicalRef = useRef<HTMLDivElement>(null)
-  const detailsRef = useRef<HTMLDivElement>(null)
-  const shippingRef = useRef<HTMLDivElement>(null)
-  const reviewsRef = useRef<HTMLDivElement>(null)
+  const [activeTab, setActiveTab] = useState<TabId>("description")
+  
+  // A single ref map is cleaner!
+  const sectionRefs = {
+    description: useRef<HTMLDivElement>(null),
+    technical: useRef<HTMLDivElement>(null),
+    details: useRef<HTMLDivElement>(null),
+    reviews: useRef<HTMLDivElement>(null),
+  }
+
   const isVisible = useScrollVisibility(10)
-  const scrollToSection = (section: TabId) => {
+
+  // ✨ DYNAMIC OFFSET CALCULATION ✨
+  // Based on your Tailwind classes: top-34 = 8.5rem, top-22 = 5.5rem.
+  // We add a little extra padding for breathing room.
+  const scrollMarginTop = isVisible ? "9rem" : "6rem"; // e.g., 144px and 96px
+
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, section: TabId) => {
+    e.preventDefault() // Prevent URL hash from changing
     setActiveTab(section)
-    const refMap = {
-      technical: technicalRef,
-      details: detailsRef,
-      shipping: shippingRef,
-      reviews: reviewsRef,
-    }
-    const ref = refMap[section]
-
+    
+    const ref = sectionRefs[section]
     if (ref.current) {
-      const offset = 100
-      const elementPosition = ref.current.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - offset
-
-      window.scrollTo({
-        top: offsetPosition,
+      ref.current.scrollIntoView({
         behavior: "smooth",
+        block: "start", // This aligns the top of the element to the top of the scroll container
       })
     }
   }
@@ -48,82 +50,93 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const id = entry.target.id
-            if (id === "technical-specs") setActiveTab("technical")
-            if (id === "product-details") setActiveTab("details")
-            if (id === "shipping-returns") setActiveTab("shipping")
-            if (id === "product-reviews") setActiveTab("reviews")
+            // The id is on the element, so we can cast it safely.
+            setActiveTab(entry.target.id as TabId)
           }
         })
       },
+      // This rootMargin is brilliant! It says "consider an element active when it's
+      // between 100px from the top and the center of the screen".
       { threshold: 0.5, rootMargin: "-100px 0px -50% 0px" }
     )
 
-    if (technicalRef.current) observer.observe(technicalRef.current)
-    if (detailsRef.current) observer.observe(detailsRef.current)
-    if (shippingRef.current) observer.observe(shippingRef.current)
-    if (reviewsRef.current) observer.observe(reviewsRef.current)
+    // Observe all refs
+    Object.values(sectionRefs).forEach((ref) => {
+      if (ref.current) observer.observe(ref.current)
+    })
 
     return () => observer.disconnect()
-  }, [])
+  }, []) // No dependencies needed if refs don't change
 
   const tabs = [
-    { id: "technical" as TabId, label: "مشخصات فنی" },
-    { id: "details" as TabId, label: "جزئیات محصول" },
-    { id: "shipping" as TabId, label: "ارسال و بازگشت کالا" },
-    { id: "reviews" as TabId, label: "نظرات کاربران" },
+    { id: "description" as TabId, label: "شرح" },
+    { id: "technical" as TabId, label: "مشخصات" },
+    { id: "details" as TabId, label: "جزئیات" },
+    { id: "reviews" as TabId, label: "نظرات" },
   ]
 
   return (
     <div className="relative w-full">
       {/* Sticky Tab Navigation */}
       <div
-        className={`sticky md:z-15 shadow-sm bg-white w-fit ${
-          isVisible ? "md:top-34" : "md:top-22"
+        className={`sticky md:z-15 w-full border-b border-gray-200 bg-white transition-all duration-300 pt-2 ${
+          isVisible ? "md:top-31" : "md:top-19"
         }`}
       >
         <div className="flex gap-1">
           {tabs.map((tab) => (
-            <button
+            // Using <a> tags for semantics and accessibility
+            <a
               key={tab.id}
-              onClick={() => scrollToSection(tab.id)}
-              className={`shrink cursor-pointer p-2 text-xs md:text-sm font-medium transition-all duration-200 ${
+              href={`#${tab.id}`}
+              onClick={(e) => scrollToSection(e, tab.id)}
+              className={`shrink cursor-pointer p-2 text-gray-600 text-sm font-medium transition-all duration-200 ${
                 activeTab === tab.id
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                  ? "border-b-blue-400 border-b-2 text-blue-600"
+                  : "hover:bg-gray-100 hover:text-gray-900"
               }`}
             >
               {tab.label}
-            </button>
+            </a>
           ))}
         </div>
       </div>
 
-      {/* Technical Specifications Section */}
+      {/* The Sections */}
+      {/* We apply the dynamic scroll-margin-top via inline styles */}
       <div
-        id="technical-specs"
-        ref={technicalRef}
-        className="md:py-8 py-4 scroll-mt-24"
+        id="description"
+        ref={sectionRefs.description}
+        className="md:py-8 py-4"
+        style={{ scrollMarginTop }}
+      >
+        <ProductDescriptionSection product={product} />
+      </div>
+
+      <div
+        id="technical"
+        ref={sectionRefs.technical}
+        className="md:py-8 py-4"
+        style={{ scrollMarginTop }}
       >
         <TechnicalSpecificationsSection product={product} />
       </div>
 
-      {/* Product Details Section */}
-      <div id="product-details" ref={detailsRef} className="md:py-8 py-4 scroll-mt-24">
+      <div
+        id="details"
+        ref={sectionRefs.details}
+        className="md:py-8 py-4"
+        style={{ scrollMarginTop }}
+      >
         <ProductDetailsSection product={product} />
       </div>
 
-      {/* Shipping & Returns Section */}
       <div
-        id="shipping-returns"
-        ref={shippingRef}
-        className="md:py-8 py-4 scroll-mt-24"
+        id="reviews"
+        ref={sectionRefs.reviews}
+        className="md:py-8 py-4"
+        style={{ scrollMarginTop }}
       >
-        <ShippingReturnsSection />
-      </div>
-
-      {/* Product Reviews Section */}
-      <div id="product-reviews" ref={reviewsRef} className="md:py-8 py-4 scroll-mt-24">
         <ProductReviewsSection productId={product.id} />
       </div>
     </div>

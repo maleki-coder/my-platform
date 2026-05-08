@@ -166,7 +166,7 @@ export default function ProductActions({
   // --- Main Render ---
 
   return (
-    <div className="flex flex-col gap-y-6 md:rounded-2xl md:border-b md:border-gray-100 bg-white p-2 shadow-custom">
+    <div className="flex flex-col gap-y-6 md:rounded-2xl bg-white p-2 shadow-custom">
       {/* Discount Badge */}
       {inStock && isValidVariant && hasValidTimedDiscount && (
         <div className="border-b border-gray-100 pb-4 md:block hidden">
@@ -186,7 +186,10 @@ export default function ProductActions({
 
       {/* Price */}
       {inStock && isValidVariant && (
+        <div className="md:flex hidden">
+
         <ProductPrice product={product} variant={selectedVariant} />
+        </div>
       )}
 
       {/* Actions */}
@@ -202,6 +205,7 @@ export default function ProductActions({
                 isAdding={isAdding}
                 isNavigating={isPending}
                 isRemoving={isRemoving}
+                product={product}
                 onAdd={inStock ? handleAddToCart : handleAddToInquiryCart}
                 onRemove={
                   inStock ? handleRemoveFromCart : handleRemoveFromInquiryCart
@@ -234,44 +238,45 @@ export default function ProductActions({
           </div>
           {/* Mobile version (smaller than md) */}
           <div className="md:hidden flex md:border-t md:border-gray-100 md:pt-6">
-            <div className="w-full">
-              <div className="fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
-                <AnimatedCartButton
-                  isInCart={inStock ? !!cartLineItem : !!inquiryLineItem}
-                  isAdding={isAdding}
-                  isNavigating={isPending}
-                  isRemoving={isRemoving}
-                  onAdd={inStock ? handleAddToCart : handleAddToInquiryCart}
-                  onRemove={
-                    inStock ? handleRemoveFromCart : handleRemoveFromInquiryCart
-                  }
-                  onNavigate={() =>
-                    handleNavigate(inStock ? "cart" : "inquiry-cart")
-                  }
-                  addLabel={
-                    inStock ? "افزودن به سبد خرید" : "افزودن به لیست استعلام"
-                  }
-                  navigateLabel={
-                    inStock ? "مشاهده سبد خرید" : "مشاهده لیست استعلام"
-                  }
-                  AddIcon={
-                    inStock ? (
-                      <ShoppingCart size={20} />
-                    ) : (
-                      <ClipboardList size={20} />
-                    )
-                  }
-                  NavigateIcon={<ArrowLeft size={20} />}
-                  activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
-                  inactiveClasses={
-                    inStock
-                      ? "bg-sky-900 hover:bg-sky-700 text-white"
-                      : "bg-blue-600 hover:bg-blue-500 text-white"
-                  }
-                />
-              </div>
+            {/* <div className="w-full"> */}  
+            <div className="fixed bottom-20 right-0 z-20 w-full border-t border-gray-300 bg-gray-100 px-6 py-4">
+              <AnimatedCartButton
+                isInCart={inStock ? !!cartLineItem : !!inquiryLineItem}
+                isAdding={isAdding}
+                isNavigating={isPending}
+                isRemoving={isRemoving}
+                product={product}
+                onAdd={inStock ? handleAddToCart : handleAddToInquiryCart}
+                onRemove={
+                  inStock ? handleRemoveFromCart : handleRemoveFromInquiryCart
+                }
+                onNavigate={() =>
+                  handleNavigate(inStock ? "cart" : "inquiry-cart")
+                }
+                addLabel={
+                  inStock ? "افزودن به سبد خرید" : "افزودن به لیست استعلام"
+                }
+                navigateLabel={
+                  inStock ? "مشاهده سبد خرید" : "مشاهده لیست استعلام"
+                }
+                AddIcon={
+                  inStock ? (
+                    <ShoppingCart size={20} />
+                  ) : (
+                    <ClipboardList size={20} />
+                  )
+                }
+                NavigateIcon={<ArrowLeft size={20} />}
+                activeClasses="bg-slate-800 hover:bg-slate-700 text-white"
+                inactiveClasses={
+                  inStock
+                    ? "bg-sky-900 hover:bg-sky-700 text-white"
+                    : "bg-blue-600 hover:bg-blue-500 text-white"
+                }
+              />
             </div>
           </div>
+          {/* </div> */}
         </>
       )}
     </div>

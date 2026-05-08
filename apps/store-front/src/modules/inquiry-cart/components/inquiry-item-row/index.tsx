@@ -191,7 +191,7 @@ export default function InquiryItemRow({ item }: InquiryItemRowProps) {
   )
 
   return (
-    <div className="relative mb-6 flex w-full flex-col rounded-2xl border px-6 md:px-11 py-6 last:mb-0 transition-all duration-300 ease-in-out">
+    <div className="relative mb-6 flex w-full flex-col rounded-2xl shadow-custom bg-white px-6 md:px-11 py-6 last:mb-0 transition-all duration-300 ease-in-out">
       {/* DELETE BUTTON */}
       <div className="absolute left-3 top-2 z-5">
         <DeleteButton className="p-2 border rounded-4xl" id={item.id!} />

@@ -1,5 +1,6 @@
 import { clx } from "@lib/util/clx"
 import { HttpTypes } from "@medusajs/types"
+import { CheckCheckIcon, CheckCircle, CheckIcon } from "lucide-react"
 import React, { useMemo } from "react"
 
 type OptionSelectProps = {
@@ -60,15 +61,16 @@ const OptionSelect: React.FC<OptionSelectProps> = ({
               onClick={() => updateOption(option.id, v as string)}
               key={v}
               className={clx(
-                "border cursor-pointer text-xs font-medium rounded-md px-3 py-1.5 transition-all duration-200 min-w-15",
+                "border cursor-pointer text-xs font-medium flex gap-1 rounded-md px-3 py-1.5 transition-all duration-200 min-w-15",
                 {
-                  "shadow-sm border-black": v === current,
+                  "shadow-sm border-green-600 border": v === current,
                   "": v !== current,
                 }
               )}
               disabled={disabled}
               data-testid="option-button"
             >
+              {v === current ? <CheckIcon color="green" size={16}/> : null}
               {v}
             </button>
           )

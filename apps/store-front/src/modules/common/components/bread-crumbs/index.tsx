@@ -75,14 +75,14 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
         <li className="inline-flex items-center">
           <Link
             href="/"
-            className="block whitespace-nowrap text-xs font-normal leading-4 text-blue-300 hover:text-shadow-xs transition-colors xl:leading-6.25"
+            className="block whitespace-nowrap text-xs font-normal leading-4 text-gray-600 hover:text-shadow-xs transition-colors xl:leading-6.25"
           >
             خانه
           </Link>
         </li>
 
         {/* Separator if categories or product title exist */}
-        {(breadcrumbTrail.length > 0 || productTitle) && <li className="text-blue-300">/</li>}
+        {(breadcrumbTrail.length > 0 || productTitle) && <li className="text-gray-600">/</li>}
 
         {/* Dynamic category breadcrumbs */}
         {breadcrumbTrail.map((cat, index) => {
@@ -103,7 +103,7 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
                 ) : (
                   <Link
                     href={categoryUrl}
-                    className="block whitespace-nowrap text-xs font-normal leading-4 text-blue-300 hover:text-shadow-xs transition-colors xl:leading-6.25"
+                    className="block whitespace-nowrap text-xs font-normal leading-4 text-gray-600 hover:text-shadow-xs transition-colors xl:leading-6.25"
                   >
                     {cat.name}
                   </Link>
@@ -111,7 +111,7 @@ const BreadCrumbs: React.FC<BreadCrumbsProps> = async ({
               </li>
 
               {/* Add separator if not the absolute last item */}
-              {(!isLastCategory || productTitle) && <li className="text-blue-300">/</li>}
+              {(!isLastCategory || productTitle) && <li className="text-gray-600">/</li>}
             </React.Fragment>
           )
         })}

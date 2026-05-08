@@ -155,7 +155,7 @@ export default function InquirySummary({ cart }: InquirySummaryProps) {
 
   return (
     <>
-      <div className="flex flex-col gap-y-6 border border-gray-200 rounded-2xl p-6 bg-white shadow-custom sticky top-12">
+      <div className="flex flex-col gap-y-6 rounded-2xl p-6 bg-white shadow-custom sticky top-12">
         <div className="border-b border-gray-100 pb-4">
           <h2 className="text-lg font-extrabold text-gray-900 flex items-center gap-2">
             <FileSpreadsheet className="text-blue-600" />
