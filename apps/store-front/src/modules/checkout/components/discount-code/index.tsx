@@ -68,20 +68,20 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   }
 
   return (
-    <div className="flex flex-col rounded-b-2xl py-4 px-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)]">
+    <div className="flex flex-col rounded-2xl p-4 shadow-custom">
       <form
         onSubmit={(e) => {
           e.preventDefault()
           addPromotionCode(new FormData(e.currentTarget))
         }}
-        className="w-full mb-5"
+        className="w-full"
       >
-        <div className="flex gap-x-1 my-2 items-center">
+        <div className="flex gap-x-1 mb-2 items-center">
           <Button
             onClick={() => setIsOpen(!isOpen)}
             type="button"
-            size={"sm"}
-            className="cursor-pointer text-xs"
+            size={"lg"}
+            className="cursor-pointer hover:bg-sky-700 bg-sky-900 text-xs"
             data-testid="add-discount-button"
           >
             کد تخفیف دارید؟
@@ -90,9 +90,9 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
 
         {isOpen && (
           <>
-            <div className="flex w-full gap-x-2 h-10">
+            <div className="flex w-full gap-x-2">
               <Input
-                className="h-full w-4/5"
+                className="h-10 w-4/5"
                 id="promotion-input"
                 name="code"
                 type="text"
@@ -101,9 +101,9 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
               />
               <Button
                 type="submit"
-                // size={"sm"}
+                size={"lg"}
                 disabled={isApplying}
-                className="cursor-pointer text-xs h-full w-1/5"
+                className="cursor-pointer hover:bg-sky-700 bg-sky-900 text-xs w-1/5"
                 data-testid="discount-apply-button"
               >
                 {isApplying ? <Spinner /> : "اعمال"}
@@ -121,7 +121,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       {promotions.length > 0 && (
         <div className="w-full flex items-center">
           <div className="flex flex-col w-full">
-            <h1 className="text-xs mb-2">کدهای تخفیف اعمال شده</h1>
+            <h1 className="text-xs my-2">کدهای تخفیف اعمال شده</h1>
 
             {promotions.map((promotion) => {
               return (
@@ -130,7 +130,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                   className="flex items-center justify-between w-full gap-x-2 max-w-full mb-2"
                   data-testid="discount-row"
                 >
-                  <div className="gap-x-1 text-xs flex items-center w-4/5 h-10 pr-1 border rounded-md ps-4">
+                  <div className="gap-x-1 text-xs flex items-center w-4/5 h-10 border rounded-md px-4">
                     <span className="truncate" data-testid="discount-code">
                       <p color={promotion.is_automatic ? "green" : "grey"}>
                         {promotion.application_method?.value !== undefined &&
@@ -151,7 +151,8 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                   </div>
                   {!promotion.is_automatic && (
                     <Button
-                      className="flex items-center cursor-pointer w-1/5 bg-red-500"
+                      size={"lg"}
+                      className="flex items-center cursor-pointer w-1/5 bg-red-50 text-red-600 hover:bg-red-100"
                       onClick={() => {
                         if (!promotion.code) {
                           return

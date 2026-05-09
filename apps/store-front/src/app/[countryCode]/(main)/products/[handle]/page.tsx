@@ -123,8 +123,8 @@ export default async function ProductPage(props: Props) {
   return (
     <ProductTemplate
       product={pricedProduct}
-      countryCode={params.countryCode}
-      images={images!}
+      // countryCode={params.countryCode}
+      // images={images!}
     />
   )
 }

@@ -79,7 +79,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
                     `}
                   onClick={() => setIsModalOpen(true)}
                 >
-                  <div className="relative w-[70%] h-[70%] md:w-[80%] md:h-[80%]">
+                  <div className="relative w-[70%] h-[70%] md:w-full md:h-full">
                     <Image
                       src={image.url}
                       alt={`${product.title} - Image ${index + 1}`}
@@ -225,7 +225,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
       </Dialog>
 
       {/* --- MAIN PAGE THUMBNAILS (Below main image on product page) --- */}
-      {/* <div className="md:flex hidden h-14 w-full px-4 md:px-0">
+      <div className="md:flex hidden h-20 w-full px-4 md:px-0">
         <Swiper
           onSwiper={setThumbsSwiper}
           spaceBetween={12}
@@ -238,7 +238,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
           {product.images.map((image, index) => (
             <SwiperSlide
               key={`thumb-${image.id}`}
-              className="cursor-pointer overflow-hidden rounded-xl border-2 border-transparent [&.swiper-slide-thumb-active]:border-gray-900 transition-colors bg-gray-50 opacity-60 [&.swiper-slide-thumb-active]:opacity-100 hover:opacity-100"
+              className="cursor-pointer overflow-hidden rounded-xl border-2 border-transparent [&.swiper-slide-thumb-active]:border-gray-900 transition-colors bg-gray-50 opacity-60 [&.swiper-slide-thumb-active]:opacity-100 hover:opacity-100 !w-20 !h-20"
             >
               <div className="relative w-full h-full">
                 <Image
@@ -251,7 +251,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
             </SwiperSlide>
           ))}
         </Swiper>
-      </div> */}
+      </div>
     </div>
   )
 }

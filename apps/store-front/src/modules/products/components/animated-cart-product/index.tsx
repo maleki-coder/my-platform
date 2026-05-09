@@ -21,8 +21,8 @@ interface AnimatedCartButtonProps {
   navigateLabel: string
   AddIcon: ReactNode
   NavigateIcon: ReactNode
-  activeClasses: string
-  inactiveClasses: string
+  activeClasses?: string
+  inactiveClasses?: string
   baseClasses?: string
   product: HttpTypes.StoreProduct
 }

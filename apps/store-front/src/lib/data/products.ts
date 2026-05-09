@@ -103,10 +103,10 @@ export const listProducts = async ({
           products.forEach((product) => {
             product.variants?.forEach((variant) => {
               if (discounts[variant.id]) {
-                ; (variant as any).discount_starts_at =
+                ;(variant as any).discount_starts_at =
                   discounts[variant.id].starts_at
-                  ; (variant as any).discount_ends_at =
-                    discounts[variant.id].ends_at
+                ;(variant as any).discount_ends_at =
+                  discounts[variant.id].ends_at
               }
             })
           })
@@ -296,28 +296,67 @@ export async function submitProductReviewAction(
   }
 }
 
+// Add this to src/lib/data/products.ts
+
+export async function getProductReviews(productId: string) {
+  try {
+    const response: any = await sdk.client.fetch(
+      `/store/products/${productId}/reviews`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        cache: "no-store",
+      }
+    )
+
+    if (!response) {
+      return {
+        success: false,
+        error: "Failed to fetch reviews",
+        reviews: [],
+      }
+    }
+    return {
+      success: true,
+      reviews: response.reviews || [],
+    }
+  } catch (error) {
+    console.error("Error fetching product reviews:", error)
+    return {
+      success: false,
+      error: "An error occurred while fetching reviews",
+      reviews: [],
+    }
+  }
+}
+
 export async function getProductMainOptions(productId: string) {
   try {
     const next = {
       ...(await getCacheOptions("product-main-options")),
     }
     const headers = { ...(await getAuthHeaders()) }
-    const response = await sdk.client.fetch<any>(`/store/products/${productId}/main-options`, {
-      method: "GET",
-      next,
-      headers,
-      cache: "no-cache",
-    })
-    const product = response.product;
+    const response = await sdk.client.fetch<any>(
+      `/store/products/${productId}/main-options`,
+      {
+        method: "GET",
+        next,
+        headers,
+        cache: "no-cache",
+      }
+    )
+    const product = response.product
 
     // Filter out the VIPs (Main Characters) for special UI treatment ✨
     const mainCharacterOptions = product.options.filter(
       (opt: any) => opt.option_extension?.is_main_character === true
-    );
+    )
 
     return {
       success: true,
-      main_options: mainCharacterOptions
+      main_options: mainCharacterOptions,
     }
   } catch (error: any) {
     console.error("Server Action Error:", error)

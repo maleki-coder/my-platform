@@ -13,7 +13,7 @@ const OrderReceiptWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
   }, [order.metadata]);
 
   if (!receiptUrl) {
-    return null; // Hide widget if no receipt
+    return null;
   }
 
   return (

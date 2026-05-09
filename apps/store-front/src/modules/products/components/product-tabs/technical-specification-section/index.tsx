@@ -56,7 +56,7 @@ export const TechnicalSpecificationsSection = ({ product }: ProductTabsProps) =>
                     option.values.map((value) => (
                       <span
                         key={value.id}
-                        className="inline-flex items-center px-3 py-1 rounded-full text-sm bg-blue-50 text-blue-700 border border-blue-200"
+                        className="px-2 py-1 bg-gray-200 rounded-md border text-xs wrap-break-word max-w-full"
                       >
                         {value.value}
                       </span>
@@ -74,7 +74,7 @@ export const TechnicalSpecificationsSection = ({ product }: ProductTabsProps) =>
           <div className="border-t border-gray-200 bg-gray-50">
             <button
               onClick={() => setShowAll(!showAll)}
-              className="w-full px-6 py-4 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
+              className="w-full cursor-pointer px-6 py-4 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-gray-100 transition-colors flex items-center justify-center gap-2"
             >
               {showAll ? (
                 <>

@@ -64,7 +64,7 @@ const Summary = ({ cart }: SummaryProps) => {
       <div className="md:block hidden">
         <Button
           onClick={handleLoginOrOrder}
-          className="w-full hover:bg-sky-700 bg-sky-700 cursor-pointer items-center justify-center text-white rounded-sm py-6"
+          className="w-full hover:bg-sky-700 bg-sky-900 cursor-pointer items-center justify-center text-white rounded-sm py-6"
         >
           {buttonContent}
         </Button>
@@ -75,7 +75,7 @@ const Summary = ({ cart }: SummaryProps) => {
         >
           <Button
             onClick={handleLoginOrOrder}
-            className="w-full hover:bg-sky-700 bg-sky-700 cursor-pointer items-center justify-center text-white rounded-sm py-6"
+            className="w-full hover:bg-sky-700 bg-sky-900 cursor-pointer items-center justify-center text-white rounded-sm py-6"
           >
             {buttonContent}
           </Button>

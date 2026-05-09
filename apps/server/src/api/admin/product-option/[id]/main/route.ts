@@ -42,7 +42,7 @@ export const POST = async (req: MedusaRequest, res: MedusaResponse) => {
         },
       ]);
 
-      // 4. The Correct Remote Link Syntax! 🌟
+      // 4. The Correct Remote Link Syntax!
       // We must pass an object with EXACTLY two keys corresponding to the module names.
       await remoteLink.create({
         [Modules.PRODUCT]: {

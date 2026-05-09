@@ -20,14 +20,22 @@ type MainCharacterWidgetProps = {
   data: AdminProduct;
 };
 
-const MainCharacterWidget = ({ data: baseProduct }: MainCharacterWidgetProps) => {
-  const { t } = useTranslation(); // 🚀 Initialize the translation hook
-  const [mainCharacterStates, setMainCharacterStates] = useState<Record<string, boolean>>({});
+const MAX_MAIN_CHARACTERS = 4;
+
+const MainCharacterWidget = ({
+  data: baseProduct,
+}: MainCharacterWidgetProps) => {
+  const { t, i18n } = useTranslation();
+  const [mainCharacterStates, setMainCharacterStates] = useState<
+    Record<string, boolean>
+  >({});
 
   const { data: fetchedProduct, isLoading } = useQuery({
     queryKey: ["product-main-options", baseProduct.id],
     queryFn: async () => {
-      const response = await fetch(`/admin/products/${baseProduct.id}/main-options`);
+      const response = await fetch(
+        `/admin/products/${baseProduct.id}/main-options`,
+      );
       if (!response.ok) throw new Error("Failed to fetch fresh option data");
       const json = await response.json();
       return json.product as ExtendedProduct;
@@ -47,6 +55,21 @@ const MainCharacterWidget = ({ data: baseProduct }: MainCharacterWidgetProps) =>
   const handleToggle = async (optionId: string, currentStatus: boolean) => {
     const targetStatus = !currentStatus;
 
+    // Count currently selected main characters
+    const currentCount =
+      Object.values(mainCharacterStates).filter(Boolean).length;
+
+    // If trying to enable and already at limit, prevent it
+    if (targetStatus && currentCount >= MAX_MAIN_CHARACTERS) {
+      toast.error(t("mainCharacter.toast.limitTitle", "Limit Reached! 🚫"), {
+        description: t(
+          "mainCharacter.toast.limitDesc",
+          `You can only select up to ${MAX_MAIN_CHARACTERS} main character options at a time.`,
+        ),
+      });
+      return;
+    }
+
     setMainCharacterStates((prev) => ({
       ...prev,
       [optionId]: targetStatus,
@@ -61,8 +84,11 @@ const MainCharacterWidget = ({ data: baseProduct }: MainCharacterWidgetProps) =>
 
       if (!response.ok) throw new Error("Failed to update!");
 
-      toast.success(t("mainCharacter.toast.successTitle", "Success! 🌟"), {
-        description: t("mainCharacter.toast.successDesc", "The main character tag has been successfully updated."),
+      toast.success(t("mainCharacter.toast.successTitle", "Success!"), {
+        description: t(
+          "mainCharacter.toast.successDesc",
+          "The main character tag has been successfully updated.",
+        ),
       });
     } catch (error) {
       console.error("Error updating option:", error);
@@ -70,27 +96,34 @@ const MainCharacterWidget = ({ data: baseProduct }: MainCharacterWidgetProps) =>
         ...prev,
         [optionId]: currentStatus,
       }));
-      toast.error(t("mainCharacter.toast.errorTitle", "Oops! 🚨"), {
-        description: t("mainCharacter.toast.errorDesc", "Something went wrong while updating. Reverting."),
+      toast.error(t("mainCharacter.toast.errorTitle", "Oops!"), {
+        description: t(
+          "mainCharacter.toast.errorDesc",
+          "Something went wrong while updating. Reverting.",
+        ),
       });
     }
   };
 
   if (isLoading) {
     return (
-      <Container className="p-6 mt-4">
+      <Container className="p-6">
         <Text className="text-ui-fg-subtle animate-pulse">
-          {t("mainCharacter.loading", "Summoning VIP data... ⏳")}
+          {t("mainCharacter.loading", "Summoning VIP data...")}
         </Text>
       </Container>
     );
   }
 
-  if (!fetchedProduct || !fetchedProduct.options || fetchedProduct.options.length === 0) {
+  if (
+    !fetchedProduct ||
+    !fetchedProduct.options ||
+    fetchedProduct.options.length === 0
+  ) {
     return (
-      <Container className="p-6 mt-4">
+      <Container className="p-6">
         <Heading level="h2" className="mb-2">
-          {t("mainCharacter.heading", "Main Character Options ✨")}
+          {t("mainCharacter.heading", "Main Character Options")}
         </Heading>
         <Text className="text-ui-fg-subtle">
           {t("mainCharacter.noOptions", "No product options available.")}
@@ -99,20 +132,37 @@ const MainCharacterWidget = ({ data: baseProduct }: MainCharacterWidgetProps) =>
     );
   }
 
+  const currentCount =
+    Object.values(mainCharacterStates).filter(Boolean).length;
+
   return (
-    <Container className="p-6 mt-4">
+    <Container className="p-6">
       <Heading level="h2" className="mb-2">
-        {t("mainCharacter.heading", "Main Character Options ✨")}
+        {t("mainCharacter.heading", "Main Character Options")}
       </Heading>
-      <Text className="mb-6 text-ui-fg-subtle">
-        {t("mainCharacter.description", "Select which option should be highlighted as the \"Main Character\" on the storefront.")}
+      <Text className="mb-2 text-ui-fg-subtle">
+        {t(
+          "mainCharacter.description",
+          'Select which option should be highlighted as the "Main Character" on the storefront.',
+        )}
+      </Text>
+      <Text className="mb-6 text-xs text-ui-fg-muted">
+        {t("mainCharacter.limit", `${currentCount}/${MAX_MAIN_CHARACTERS}`)}
       </Text>
 
       <Table>
         <Table.Header>
           <Table.Row>
-            <Table.HeaderCell>{t("mainCharacter.table.optionTitle", "Option Title")}</Table.HeaderCell>
-            <Table.HeaderCell>{t("mainCharacter.table.status", "Main Character Status")}</Table.HeaderCell>
+            <Table.HeaderCell
+              className={i18n.language === "fa" ? "text-right" : "text-left"}
+            >
+              {t("mainCharacter.table.optionTitle", "Option Title")}
+            </Table.HeaderCell>
+            <Table.HeaderCell
+              className={i18n.language === "fa" ? "text-right" : "text-left"}
+            >
+              {t("mainCharacter.table.status", "Main Character Status")}
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Header>
         <Table.Body>
@@ -126,8 +176,11 @@ const MainCharacterWidget = ({ data: baseProduct }: MainCharacterWidgetProps) =>
                 </Table.Cell>
                 <Table.Cell>
                   <Switch
+                    dir="ltr"
                     checked={isMainCharacter}
-                    onCheckedChange={() => handleToggle(option.id, isMainCharacter)}
+                    onCheckedChange={() =>
+                      handleToggle(option.id, isMainCharacter)
+                    }
                   />
                 </Table.Cell>
               </Table.Row>

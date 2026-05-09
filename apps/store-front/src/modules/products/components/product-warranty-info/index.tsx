@@ -5,7 +5,7 @@ type Props = {
 }
 export default function ProductWarrantyInfo({ garrantType }: Props) {
   return (
-    <div className=" w-full items-center flex bg-blue-50 rounded">
+    <div className=" w-full items-center flex border-2 border-dotted rounded">
       <div className="relative flex h-full items-center w-full min-w-[60%] pt-3 px-4">
         <div className="w-full items-center flex cursor-default border-b pb-3 border-white ">
           <BadgeCheck size={20} color="blue" />

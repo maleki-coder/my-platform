@@ -27,6 +27,12 @@ const ProductInfoSection = ({ product }: ProductInfoProps) => {
         >
           {product.title}
         </h2>
+        <h6
+          className="text-xs leading-6.5 wrap-break-word md:text-sm font-normal text-gray-300 md:p-0 px-4"
+          data-testid="product-title"
+        >
+          {product.subtitle}
+        </h6>
         <div className="md:p-0 px-4">
           <ProductOptionsList product={product} />
         </div>

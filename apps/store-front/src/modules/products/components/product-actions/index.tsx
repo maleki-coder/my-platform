@@ -231,7 +231,7 @@ export default function ProductActions({
                 inactiveClasses={
                   inStock
                     ? "bg-sky-900 hover:bg-sky-700 text-white"
-                    : "bg-blue-600 hover:bg-blue-500 text-white"
+                    : "bg-sky-900 hover:bg-sky-700 text-white"
                 }
               />
             </div>
