@@ -59,7 +59,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
     <div className="flex flex-col gap-4 w-full h-full">
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         {/* --- MAIN PAGE GALLERY --- */}
-        <div className="relative w-full h-60 md:h-85 bg-white overflow-hidden group">
+        <div className="relative w-full h-80 md:h-85 pt-12 md:pt-0 bg-white overflow-hidden group">
           <Swiper
             spaceBetween={10}
             // navigation={true}
@@ -79,7 +79,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
                     `}
                   onClick={() => setIsModalOpen(true)}
                 >
-                  <div className="relative w-[70%] h-[70%] md:w-full md:h-full">
+                  <div className="relative w-full h-full">
                     <Image
                       src={image.url}
                       alt={`${product.title} - Image ${index + 1}`}
@@ -96,7 +96,7 @@ export default function ProductGallery({ product }: ProductGalleryProps) {
 
           {/* Timed Discount Badge Overlay - Only visible on mobile (< md) */}
           {showTimedDiscount && (
-            <div className="absolute w-full top-4 px-4 z-20 md:hidden">
+            <div className="absolute w-full top-0 px-4 z-20 md:hidden">
               <TimedDiscountBadge
                 startsAt={variantPrice.starts_at}
                 endsAt={variantPrice.ends_at!}
