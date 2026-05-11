@@ -22,7 +22,7 @@ type MainCharacterWidgetProps = {
 
 const MAX_MAIN_CHARACTERS = 4;
 
-const MainCharacterWidget = ({
+const MainOptionsWidget = ({
   data: baseProduct,
 }: MainCharacterWidgetProps) => {
   const { t, i18n } = useTranslation();
@@ -196,4 +196,4 @@ export const config = defineWidgetConfig({
   zone: "product.details.side.after",
 });
 
-export default MainCharacterWidget;
+export default MainOptionsWidget;

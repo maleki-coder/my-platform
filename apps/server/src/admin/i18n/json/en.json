@@ -102,14 +102,49 @@
         "loading": "Summoning VIP data... ⏳",
         "noOptions": "No product options available.",
         "table": {
-          "optionTitle": "Option Title",
-          "status": "Main Character Status"
+            "optionTitle": "Option Title",
+            "status": "Main Character Status"
         },
         "toast": {
-          "successTitle": "Success! 🌟",
-          "successDesc": "The main character tag has been successfully updated.",
-          "errorTitle": "Oops! 🚨",
-          "errorDesc": "Something went wrong while updating. Reverting."
+            "successTitle": "Success! 🌟",
+            "successDesc": "The main character tag has been successfully updated.",
+            "errorTitle": "Oops! 🚨",
+            "errorDesc": "Something went wrong while updating. Reverting."
         }
-      }
+    },
+    "category-media-widget": {
+        "title": "Media",
+        "loading": "Loading...",
+        "no-images": "No images added yet",
+        "image-alt-text": "Category {{type}} image"
+    },
+    "category-media-modal": {
+        "gallery-image-alt-text": "Category {{type}} image",
+        "gallery-uploaded-image-alt-text": "Uploaded image",
+        "gallery-no-images-placeholder": "No images yet. Upload images to get started.",
+        "trigger-button-text": "Edit",
+        "modal-title": "Edit Media",
+        "command-bar-selected_one": "{{count}} selected",
+        "command-bar-selected_other": "{{count}} selected",
+        "command-bar-action-thumbnail": "Set as thumbnail",
+        "command-bar-action-delete": "Delete",
+        "footer-button-cancel": "Cancel",
+        "footer-button-save": "Save",
+        "toast-success-save": "Category media saved successfully",
+        "toast-error-save": "Failed to save changes"
+    },
+    "category-media-upload": {
+        "label-media": "Media",
+        "label-optional": "(Optional)",
+        "description": "Add media to the product category to showcase it in your storefront.",
+        "status-uploading": "Uploading...",
+        "status-upload-images": "Upload images",
+        "drag-and-drop": "Drag and drop images here or click to upload."
+    },
+    "order-receipt-widget": {
+        "title": "Uploaded Receipt:",
+        "view-pdf": "View PDF Receipt",
+        "alt-receipt": "Uploaded receipt",
+        "fallback-error": "Image failed to load"
+    }
 }

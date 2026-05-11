@@ -1,29 +1,53 @@
+/* =====================================================
+   CUSTOM MEDUSA V2 LOGIN STYLES
+   ===================================================== */
+
 /* -----------------------------------------------------
-   1. SWAP THE LOGO (Scoped to Login Page ONLY)
+   1. RESIZE & SWAP THE LOGO
 ----------------------------------------------------- */
-/* Hide the default Medusa SVG */
+
+/* --- NEW: Force the Parent Container to Be Larger --- */
+/* This is the magic key! We target the element that was
+   capping our logo's size and give it the dimensions we want. */
+   .custom-login-page .bg-ui-bg-subtle > div > div:first-child {
+    width: 120px !important;
+    /* height: 120px !important; */
+    
+    /* We use !important here because we are fighting against
+       highly specific Tailwind utility classes like 'size-12' and 'w/h-[50px]'
+       that are baked into Medusa's core HTML. */
+       
+    /* Optional: Add more space between the new, larger logo and the text below */
+    margin-bottom: 2rem !important; /* Default is mb-4 (1rem) */
+}
+
+
+/* --- YOUR ORIGINAL LOGO STYLING (Still Perfect!) --- */
+/* This rule now works as intended because its parent is 120px.
+   The 100% width/height will fill the newly enlarged space. */
+.custom-login-page .bg-ui-bg-subtle > div > div:first-child > div {
+    /* Make sure this path is correct relative to your CSS file's location.
+       If your CSS is in `src/admin/` and logo in `src/admin/public/`,
+       the path should be `url('./public/main-logo.webp')` */
+    background-image: url('./public/main-logo.webp'); 
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: black; /* This will show if your logo has transparency */
+    width: 100%;
+    height: 100%;
+}
+
+
+/* --- Hide the Default Medusa SVG (Keep this!) --- */
 .custom-login-page .bg-ui-bg-subtle > div > div:first-child svg {
     display: none !important;
 }
 
-/* Inject your glorious custom logo */
-.custom-login-page .bg-ui-bg-subtle > div > div:first-child > div {
-    /* Make sure to point this to your actual asset path! */
-    background-image: url('./assets/my-logo.png'); 
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-    height: 100%;
-    /* Ensures the div doesn't collapse */
-    min-width: 48px; 
-    min-height: 48px;
-}
 
 /* -----------------------------------------------------
    2. CHANGE THE "WELCOME" TEXT (Scoped to Login Page ONLY)
 ----------------------------------------------------- */
-/* Hide the original text while keeping its DOM spacing */
 .custom-login-page h1.h1-core {
     visibility: hidden;
     position: relative;
@@ -31,10 +55,7 @@
     justify-content: center;
 }
 
-/* Overlay your custom text using the dynamic CSS variable! */
 .custom-login-page h1.h1-core::after {
-    /* We use the variable we injected via React! */
-    /* "Welcome!" is just a fallback in case the variable fails to load */
     content: var(--custom-login-title, "Welcome!"); 
     visibility: visible;
     position: absolute;

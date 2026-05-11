@@ -13,9 +13,9 @@ const LoginStyleWidget = () => {
 
     // 2. Decide what text to show based on the language!
     // Note: The extra single quotes inside the string are REQUIRED for CSS 'content' to work!
-    const welcomeText = i18n.language === "fa" 
-      ? "'به برند من خوش آمدید!'" 
-      : "'Welcome to My Brand!'";
+    const welcomeText = i18n.language === "fa"
+      ? "'به پنل مدیریت کارن خوش آمدید'"
+      : "'Welcome to Karen panel admin!'";
 
     // 3. Inject this text as a CSS variable globally into the document root!
     document.documentElement.style.setProperty("--custom-login-title", welcomeText);

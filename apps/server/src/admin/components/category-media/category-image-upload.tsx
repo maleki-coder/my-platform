@@ -1,5 +1,7 @@
+// path/to/your/components/category-image-upload.tsx
 import { RefObject } from "react"
 import { ArrowDownTray } from "@medusajs/icons"
+import { useTranslation } from "react-i18next"
 
 type CategoryImageUploadProps = {
   fileInputRef: RefObject<HTMLInputElement>
@@ -12,6 +14,8 @@ export const CategoryImageUpload = ({
   isUploading,
   onFileSelect,
 }: CategoryImageUploadProps) => {
+  const { t } = useTranslation()
+
   return (
     <div className="bg-ui-bg-base overflow-auto border-b px-6 py-4 lg:border-b-0 lg:border-l">
       <div className="flex flex-col space-y-2">
@@ -19,14 +23,17 @@ export const CategoryImageUpload = ({
           <div className="flex flex-col gap-y-1">
             <div className="flex items-center gap-x-1">
               <label className="font-sans txt-compact-small font-medium">
-                Media
+                {t("category-media-upload.label-media", "Media")}
               </label>
               <p className="font-normal font-sans txt-compact-small text-ui-fg-muted">
-                (Optional)
+                {t("category-media-upload.label-optional", "(Optional)")}
               </p>
             </div>
             <span className="txt-small text-ui-fg-subtle">
-              Add media to the product to showcase it in your storefront.
+              {t(
+                "category-media-upload.description",
+                "Add media to the product to showcase it in your storefront."
+              )}
             </span>
           </div>
 
@@ -60,11 +67,16 @@ export const CategoryImageUpload = ({
               <div className="text-ui-fg-subtle group-disabled:text-ui-fg-disabled flex items-center gap-x-2">
                 <ArrowDownTray />
                 <p className="font-normal font-sans txt-medium">
-                  {isUploading ? "Uploading..." : "Upload images"}
+                  {isUploading
+                    ? t("category-media-upload.status-uploading", "Uploading...")
+                    : t("category-media-upload.status-upload-images", "Upload images")}
                 </p>
               </div>
               <p className="font-normal font-sans txt-compact-small text-ui-fg-muted group-disabled:text-ui-fg-disabled">
-                Drag and drop images here or click to upload.
+                {t(
+                  "category-media-upload.drag-and-drop",
+                  "Drag and drop images here or click to upload."
+                )}
               </p>
             </button>
           </div>

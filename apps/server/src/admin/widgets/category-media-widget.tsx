@@ -1,3 +1,5 @@
+// src/admin/widgets/category-media-widget.tsx (or wherever you placed it)
+
 import { CategoryMediaModal } from "../components/category-media/category-media-modal"
 import { defineWidgetConfig } from "@medusajs/admin-sdk"
 import { Container, Heading } from "@medusajs/ui"
@@ -6,12 +8,15 @@ import { useQuery } from "@tanstack/react-query"
 import { sdk } from "../lib/sdk"
 import { CategoryImage } from "../types"
 import { ThumbnailBadge } from "@medusajs/icons"
+import { useTranslation } from "react-i18next"
 
 type CategoryImagesResponse = {
   category_images: CategoryImage[]
 }
 
 const CategoryMediaWidget = ({ data }: DetailWidgetProps<AdminProductCategory>) => {
+  const { t } = useTranslation()
+
   const { data: response, isLoading } = useQuery({
     queryKey: ["category-images", data.id],
     queryFn: async () => {
@@ -27,19 +32,25 @@ const CategoryMediaWidget = ({ data }: DetailWidgetProps<AdminProductCategory>) 
   return (
     <Container className="divide-y p-0">
       <div className="flex items-center justify-between px-6 py-4">
-        <Heading level="h2">Media</Heading>
+        <Heading level="h2">
+          {t("category-media-widget.title", "Media")}
+        </Heading>
         <CategoryMediaModal categoryId={data.id} existingImages={images} />
       </div>
       <div className="px-6 py-4">
         <div className="grid grid-cols-[repeat(auto-fill,96px)] gap-4">
           {isLoading && (
             <div className="col-span-full">
-              <p className="text-ui-fg-subtle text-sm">Loading...</p>
+              <p className="text-ui-fg-subtle text-sm">
+                {t("category-media-widget.loading", "Loading...")}
+              </p>
             </div>
           )}
           {!isLoading && images.length === 0 && (
             <div className="col-span-full">
-              <p className="text-ui-fg-subtle text-sm">No images added yet</p>
+              <p className="text-ui-fg-subtle text-sm">
+                {t("category-media-widget.no-images", "No images added yet")}
+              </p>
             </div>
           )}
           {images.map((image: CategoryImage) => (
@@ -49,7 +60,9 @@ const CategoryMediaWidget = ({ data }: DetailWidgetProps<AdminProductCategory>) 
             >
               <img
                 src={image.url}
-                alt={`Category ${image.type}`}
+                alt={t("category-media-widget.image-alt-text", "Category {{type}} image", {
+                  type: image.type,
+                })}
                 className="h-full w-full object-cover"
               />
               {image.type === "thumbnail" && (

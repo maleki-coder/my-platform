@@ -46,7 +46,7 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
   const [successMessage, setSuccessMessage] = useState("")
   const [errorMessage, setErrorMessage] = useState("")
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  
+
   // Reviews state
   const [reviews, setReviews] = useState<Review[]>([])
   const [reviewsLoading, setReviewsLoading] = useState(true)
@@ -57,7 +57,7 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
     const fetchReviews = async () => {
       setReviewsLoading(true)
       const result = await getProductReviews(productId)
-      
+
       if (result.success) {
         setReviews(result.reviews)
       } else {
@@ -96,7 +96,7 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
         setSuccessMessage(result.message || "نظر شما ثبت شد و پس از تایید نمایش داده خواهد شد.")
         setComment("")
         setRating(5)
-        
+
         // Refresh reviews after successful submission
         const updatedReviews = await getProductReviews(productId)
         if (updatedReviews.success) {
@@ -145,12 +145,12 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
 
   return (
     <div className="md:p-0 px-4">
-      <h3 className="text-lg font-bold text-gray-900 mb-6">نظرات کاربران</h3>
 
       {/* Two Column Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Right Section - Sticky Submit Button & Average Rating */}
         <div className="lg:col-span-4 order-first">
+          <h3 className="text-lg font-bold text-gray-900 mb-6">نظرات کاربران</h3>
           <div style={isVisible ? { top: "11.5rem" } : { top: "8.5rem" }} className="lg:sticky">
             <div className="border rounded-xl p-6 bg-white shadow-sm">
               {/* Average Rating */}
@@ -163,11 +163,10 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
-                        className={`w-5 h-5 ${
-                          parseFloat(calculateAverageRating()) >= star
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                        }`}
+                        className={`w-5 h-5 ${parseFloat(calculateAverageRating()) >= star
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
+                          }`}
                       />
                     ))}
                   </div>
@@ -209,11 +208,10 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
                               className="focus:outline-none transition-transform hover:scale-110"
                             >
                               <Star
-                                className={`w-8 h-8 ${
-                                  rating >= star
-                                    ? "fill-yellow-400 text-yellow-400"
-                                    : "text-gray-300"
-                                }`}
+                                className={`w-8 h-8 ${rating >= star
+                                  ? "fill-yellow-400 text-yellow-400"
+                                  : "text-gray-300"
+                                  }`}
                               />
                             </button>
                           ))}
@@ -285,13 +283,17 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
 
         {/* Left Section - Reviews List (Scrollable) */}
         <div className="lg:col-span-8 space-y-6">
+            {reviews.length > 0 ? (
           <h4 className="text-md font-semibold text-gray-900">
-            نظرات ({reviews.length})
+              <span>
+                نظرات ({reviews.length})
+              </span>
           </h4>
+            ) : null}
 
           {reviewsLoading && (
             <div className="space-y-4">
-              {[1, 2, 3].map((i) => (
+              {[1, 2].map((i) => (
                 <div
                   key={i}
                   className="border rounded-lg p-6 animate-pulse bg-gray-50"
@@ -343,11 +345,10 @@ export function ProductReviewsSection({ productId }: ProductReviewsProps) {
                     {[1, 2, 3, 4, 5].map((star) => (
                       <Star
                         key={star}
-                        className={`w-4 h-4 ${
-                          review.rating >= star
-                            ? "fill-yellow-400 text-yellow-400"
-                            : "text-gray-300"
-                        }`}
+                        className={`w-4 h-4 ${review.rating >= star
+                          ? "fill-yellow-400 text-yellow-400"
+                          : "text-gray-300"
+                          }`}
                       />
                     ))}
                   </div>

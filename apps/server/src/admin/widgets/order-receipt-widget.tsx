@@ -5,9 +5,13 @@ import {
   Container,
   Text,
 } from "@medusajs/ui";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const OrderReceiptWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
+  const { t } = useTranslation();
+  const [imageFailed, setImageFailed] = useState(false);
+
   const receiptUrl = useMemo(() => {
     return (order.metadata?.receipt_url as string) || null;
   }, [order.metadata]);
@@ -20,8 +24,9 @@ const OrderReceiptWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
     <Container className="divide-y p-0">
       <div className="p-4">
         <Text size="small" weight="plus" className="mb-2">
-          Uploaded Receipt:
+          {t("order-receipt-widget.title", "Uploaded Receipt:")}
         </Text>
+        
         {receiptUrl.endsWith(".pdf") ? (
           <a
             href={receiptUrl}
@@ -29,19 +34,25 @@ const OrderReceiptWidget = ({ data: order }: DetailWidgetProps<AdminOrder>) => {
             rel="noopener noreferrer"
             className="text-ui-fg-interactive hover:underline"
           >
-            View PDF Receipt
+            {t("order-receipt-widget.view-pdf", "View PDF Receipt")}
           </a>
         ) : (
           <>
-            <img
-              src={receiptUrl}
-              alt="Uploaded receipt"
-              className="max-w-full h-auto rounded border max-h-96 object-contain"
-              onError={(e) => {
-                e.currentTarget.style.display = "none";
-                // Fallback text if image fails
-              }}
-            />
+            {!imageFailed ? (
+              <img
+                src={receiptUrl}
+                alt={t("order-receipt-widget.alt-receipt", "Uploaded receipt")}
+                className="max-w-full h-auto rounded border max-h-96 object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  setImageFailed(true);
+                }}
+              />
+            ) : (
+              <Text size="small" className="text-ui-fg-muted italic">
+                {t("order-receipt-widget.fallback-error", "Image failed to load")}
+              </Text>
+            )}
           </>
         )}
       </div>

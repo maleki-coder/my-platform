@@ -98,7 +98,7 @@
     },
     "mainCharacter": {
         "heading": "ویژگی های اصلی",
-        "description": "انتخاب کنید کدام گزینه باید به عنوان \"ویژگی اصلی\" در فروشگاه ویژگی های اصلی شود.",
+        "description": "انتخاب کنید کدام گزینه باید به عنوان \"ویژگی اصلی\" در فروشگاه نمایش داده شود.",
         "loading": "در حال دریافت  ویژگی های اصلی...",
         "noOptions": "هیچ گزینه‌ای برای محصول موجود نیست.",
         "table": {
@@ -111,5 +111,40 @@
             "errorTitle": "اوه!",
             "errorDesc": "مشکلی در حین به‌روزرسانی پیش آمد. در حال بازگردانی."
         }
+    },
+    "category-media-widget": {
+        "title": "رسانه",
+        "loading": "در حال بارگذاری...",
+        "no-images": "هنوز تصویری اضافه نشده است",
+        "image-alt-text": "تصویر دسته‌بندی ({{type}})"
+    },
+    "category-media-modal": {
+        "gallery-image-alt-text": "تصویر دسته‌بندی ({{type}})",
+        "gallery-uploaded-image-alt-text": "تصویر بارگذاری شده",
+        "gallery-no-images-placeholder": "هنوز تصویری وجود ندارد. برای شروع، تصاویری را بارگذاری کنید.",
+        "trigger-button-text": "ویرایش",
+        "modal-title": "ویرایش رسانه",
+        "command-bar-selected_one": "{{count}} مورد انتخاب شد",
+        "command-bar-selected_other": "{{count}} مورد انتخاب شد",
+        "command-bar-action-thumbnail": "تنظیم به عنوان تصویر اصلی",
+        "command-bar-action-delete": "حذف",
+        "footer-button-cancel": "انصراف",
+        "footer-button-save": "ذخیره",
+        "toast-success-save": "رسانه دسته‌بندی با موفقیت ذخیره شد",
+        "toast-error-save": "ذخیره تغییرات ناموفق بود"
+    },
+    "category-media-upload": {
+        "label-media": "رسانه",
+        "label-optional": "(اختیاری)",
+        "description": "برای نمایش بهتر در فروشگاه، به این دسته بندی رسانه اضافه کنید.",
+        "status-uploading": "در حال بارگذاری...",
+        "status-upload-images": "بارگذاری تصاویر",
+        "drag-and-drop": "تصاویر را اینجا بکشید و رها کنید یا برای بارگذاری کلیک کنید."
+    },
+    "order-receipt-widget": {
+        "title": "رسید بارگذاری شده:",
+        "view-pdf": "مشاهده رسید PDF",
+        "alt-receipt": "رسید بارگذاری شده",
+        "fallback-error": "بارگذاری تصویر با خطا مواجه شد"
     }
 }

@@ -6,6 +6,7 @@ import { CategoryImageGallery } from "./category-image-gallery"
 import { CategoryImageUpload } from "./category-image-upload"
 import { useCategoryImageMutations } from "../../hooks/use-category-image"
 import { CommandBar } from "@medusajs/ui"
+import { useTranslation } from "react-i18next"
 type CategoryMediaModalProps = {
   categoryId: string
   existingImages: CategoryImage[]
@@ -14,8 +15,9 @@ type CategoryMediaModalProps = {
 export const CategoryMediaModal = ({
   categoryId,
   existingImages,
-  
+
 }: CategoryMediaModalProps) => {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
   const [currentThumbnailId, setCurrentThumbnailId] = useState<string | null>(
@@ -38,247 +40,249 @@ export const CategoryMediaModal = ({
       resetModalState()
     },
     onUpdateSuccess: () => {
-    setSelectedImageIds(new Set())
-  },
-  onDeleteSuccess: (deletedIds) => {
-    setSelectedImageIds(new Set())
-    if (currentThumbnailId && deletedIds.includes(currentThumbnailId)) {
-      setCurrentThumbnailId(null)
-    }
-  },
+      setSelectedImageIds(new Set())
+    },
+    onDeleteSuccess: (deletedIds) => {
+      setSelectedImageIds(new Set())
+      if (currentThumbnailId && deletedIds.includes(currentThumbnailId)) {
+        setCurrentThumbnailId(null)
+      }
+    },
   })
 
-const isSaving = 
-  createImagesMutation.isPending ||
-  updateImagesMutation.isPending ||
-  deleteImagesMutation.isPending
+  const isSaving =
+    createImagesMutation.isPending ||
+    updateImagesMutation.isPending ||
+    deleteImagesMutation.isPending
 
   const resetModalState = () => {
-  setUploadedFiles([])
-  setCurrentThumbnailId(null)
-  setSelectedImageIds(new Set())
-  setImagesToDelete(new Set())
-}
-const handleImageSelection = (id: string, isUploaded: boolean = false) => {
-  const itemId = isUploaded ? `uploaded:${id}` : id
-  const newSelected = new Set(selectedImageIds)
-  if (newSelected.has(itemId)) {
-    newSelected.delete(itemId)
-  } else {
-    newSelected.add(itemId)
+    setUploadedFiles([])
+    setCurrentThumbnailId(null)
+    setSelectedImageIds(new Set())
+    setImagesToDelete(new Set())
   }
-  setSelectedImageIds(newSelected)
-}
-
-const handleDelete = () => {
-  if (selectedImageIds.size === 0) {return}
-
-  const uploadedFileIds: string[] = []
-  const savedImageIds: string[] = []
-
-  selectedImageIds.forEach((id) => {
-    if (id.startsWith("uploaded:")) {
-      uploadedFileIds.push(id.replace("uploaded:", ""))
+  const handleImageSelection = (id: string, isUploaded: boolean = false) => {
+    const itemId = isUploaded ? `uploaded:${id}` : id
+    const newSelected = new Set(selectedImageIds)
+    if (newSelected.has(itemId)) {
+      newSelected.delete(itemId)
     } else {
-      savedImageIds.push(id)
+      newSelected.add(itemId)
     }
-  })
+    setSelectedImageIds(newSelected)
+  }
 
-  if (uploadedFileIds.length > 0) {
-    setUploadedFiles((prev) =>
-      prev.filter((file) => !uploadedFileIds.includes(file.id))
-    )
-    if (currentThumbnailId?.startsWith("uploaded:")) {
-      const thumbnailFileId = currentThumbnailId.replace("uploaded:", "")
-      if (uploadedFileIds.includes(thumbnailFileId)) {
+  const handleDelete = () => {
+    if (selectedImageIds.size === 0) { return }
+
+    const uploadedFileIds: string[] = []
+    const savedImageIds: string[] = []
+
+    selectedImageIds.forEach((id) => {
+      if (id.startsWith("uploaded:")) {
+        uploadedFileIds.push(id.replace("uploaded:", ""))
+      } else {
+        savedImageIds.push(id)
+      }
+    })
+
+    if (uploadedFileIds.length > 0) {
+      setUploadedFiles((prev) =>
+        prev.filter((file) => !uploadedFileIds.includes(file.id))
+      )
+      if (currentThumbnailId?.startsWith("uploaded:")) {
+        const thumbnailFileId = currentThumbnailId.replace("uploaded:", "")
+        if (uploadedFileIds.includes(thumbnailFileId)) {
+          setCurrentThumbnailId(null)
+        }
+      }
+    }
+
+    if (savedImageIds.length > 0) {
+      setImagesToDelete((prev) => {
+        const newSet = new Set(prev)
+        savedImageIds.forEach((id) => newSet.add(id))
+        return newSet
+      })
+      if (currentThumbnailId && savedImageIds.includes(currentThumbnailId)) {
         setCurrentThumbnailId(null)
       }
     }
+
+    setSelectedImageIds(new Set())
   }
 
-  if (savedImageIds.length > 0) {
-    setImagesToDelete((prev) => {
-      const newSet = new Set(prev)
-      savedImageIds.forEach((id) => newSet.add(id))
-      return newSet
+  const handleSetAsThumbnail = () => {
+    if (selectedImageIds.size !== 1) { return }
+
+    const selectedId = Array.from(selectedImageIds)[0]
+    setCurrentThumbnailId(selectedId)
+    if (selectedId.startsWith("uploaded:")) {
+      // update uploaded file type to thumbnail
+      const uploadedFileId = selectedId.replace("uploaded:", "")
+      setUploadedFiles((prev) =>
+        prev.map((file) => {
+          return file.id === uploadedFileId ? { ...file, type: "thumbnail" } : file
+        })
+      )
+    }
+
+    setSelectedImageIds(new Set())
+  }
+
+  const initializeThumbnail = () => {
+    const thumbnailImage = existingImages.find((img) => img.type === "thumbnail")
+    if (thumbnailImage?.id) {
+      setCurrentThumbnailId(thumbnailImage.id)
+    }
+  }
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen)
+    if (isOpen) {
+      initializeThumbnail()
+    } else {
+      resetModalState()
+    }
+  }
+
+  const handleUploadFile = (files: FileList | null) => {
+    if (!files || files.length === 0) { return }
+    const filesArray = Array.from(files)
+
+    uploadFilesMutation.mutate(filesArray, {
+      onSuccess: (data) => {
+        setUploadedFiles((prev) => [...prev, ...data.files])
+      },
     })
-    if (currentThumbnailId && savedImageIds.includes(currentThumbnailId)) {
-      setCurrentThumbnailId(null)
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""
     }
   }
+  const handleSave = async () => {
+    const hasNewImages = uploadedFiles.length > 0
+    const hasImagesToDelete = imagesToDelete.size > 0
 
-  setSelectedImageIds(new Set())
-}
+    const initialThumbnail = existingImages.find((img) => img.type === "thumbnail")
+    const thumbnailChanged =
+      currentThumbnailId &&
+      !currentThumbnailId.startsWith("uploaded:") &&
+      currentThumbnailId !== initialThumbnail?.id
 
-const handleSetAsThumbnail = () => {
-  if (selectedImageIds.size !== 1) {return}
-
-  const selectedId = Array.from(selectedImageIds)[0]
-  setCurrentThumbnailId(selectedId)
-  if (selectedId.startsWith("uploaded:")) {
-    // update uploaded file type to thumbnail
-    const uploadedFileId = selectedId.replace("uploaded:", "")
-    setUploadedFiles((prev) =>
-      prev.map((file) => {
-        return file.id === uploadedFileId ? { ...file, type: "thumbnail" } : file
-      })
-    )
-  }
-  
-  setSelectedImageIds(new Set())
-}
-
-const initializeThumbnail = () => {
-  const thumbnailImage = existingImages.find((img) => img.type === "thumbnail")
-  if (thumbnailImage?.id) {
-    setCurrentThumbnailId(thumbnailImage.id)
-  }
-}
-
-const handleOpenChange = (isOpen: boolean) => {
-  setOpen(isOpen)
-  if (isOpen) {
-    initializeThumbnail()
-  } else {
-    resetModalState()
-  }
-}
-
-const handleUploadFile = (files: FileList | null) => {
-  if (!files || files.length === 0) {return}
-  const filesArray = Array.from(files)
-  
-  uploadFilesMutation.mutate(filesArray, {
-    onSuccess: (data) => {
-      setUploadedFiles((prev) => [...prev, ...data.files])
-    },
-  })
-  
-  if (fileInputRef.current) {
-    fileInputRef.current.value = ""
-  }
-}
-const handleSave = async () => {
-  const hasNewImages = uploadedFiles.length > 0
-  const hasImagesToDelete = imagesToDelete.size > 0
-  
-  const initialThumbnail = existingImages.find((img) => img.type === "thumbnail")
-  const thumbnailChanged = 
-    currentThumbnailId && 
-    !currentThumbnailId.startsWith("uploaded:") &&
-    currentThumbnailId !== initialThumbnail?.id
-
-  if (!hasNewImages && !hasImagesToDelete && !thumbnailChanged) {
-    setOpen(false)
-    return
-  }
-
-  try {
-    const operations: Array<Promise<unknown>> = []
-    if (hasNewImages) {
-      const imagesToCreate = uploadedFiles.map((file) => ({
-        url: file.url,
-        file_id: file.id,
-        type: file.type || (currentThumbnailId === `uploaded:${file.id}` ? 
-          "thumbnail" : "image"
-        ),
-      }))
-      operations.push(createImagesMutation.mutateAsync(imagesToCreate))
+    if (!hasNewImages && !hasImagesToDelete && !thumbnailChanged) {
+      setOpen(false)
+      return
     }
 
-    // Update thumbnail if changed and it's not an uploaded file
-    if (thumbnailChanged && !(hasNewImages && currentThumbnailId?.startsWith("uploaded:"))) {
-      const updates = [
-        {
-          id: currentThumbnailId,
-          type: "thumbnail" as const,
-        },
-      ]
-      operations.push(updateImagesMutation.mutateAsync(updates))
+    try {
+      const operations: Array<Promise<unknown>> = []
+      if (hasNewImages) {
+        const imagesToCreate = uploadedFiles.map((file) => ({
+          url: file.url,
+          file_id: file.id,
+          type: file.type || (currentThumbnailId === `uploaded:${file.id}` ?
+            "thumbnail" : "image"
+          ),
+        }))
+        operations.push(createImagesMutation.mutateAsync(imagesToCreate))
+      }
+
+      // Update thumbnail if changed and it's not an uploaded file
+      if (thumbnailChanged && !(hasNewImages && currentThumbnailId?.startsWith("uploaded:"))) {
+        const updates = [
+          {
+            id: currentThumbnailId,
+            type: "thumbnail" as const,
+          },
+        ]
+        operations.push(updateImagesMutation.mutateAsync(updates))
+      }
+
+      if (hasImagesToDelete) {
+        const idsToDelete = Array.from(imagesToDelete)
+        operations.push(deleteImagesMutation.mutateAsync(idsToDelete))
+      }
+
+      await Promise.all(operations)
+
+      queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
+      setOpen(false)
+      resetModalState()
+      toast.success(t("category-media-modal.toast-success-save", "Category media saved successfully"))
+    } catch (error) {
+      toast.error("Failed to save changes")
     }
-
-    if (hasImagesToDelete) {
-      const idsToDelete = Array.from(imagesToDelete)
-      operations.push(deleteImagesMutation.mutateAsync(idsToDelete))
-    }
-
-    await Promise.all(operations)
-
-    queryClient.invalidateQueries({ queryKey: ["category-images", categoryId] })
-    setOpen(false)
-    resetModalState()
-    toast.success("Category media saved successfully")
-  } catch (error) {
-    toast.error("Failed to save changes")
   }
-}
-return (
-  <FocusModal open={open} onOpenChange={handleOpenChange}>
-    <FocusModal.Trigger asChild>
-      <Button size="small" variant="secondary">
-        Edit
-      </Button>
-    </FocusModal.Trigger>
+  return (
+    <FocusModal open={open} onOpenChange={handleOpenChange}>
+      <FocusModal.Trigger asChild>
+        <Button size="small" variant="secondary">
+          {t("category-media-modal.trigger-button-text", "Edit")}
+        </Button>
+      </FocusModal.Trigger>
 
-    <FocusModal.Content>
-      <FocusModal.Header>
-        <Heading>Edit Media</Heading>
-      </FocusModal.Header>
+      <FocusModal.Content>
+        <FocusModal.Header>
+          {t("category-media-modal.modal-title", "Edit Media")}
+        </FocusModal.Header>
 
-      <FocusModal.Body className="flex h-full overflow-hidden">
-        <div className="flex w-full h-full flex-col-reverse lg:grid lg:grid-cols-[1fr_560px]">
-          <CategoryImageGallery
-            existingImages={existingImages}
-            uploadedFiles={uploadedFiles}
-            currentThumbnailId={currentThumbnailId}
-            selectedImageIds={selectedImageIds}
-            onToggleSelect={handleImageSelection}
-            imagesToDelete={imagesToDelete}
-          />
-          <CategoryImageUpload
-            fileInputRef={fileInputRef}
-            isUploading={uploadFilesMutation.isPending}
-            onFileSelect={handleUploadFile}
-          />
-        </div>
-        <CommandBar open={selectedImageIds.size > 0}>
-        <CommandBar.Bar>
-            <CommandBar.Value>
-              {selectedImageIds.size} selected
-            </CommandBar.Value>
-            <CommandBar.Seperator />
-            <CommandBar.Command
-              action={handleSetAsThumbnail}
-              label="Set as thumbnail"
-              shortcut="t"
-              disabled={selectedImageIds.size !== 1}
+        <FocusModal.Body className="flex h-full overflow-hidden">
+          <div className="flex w-full h-full flex-col-reverse lg:grid lg:grid-cols-[1fr_560px]">
+            <CategoryImageGallery
+              existingImages={existingImages}
+              uploadedFiles={uploadedFiles}
+              currentThumbnailId={currentThumbnailId}
+              selectedImageIds={selectedImageIds}
+              onToggleSelect={handleImageSelection}
+              imagesToDelete={imagesToDelete}
             />
-            <CommandBar.Seperator />
-                <CommandBar.Command
-                  action={handleDelete}
-                  label="Delete"
-                  shortcut="d"
-                />
+            <CategoryImageUpload
+              fileInputRef={fileInputRef}
+              isUploading={uploadFilesMutation.isPending}
+              onFileSelect={handleUploadFile}
+            />
+          </div>
+          <CommandBar open={selectedImageIds.size > 0}>
+            <CommandBar.Bar>
+              <CommandBar.Value>
+                {t("category-media-modal.command-bar-selected", {
+                  count: selectedImageIds.size,
+                })}
+              </CommandBar.Value>
+              <CommandBar.Seperator />
+              <CommandBar.Command
+                action={handleSetAsThumbnail}
+                label={t("category-media-modal.command-bar-action-thumbnail", "Set as thumbnail")}
+                shortcut="t"
+                disabled={selectedImageIds.size !== 1}
+              />
+              <CommandBar.Seperator />
+              <CommandBar.Command
+                action={handleDelete}
+                label={t("category-media-modal.command-bar-action-delete", "Delete")}
+                shortcut="d"
+              />
             </CommandBar.Bar>
-        </CommandBar>
-      </FocusModal.Body>
-      <FocusModal.Footer>
-        <div className="flex items-center justify-end gap-x-2">
-          <FocusModal.Close asChild>
-            <Button size="small" variant="secondary">
-              Cancel
+          </CommandBar>
+        </FocusModal.Body>
+        <FocusModal.Footer>
+          <div className="flex items-center justify-end gap-x-2">
+            <FocusModal.Close asChild>
+              <Button size="small" variant="secondary">
+                {t("category-media-modal.footer-button-cancel", "Cancel")}
+              </Button>
+            </FocusModal.Close>
+            <Button
+              size="small"
+              onClick={handleSave}
+              isLoading={isSaving}
+            >
+              {t("category-media-modal.footer-button-save", "Save")}
             </Button>
-          </FocusModal.Close>
-          <Button
-            size="small"
-            onClick={handleSave}
-            isLoading={isSaving}
-          >
-            Save
-          </Button>
-        </div>
-      </FocusModal.Footer>
-    </FocusModal.Content>
-  </FocusModal>
-)
+          </div>
+        </FocusModal.Footer>
+      </FocusModal.Content>
+    </FocusModal>
+  )
 }
