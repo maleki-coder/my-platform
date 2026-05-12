@@ -1,6 +1,6 @@
 import { createStep, StepResponse } from "@medusajs/framework/workflows-sdk"
 import { Modules } from "@medusajs/framework/utils"
-import { ProductOptionValueDTO } from "@medusajs/framework/types"
+import { IProductModuleService, ProductOptionValueDTO } from "@medusajs/framework/types"
 
 export type UpdateProductOptionValuesMetadataInput = {
   updates: {
@@ -13,7 +13,7 @@ export type UpdateProductOptionValuesMetadataInput = {
 export const updateProductOptionValuesMetadataStep = createStep(
   "update-product-option-values-metadata",
   async ({ updates }: UpdateProductOptionValuesMetadataInput, { container }) => {
-    const productModuleService = container.resolve(Modules.PRODUCT)
+    const productModuleService = container.resolve<IProductModuleService>(Modules.PRODUCT)
 
     const updatedOptionValues: ProductOptionValueDTO[] = []
 
@@ -47,7 +47,7 @@ export const updateProductOptionValuesMetadataStep = createStep(
       return
     }
 
-    const productModuleService = container.resolve(Modules.PRODUCT)
+    const productModuleService = container.resolve<IProductModuleService>(Modules.PRODUCT)
 
     // Restore original metadata
     for (const original of compensationData) {
